@@ -1,0 +1,177 @@
+.map-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Dark background acting like a wall for the image canvas */
+  background-color: #1a0f08;
+}
+
+.map-visual-layer {
+  position: relative;
+  /* Force it to match the exact size and aspect ratio of your image */
+  height: 100vh;
+  max-width: 100vw;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  /* Matches the portrait proportions of your illustration */
+
+  background:
+    linear-gradient(rgba(255, 246, 234, 0.2), rgba(232, 213, 188, 0.4)),
+    url('/map-bg.jpg');
+  background-size: cover;
+  background-position: center;
+
+  z-index: 1;
+  /* Behind text */
+  animation: fadeIn 5s ease-in-out;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  /* Gives it a canvas look */
+}
+
+.map-text-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  animation: fadeIn 5s ease-in-out;
+  pointer-events: none;
+  /* Let clicks pass through to pins if overlapping */
+  background: rgba(255, 255, 255, 0.35);
+  padding: 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  margin-top: -25vh;
+  /* elevate text slightly above the center */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  35% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  /* wait for door */
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  color: #1a110a;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #3b2c1a;
+  max-width: 600px;
+  font-weight: 600;
+}
+
+.city-pin {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  background-color: #e63946;
+  /* Vibrant red contrasts well with landscape */
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 5px rgba(230, 57, 70, 0.4), 0 5px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.city-pin:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 10px rgba(230, 57, 70, 0.5), 0 8px 15px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+}
+
+.city-label {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1d3557;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease, bottom 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.city-label::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: #1d3557 transparent transparent transparent;
+}
+
+.city-pin:hover .city-label {
+  opacity: 1;
+  bottom: 35px;
+}
+
+/* Updated pin positions for full-screen layout.
+   Adjusted roughly for India's shape centered on screen. */
+.pin-delhi {
+  top: 35%;
+  left: 45%;
+}
+
+.pin-mumbai {
+  top: 60%;
+  left: 35%;
+}
+
+.pin-bangalore {
+  top: 75%;
+  left: 42%;
+}
+
+.pin-chennai {
+  top: 72%;
+  left: 48%;
+}
+
+.pin-kolkata {
+  top: 55%;
+  left: 58%;
+}
+
+/* New Colorful Cities */
+.pin-jaipur { top: 38%; left: 38%; }
+.pin-ahmedabad { top: 50%; left: 30%; }
+.pin-pune { top: 62%; left: 32%; }
+.pin-hyderabad { top: 65%; left: 45%; }
+.pin-kochi { top: 85%; left: 40%; }
+.pin-varanasi { top: 45%; left: 52%; }
+.pin-goa { top: 68%; left: 31%; }
+.pin-shimla { top: 25%; left: 43%; }

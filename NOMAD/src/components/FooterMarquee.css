@@ -1,0 +1,59 @@
+.footer-marquee-container {
+  width: 100vw;
+  background-color: #000; /* Match the dark theme */
+  overflow: hidden;
+  padding: 15px 0; /* Reduced padding to make the containing box smaller */
+  margin-top: -50px; /* Pull the stamps upward gently without overlapping the map */
+  position: relative;
+  z-index: 5; /* Ensure it stays on top of any overlapping SVG space */
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-marquee 30s linear infinite;
+  gap: 25px; /* Smaller space between stamps */
+  padding: 0 30px;
+}
+
+.stamp-item {
+  flex-shrink: 0;
+  width: auto; /* Scale horizontally proportionally to height */
+  height: 120px; /* Small stamp size */
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.marquee-img {
+  height: 100%;
+  width: auto; 
+  display: block;
+  object-fit: contain; /* Do not crop and do not squish */
+  filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.6));
+  border-radius: 4px;
+}
+
+.stamp-item:hover {
+  transform: scale(1.1) translateY(-10px) rotate(2deg);
+  z-index: 10;
+}
+
+@keyframes scroll-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Since we repeated the list 4 times (12 items total),
+       moving by 1/4 of total track width (the first set of 3)
+       will make it seamless. Actually, moving by the width of the initial set. */
+    transform: translateX(calc(-25% - 15px)); 
+  }
+}
+
+/* Pause animation on hover if we want the user to inspect stamps */
+.footer-marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}

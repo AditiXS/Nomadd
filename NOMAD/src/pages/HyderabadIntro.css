@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Tenali+Ramakrishna&display=swap');
+
+.dynamic-sequence-bg {
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 1s ease;
+    opacity: 1;
+}
+
+.dynamic-sequence-bg.fade-out {
+    opacity: 0;
+}
+
+.full-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* This makes sure the layers stack nicely on top of each other */
+    z-index: 10; 
+}
+
+.full-image {
+    width: 100%;
+    height: 100%;
+    /* No boxes! The image naturally fills and covers the screen perfectly without stretching */
+    object-fit: cover; 
+    object-position: center;
+}
+
+/* 
+ * ==========================================
+ * HEAVY CINEMATIC TRANSITIONS 
+ * "Make them fall from anywhere"
+ * ==========================================
+ */
+
+.drop-from-top {
+    z-index: 1;
+    animation: slam-down 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.slide-from-left {
+    z-index: 2;
+    animation: slam-right 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.drop-from-right {
+    z-index: 3;
+    animation: slam-from-corner 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* The text slams down on top of the final image */
+.text-slam-layer {
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: rgba(0,0,0,0.4); /* Slight dim to make text pop */
+    animation: fade-in-bg 0.5s ease forwards;
+}
+
+.epic-intro-text {
+    font-family: 'Tenali Ramakrishna', sans-serif;
+    color: #fff;
+    font-size: clamp(5rem, 12vw, 10rem);
+    text-align: center;
+    line-height: 0.9;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-transform: lowercase;
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    animation: text-slam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Keyframes */
+@keyframes slam-down {
+    0% { transform: translateY(-100vh) scale(1.1); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes slam-right {
+    0% { transform: translateX(-100vw) rotate(-5deg) scale(1.1); }
+    100% { transform: translateX(0) rotate(0deg) scale(1); }
+}
+
+@keyframes slam-from-corner {
+    0% { transform: translate(100vw, -100vh) rotate(10deg) scale(1.1); }
+    100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes fade-in-bg {
+    0% { background: transparent; }
+    100% { background: rgba(0,0,0,0.4); }
+}
+
+@keyframes text-slam {
+    0% { transform: scale(3) rotate(5deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}

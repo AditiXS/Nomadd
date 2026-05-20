@@ -1,0 +1,66 @@
+/* ── Map Section (map only, no text) ── */
+.map-section {
+  width: 100vw;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  /* Removed min-height: 100vh to let it shrink to fit the map */
+}
+
+.map-canvas {
+  position: relative;
+  width: 100%;
+  height: auto; /* Let the map dictate height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 40px 0 40px; /* Removed bottom padding entirely */
+  box-sizing: border-box;
+}
+
+/* Tooltip */
+.map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 10;
+  transform: translateY(-100%);
+}
+
+/* SVG */
+.india-svg {
+  width: auto;
+  height: 92vh;
+  max-width: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 80px rgba(255,255,255,0.06));
+  transform: translateX(3%); /* Optically center the map since India's eastern states pull the bounding box far right */
+}
+
+/* State paths */
+.state-path {
+  fill: #080808;
+  stroke: #ffffff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  cursor: pointer;
+  transition: fill 0.2s ease, filter 0.2s ease;
+}
+
+.state-path:hover {
+  fill: var(--hover-color, #1e1e1e);
+}

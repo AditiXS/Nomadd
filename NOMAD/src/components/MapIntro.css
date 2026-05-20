@@ -1,0 +1,63 @@
+/* ── Map Intro Section ── */
+.map-intro-section {
+  width: 100vw;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 30px; /* Added horizontal padding to create space on left and right */
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.map-intro-overlay {
+  display: none;
+}
+
+/* Text layer - Postcard / Stamp */
+.map-intro-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%; /* Spans full width of parent, minus the parent padding */
+  max-width: 1200px; /* Keeps from getting absurdly wide on ultra-wide monitors */
+  text-align: center;
+  padding: 40px 60px;
+  box-sizing: border-box;
+
+  /* The actual stamp effect (Pure CSS Cutouts) */
+  background-color: #e8e2e2;
+  --r: 8px; /* Radius of cutouts */
+  /* Chrome/Safari prefix */
+  -webkit-mask: 
+    radial-gradient(var(--r), #0000 98%, #000) 0 0 / calc(2*var(--r)) calc(2*var(--r)) round,
+    linear-gradient(#000 0 0) 50% 50% / calc(100% - 2*var(--r)) calc(100% - 2*var(--r)) no-repeat;
+  /* Standard */
+  mask: 
+    radial-gradient(var(--r), #0000 98%, #000) 0 0 / calc(2*var(--r)) calc(2*var(--r)) round,
+    linear-gradient(#000 0 0) 50% 50% / calc(100% - 2*var(--r)) calc(100% - 2*var(--r)) no-repeat;
+}
+
+.map-intro-eyebrow {
+  display: none;
+}
+
+.map-intro-heading {
+  font-family: 'Yatra One', cursive;
+  font-size: clamp(2.5rem, 6.5vw, 5rem); /* Scaled up to be bigger, but safely fitting on one line */
+  white-space: nowrap; /* Forces text to stay on one line */
+  font-weight: 700;
+  line-height: 1.1;
+  color: #000;
+  /* Black text */
+  /* Rust red similar to painted text */
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  /* Subtle texture instead of heavy glow */
+  opacity: 0.9;
+}
+
+.map-intro-subtext {
+  display: none;
+}

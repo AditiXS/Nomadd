@@ -1,0 +1,94 @@
+.hero-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background-color: #000;
+}
+
+.hero-slices-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slice {
+  flex: 1; 
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.7s ease;
+  cursor: pointer;
+  /* All slices start black & white */
+  filter: grayscale(100%) brightness(0.55);
+}
+
+.hero-slice:not(:last-child) {
+  border-right: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* When hovering the container, keep non-active slices B&W and dim them further */
+.hero-slices-container:hover .hero-slice {
+  filter: grayscale(100%) brightness(0.4);
+}
+/* Only the hovered slice bursts into full color */
+.hero-slices-container:hover .hero-slice.active {
+  flex: 1.5;
+  filter: grayscale(0%) brightness(1.05);
+}
+
+.slice-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Subtle dark overlay for text contrast */
+  transition: background-color 0.6s ease;
+  z-index: 1;
+}
+
+.hero-slices-container:hover .hero-slice.active .slice-overlay {
+  background-color: rgba(0, 0, 0, 0.1); 
+}
+
+.hero-letter {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8rem;
+  font-weight: 700;
+  color: #ffffff;
+  z-index: 2;
+  text-shadow: 3px 3px 8px rgba(0,0,0,0.9);
+  margin: 0;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hero-slice.active .hero-letter {
+  transform: scale(1.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-letter { font-size: 4rem; }
+}
+
+/* Hindi word fixed to the bottom right of the hero section */
+.hindi-subtitle {
+  position: absolute;
+  bottom: 8%;
+  right: 4%;
+  font-family: 'Courier New', Courier, monospace, 'Noto Sans Devanagari', sans-serif;
+  font-size: 3.5rem;
+  color: white;
+  z-index: 10;
+  letter-spacing: 6px;
+  text-shadow: 2px 2px 15px rgba(0,0,0,0.9);
+  font-weight: bold;
+  pointer-events: none;
+  line-height: 1;
+}
