@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EventCalendar from '../components/EventCalendar';
-import { getCityConfig } from '../data/cityConfigs';
 import API_BASE from '../utils/api';
 import './HyderabadPage.css';
 
 const HyderabadPage = () => {
   const navigate = useNavigate();
   const { city } = useParams();
-  const cityName = (city || 'hyderabad').toLowerCase();
-  const cityConfig = getCityConfig(cityName);
-  const displayName = cityConfig.displayName;
+  const cityName = city || 'hyderabad';
+  const displayName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
 
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -125,7 +123,16 @@ const HyderabadPage = () => {
     'Heritage Fort': '🏯', 'Temple': '🛕', 'Lake': '🌊', 'default': '📍'
   };
 
-  const placeImageFallbacks = cityConfig.placeImageFallbacks;
+  const placeImageFallbacks = {
+    'charminar': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/330px-Charminar_Hyderabad_1.jpg',
+    'golconda fort': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Golconda_Fort_005.jpg/330px-Golconda_Fort_005.jpg',
+    'hussain sagar lake': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HussainSagar_Moon_Rise.jpg/330px-HussainSagar_Moon_Rise.jpg',
+    'ramoji film city': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ramoji_Film_City.jpg/330px-Ramoji_Film_City.jpg',
+    'salar jung museum': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Salar_Jung_Museum%2C_Hyderabad%2C_India.jpg/330px-Salar_Jung_Museum%2C_Hyderabad%2C_India.jpg',
+    'birla mandir': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Birla_Mandir%2C_Hyderabad.png/330px-Birla_Mandir%2C_Hyderabad.png',
+    'chowmahalla palace': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Chowmahalla_Palace_01.jpg/330px-Chowmahalla_Palace_01.jpg',
+    'nehru zoological park': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Hyderabad_zoo.jpg/330px-Hyderabad_zoo.jpg'
+  };
 
   const getPlaceFallbackImage = (place, index) => {
     const fallbackImages = Object.values(placeImageFallbacks);
@@ -137,8 +144,18 @@ const HyderabadPage = () => {
     return placeImageFallbacks[key] || place?.image || getPlaceFallbackImage(place, index);
   };
 
-  const cityMapPlaces = cityConfig.mapPlaces;
-  const foodImageMap = cityConfig.foodImageMap;
+  const foodImageMap = {
+    'hyderabadi biryani': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Biryani.jpg/640px-Biryani.jpg',
+    'haleem': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Ramzan_food_%2843%29.jpg/640px-Ramzan_food_%2843%29.jpg',
+    'double ka meetha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Bread_pudding_-_Aubry%27s_Orleans.jpg/640px-Bread_pudding_-_Aubry%27s_Orleans.jpg',
+    'irani chai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Cup-of-tea.jpg/640px-Cup-of-tea.jpg',
+    'qubani ka meetha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Peaches_and_plums.jpg/640px-Peaches_and_plums.jpg',
+    'lukhmi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Samosa_%28238609264%29.jpg/640px-Samosa_%28238609264%29.jpg',
+    'vada pav': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Vada_Pav.jpg/640px-Vada_Pav.jpg',
+    'pav bhaji': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pav_bhaji.jpg/640px-Pav_bhaji.jpg',
+    'pani puri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Panipuri.jpg/640px-Panipuri.jpg',
+    'bombay sandwich': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Masala_Dosa_-_Udupi_Hotel.jpg/640px-Masala_Dosa_-_Udupi_Hotel.jpg'
+  };
 
   const getFoodFallbackImage = (foodName) => {
     if (!foodName) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg';
@@ -146,59 +163,68 @@ const HyderabadPage = () => {
     return foodImageMap[key] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg';
   };
 
-  const getFoodFallbackData = () =>
-    cityConfig.foodFallbacks.map((food) => ({ ...food, image: getFoodFallbackImage(food.name) }));
+  const getFoodFallbackData = (city) => {
+    const base = [
+      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', avg_rating: 4.8 },
+      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', avg_rating: 4.9 },
+      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', avg_rating: 4.6 },
+      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', avg_rating: 4.7 },
+      { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', avg_rating: 4.5 },
+      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', must_try_at: 'Old City, Charminar area', price_range: 'Low', avg_rating: 4.6 }
+    ];
+    return base.map((food) => ({ ...food, image: getFoodFallbackImage(food.name) }));
+  };
 
   useEffect(() => {
-    fetch(`/api/weather/${cityName}`)
+    fetch(`${API_BASE}/api/weather/${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setWeather(d.weather); }).catch(() => {});
 
     setLoadingPlaces(true);
-    fetch(`/api/places/${cityName}`)
+    fetch(`${API_BASE}/api/places/${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setPlaces(d.places); }).catch(() => {}).finally(() => setLoadingPlaces(false));
 
     setLoadingFoods(true);
-    fetch(`/api/foods/${cityName}`)
+    fetch(`${API_BASE}/api/foods/${cityName}`)
       .then(r => r.json())
       .then(d => {
         if (d.success && Array.isArray(d.foods) && d.foods.length > 0) {
           setFoods(d.foods.map((food) => ({ ...food, image: food.image || getFoodFallbackImage(food.name) })));
         } else {
-          setFoods(getFoodFallbackData());
+          setFoods(getFoodFallbackData(cityName));
         }
       })
-      .catch(() => { setFoods(getFoodFallbackData()); })
+      .catch(() => { setFoods(getFoodFallbackData(cityName)); })
       .finally(() => setLoadingFoods(false));
 
     setLoadingEvents(true);
     const now = new Date();
-    fetch(`/api/events/${cityName}?month=${now.getMonth() + 1}&year=${now.getFullYear()}`)
+    fetch(`${API_BASE}/api/events/${cityName}?month=${now.getMonth() + 1}&year=${now.getFullYear()}`)
       .then(r => r.json()).then(d => { if (d.success) setEvents(d.events); }).catch(() => {}).finally(() => setLoadingEvents(false));
 
     setLoadingTransport(true);
-    fetch(`/api/transport/${cityName}`)
+    fetch(`${API_BASE}/api/transport/${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setTransport(d); }).catch(() => {}).finally(() => setLoadingTransport(false));
 
     fetchPosts();
     fetchCarpoolPosts();
 
     // Fetch fare estimator locations
-    fetch(`/api/transport/${cityName}/locations`)
+    fetch(`${API_BASE}/api/transport/${cityName}/locations`)
       .then(r => r.json()).then(d => { if (d.success) setFareLocations(d.locations); }).catch(() => {});
 
     // Fetch accommodations
     setLoadingAccommodations(true);
-    fetch(`/api/accommodations/${cityName}`)
+    fetch(`${API_BASE}/api/accommodations/${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setAccommodations(d.accommodations); }).catch(() => {}).finally(() => setLoadingAccommodations(false));
   }, [cityName]);
 
   const fetchPosts = () => {
-    fetch(`/api/community/posts?city=${cityName}`)
+    fetch(`${API_BASE}/api/community/posts?city=${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setPosts(d.posts); }).catch(() => {});
   };
 
   const fetchCarpoolPosts = () => {
-    fetch(`/api/carpool/posts?city=${cityName}`)
+    fetch(`${API_BASE}/api/carpool/posts?city=${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setCarpoolPosts(d.posts); }).catch(() => {});
   };
 
@@ -206,7 +232,7 @@ const HyderabadPage = () => {
     if (!fareOrigin || !fareDest) return;
     setFareLoading(true);
     try {
-      const res = await fetch(${API_BASE}/api/, {
+      const res = await fetch(`${API_BASE}/api/transport/estimate-fare`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           originLat: fareOrigin.lat, originLon: fareOrigin.lon,
@@ -226,7 +252,7 @@ const HyderabadPage = () => {
     if (!name.trim() || !origin.trim() || !destination.trim() || !date || !time) return;
     setCarpoolPosting(true);
     try {
-      const res = await fetch(${API_BASE}/api/, {
+      const res = await fetch(`${API_BASE}/api/carpool/posts`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ city: cityName, author_name: name, origin, destination, travel_date: date, travel_time: time, seats: parseInt(seats) || 1, note: carpoolForm.note })
       });
@@ -247,7 +273,7 @@ const HyderabadPage = () => {
     if (!authorName.trim() || !postContent.trim()) return;
     setPosting(true);
     try {
-      const res = await fetch(${API_BASE}/api/, {
+      const res = await fetch(`${API_BASE}/api/community/posts`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ city: cityName, author_name: authorName, content: postContent })
       });
@@ -261,7 +287,7 @@ const HyderabadPage = () => {
     if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
     setSubmittingReview(true);
     try {
-      const res = await fetch(${API_BASE}/api/, {
+      const res = await fetch(`${API_BASE}/api/reviews`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           city: cityName, restaurant_name: restaurantName,
@@ -273,7 +299,7 @@ const HyderabadPage = () => {
         setReviewForm({ restaurant: '', name: '', stars: 5, text: '' });
         setReviewOpenFor(null);
         // Refresh foods to get updated reviews
-        fetch(`/api/foods/${cityName}`)
+        fetch(`${API_BASE}/api/foods/${cityName}`)
           .then(r => r.json()).then(d => { if (d.success) setFoods(d.foods); }).catch(() => {});
       }
     } catch (err) {}
@@ -312,7 +338,7 @@ const HyderabadPage = () => {
   );
 
   return (
-    <div className={`city-page city-page--${cityName}`}>
+    <div className="city-page">
       {/* HEADER */}
       <div className="city-gallery-header">
         <div className="header-branding">
@@ -343,9 +369,14 @@ const HyderabadPage = () => {
       {/* HERO */}
       <div className="city-hero" ref={heroRef}>
         <div className="city-hero-layered-collage">
-          {cityConfig.heroImages.map((src, i) => (
-            <img key={src} src={src} alt="" className={`layered-img img-${i + 1}`} loading="lazy" />
-          ))}
+          <img src="/hyd/Untitled (1).png" alt="" className="layered-img img-1" />
+          <img src="/hyd/Untitled.png" alt="" className="layered-img img-2" />
+          <img src="/hyd/image (3).png" alt="" className="layered-img img-4" />
+          <img src="/hyd/img.png" alt="" className="layered-img img-5" />
+          <img src="/hyd/biryani.png" alt="" className="layered-img img-9" />
+          <img src="/hyd/imgg.png" alt="" className="layered-img img-6" />
+          <img src="/hyd/human.png" alt="" className="layered-img img-7" />
+          <img src="/dancing.png" alt="" className="layered-img img-8" />
         </div>
         <div className="city-hero-fade" />
         <button className="city-back-btn" onClick={() => navigate('/login')}>←</button>
@@ -358,51 +389,49 @@ const HyderabadPage = () => {
           <div className="realtime-section-header places-scrapbook-header">
             <div className="section-badge places-scrapbook-badge">CITY RECS</div>
             <h2 className="realtime-title places-scrapbook-title">places in {displayName}</h2>
-            <p className="realtime-subtitle places-scrapbook-subtitle">tap a landmark on the illustrated map to open its Wikipedia story</p>
+            <p className="realtime-subtitle places-scrapbook-subtitle">real Hyderabad landmarks, pinned like travel notes</p>
           </div>
-
-          <div className="hyderabad-map-panel" aria-label={cityConfig.mapAriaLabel}>
-            <div className="hyderabad-map-paper">
-              <svg className="hyderabad-map-outline" viewBox="0 0 680 820" aria-hidden="true">
-                <path
-                  d={cityConfig.mapOutlinePaths[0]}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeDasharray="12 14"
-                />
-                {cityConfig.mapOutlinePaths.slice(1).map((d, i) => (
-                  <path key={i} d={d} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-                ))}
-              </svg>
-              <div className="hyderabad-map-water hyderabad-map-water--one" />
-              <div className="hyderabad-map-water hyderabad-map-water--two" />
-              <div className="hyderabad-map-city-name">{cityConfig.mapCityName}</div>
-              {cityMapPlaces.map((spot) => (
-                <a
-                  key={spot.name}
-                  className={`hyderabad-map-pin hyderabad-map-pin--${spot.size}`}
-                  href={spot.wiki}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
-                  aria-label={`Open ${spot.name} on Wikipedia`}
-                  title={`Open ${spot.name} on Wikipedia`}
+          {loadingPlaces ? (
+            <div className="realtime-loading"><div className="loading-spinner" /><p>Fetching real-time places…</p></div>
+          ) : (
+            <div className="places-grid places-scrapbook-grid">
+              {places.map((place, i) => (
+                <article
+                  key={place.id}
+                  className="place-card place-scrap"
+                  style={{ animationDelay: `${i * 0.08}s`, '--tilt': `${[-4, 3, -2, 4, -3, 2, -1, 3][i % 8]}deg` }}
                 >
-                  <span className="map-pin-art">
-                    <img src={spot.asset} alt="" loading="lazy" />
-                  </span>
-                  <span className="map-pin-label">
-                    <strong>{spot.name}</strong>
-                    <span>{spot.type}</span>
-                  </span>
-                </a>
+                  <div className="place-card-img-wrap place-scrap-photo">
+                    <span className="place-scrap-tape" />
+                    <img
+                      src={getPlaceImage(place, i)}
+                      alt={place.name}
+                      className="place-card-img"
+                      loading="lazy"
+                      onError={(e) => {
+                        if (e.currentTarget.dataset.fallbackApplied) return;
+                        e.currentTarget.dataset.fallbackApplied = 'true';
+                        e.currentTarget.src = getPlaceFallbackImage(place, i);
+                      }}
+                    />
+                  </div>
+                  <div className="place-card-body place-scrap-body">
+                    <div className="place-card-category place-scrap-category">
+                      <span>{categoryEmojis[place.category] || categoryEmojis['default']}</span>
+                      <span>{place.category}</span>
+                    </div>
+                    <h3 className="place-card-name">{place.name}</h3>
+                    <p className="place-card-desc">{place.description}</p>
+                    <div className="place-card-footer place-scrap-footer">
+                      <span>{place.rating} rating</span>
+                      <span>{place.timings}</span>
+                      <span>{place.entry}</span>
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
-          </div>
-
+          )}
         </section>
       )}
 
@@ -550,7 +579,7 @@ const HyderabadPage = () => {
             )}
           </section>
           <div className="events-stamp-divider"><span>calendar view</span></div>
-          <EventCalendar city={cityName} displayName={displayName} />
+          <EventCalendar />
         </>
       )}
 

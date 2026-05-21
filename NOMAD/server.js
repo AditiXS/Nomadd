@@ -32,45 +32,7 @@ function normalizeEmail(email) {
 app.use(cors());
 app.use(express.json());
 
-// POST /api/send-otp
-// Body: { phone: "9876543210", otp: "123456" }
-app.post('/api/send-otp', async (req, res) => {
-  const { phone, otp } = req.body;
-
-  if (!phone || !otp) {
-    return res.status(400).json({ success: false, message: 'Phone and OTP are required.' });
-  }
-
-  if (!/^\d{10}$/.test(phone)) {
-    return res.status(400).json({ success: false, message: 'Invalid phone number.' });
-  }
-
-  try {
-    const response = await axios.post('https://www.fast2sms.com/dev/bulkV2', {
-      route: 'q',
-      message: `Your NOMAD verification OTP is ${otp}`,
-      language: 'english',
-      flash: 0,
-      numbers: String(phone),
-    }, {
-      headers: {
-        authorization: process.env.FAST2SMS_KEY
-      }
-    });
-
-    if (response.data.return === true) {
-      console.log(`✅ OTP sent to +91${phone}`);
-      return res.json({ success: true, message: 'OTP sent successfully.' });
-    } else {
-      console.error('Fast2SMS error:', response.data);
-      return res.status(500).json({ success: false, message: 'Failed to send OTP.', detail: response.data });
-    }
-  } catch (err) {
-    const errorDetail = err.response?.data || err.message;
-    console.error('Fast2SMS Error Detail:', errorDetail);
-    return res.status(500).json({ success: false, message: 'Server error while sending OTP.', detail: errorDetail });
-  }
-});
+// (SMS OTP route removed per user request)
 
 // POST /api/send-email-otp
 // Body: { email: "user@example.com", otp: "123456" }
