@@ -1,14 +1,19 @@
 .postcard-bg {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+  max-width: 100%;
   background-color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* Lock to one screen strictly! */
+  overflow-x: hidden;
+  overflow-y: auto;
   opacity: 0;
   transition: opacity 0.5s ease;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .postcard-bg.fade-in {
@@ -18,43 +23,46 @@
 /* ── Back button ── */
 .back-btn {
   position: fixed;
-  top: 30px;
-  left: 30px;
+  top: max(16px, env(safe-area-inset-top, 0px));
+  left: max(16px, env(safe-area-inset-left, 0px));
   z-index: 100;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 1.1rem;
-  padding: 10px 24px;
+  font-size: 1rem;
+  padding: 10px 18px;
   border-radius: 2px;
   cursor: pointer;
   letter-spacing: 0.05em;
   text-transform: lowercase;
   transition: background 0.2s, color 0.2s;
 }
+
 .back-btn:hover {
   background: #fff;
   color: #000;
 }
 
-/* ── Stamp card: stamp image is the background ── */
+/* ── Stamp card ── */
 .postcard-card {
   position: relative;
-  height: 96vh; /* strict maximum height */
-  max-width: 95vw; /* don't let it overflow width */
-  aspect-ratio: 1 / 1.2; /* ratio that guarantees it scales nicely */
-  width: auto;
-  /* Padding acts as the protective border away from scallops */
-  padding: 10% 12%; 
-  background-image: url('/download (2).jpg');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  width: min(520px, 95vw);
+  max-width: 100%;
+  
+  /* Use border-image for scalable stamp edges */
+  border-style: solid;
+  border-width: 90px 70px 120px 70px;
+  border-image-source: url('/download (2).jpg');
+  border-image-slice: 24% 18% 28% 18% fill;
+  border-image-repeat: round;
+  padding: 4px 10px 10px 10px;
+  
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transform: translateY(40px);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transform: translateY(24px);
   transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -62,66 +70,67 @@
   transform: translateY(0);
 }
 
-/* ── Inner form area: positioned inside the white stamp center ── */
+/* ── Inner form area ── */
 .stamp-form-inner {
   position: relative;
   z-index: 2;
-  width: 100%; /* Fully occupies the padded safe zone */
-  height: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
+  align-items: stretch;
+  gap: 2px;
 }
 
-/* ── Header: post card from NOMAD ── */
 .postcard-label-top {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.65rem, 1.3vh, 1.05rem); /* slightly larger */
-  letter-spacing: 0.15em;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
   color: #333;
   text-transform: lowercase;
-  margin: 0 0 1px 0;
-  line-height: 1.2;
+  margin: 0 0 2px;
+  line-height: 1.1;
 }
 
 .postcard-brand {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(1.8rem, 4.5vh, 3.2rem); /* slightly larger brand text */
+  font-size: clamp(1.2rem, 6vw, 1.8rem);
   font-weight: 700;
   color: #111;
-  margin: 0 0 5px 0; /* tighter gap */
-  letter-spacing: 0.08em;
+  margin: 0 0 6px;
+  letter-spacing: 0.06em;
   line-height: 1;
   text-transform: lowercase;
 }
 
-/* ── Tab buttons ── */
+/* ── Tabs ── */
 .tab-row {
   display: flex;
   gap: 0;
-  margin-bottom: 6px; /* tight */
-  border-bottom: 2px solid rgba(0,0,0,0.2);
+  margin-bottom: 6px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
   width: 100%;
 }
+
 .tab-btn {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.8rem, 1.5vh, 1.1rem); /* slightly larger tighter */
-  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
-  padding: 2px 14px 4px; /* Tightened */
+  padding: 4px 16px 6px;
   cursor: pointer;
   color: #888;
   margin-bottom: -2px;
   text-transform: lowercase;
   transition: color 0.2s, border-color 0.2s;
 }
+
 .tab-btn.active {
   color: #111;
   border-bottom: 3px solid #111;
 }
+
 .tab-btn:hover:not(.active) {
   color: #333;
 }
@@ -130,22 +139,25 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 3px; /* Extemely reduced vertical gap to fit everything */
+  gap: 6px;
   width: 100%;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0px; /* remove gap between label and input */
+  gap: 2px;
+  width: 100%;
 }
+
 .form-field label {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.65rem, 1.1vh, 0.85rem); /* slightly larger strictly compress label */
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
   color: #555;
   text-transform: lowercase;
 }
+
 .form-field input,
 .form-field .vintage-select {
   background: transparent;
@@ -153,130 +165,190 @@
   border-bottom: 1px dotted #555;
   outline: none;
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.8rem, 1.4vh, 1.1rem); /* slightly larger Compress text slightly */
+  font-size: 0.9rem;
   color: #111;
-  padding: 1px 0 2px; /* Extremely tight padding */
+  padding: 4px 0 6px;
   width: 100%;
   text-transform: lowercase;
   transition: border-color 0.2s;
+  box-sizing: border-box;
+  min-height: 30px;
 }
+
 .form-field input::placeholder {
-  color: rgba(0,0,0,0.25);
-  font-size: clamp(0.8rem, 1.4vh, 1rem);
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 0.95rem;
 }
+
 .form-field input:focus,
 .form-field .vintage-select:focus {
   border-bottom-color: #000;
 }
+
 .vintage-select {
   appearance: none;
   cursor: pointer;
   color: #111;
 }
+
 .vintage-select option {
   background: #fff;
   color: #111;
 }
 
-/* Phone row */
 .phone-input-group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   border-bottom: 1.5px dotted #555;
-  padding-bottom: 2px;
+  padding-bottom: 4px;
+  width: 100%;
 }
+
 .phone-input-group input {
   border: none;
-  padding: 0;
+  padding: 8px 0;
   flex: 1;
+  min-width: 0;
 }
+
 .phone-prefix {
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.75rem, 1.3vh, 1.05rem);
+  font-size: 0.9rem;
   color: #555;
+  flex-shrink: 0;
 }
+
 .otp-btn {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   background: #111;
   color: #fff;
   border: none;
-  padding: 4px 10px;
+  padding: 8px 10px;
   cursor: pointer;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: lowercase;
   border-radius: 2px;
   transition: background 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
-.otp-btn:hover:not(:disabled) { background: #333; }
+
+.otp-btn:hover:not(:disabled) {
+  background: #333;
+}
+
 .otp-btn:disabled {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   cursor: not-allowed;
 }
 
-/* OTP row */
 .otp-input-group {
   display: flex;
   align-items: center;
   gap: 8px;
   border-bottom: 1.5px dotted #555;
+  width: 100%;
 }
+
 .otp-input-group input {
   border: none;
   flex: 1;
-  letter-spacing: 0.2em;
-  padding-bottom: 2px;
+  min-width: 0;
+  letter-spacing: 0.15em;
+  padding: 8px 0;
 }
+
 .verify-btn {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   background: #2a5e2a;
   color: #fff;
   border: none;
-  padding: 4px 10px;
+  padding: 8px 10px;
   cursor: pointer;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: lowercase;
   border-radius: 2px;
+  flex-shrink: 0;
 }
-.verify-btn:hover { background: #1e451e; }
+
+.verify-btn:hover {
+  background: #1e451e;
+}
 
 .verified-badge {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #2a5e2a;
   font-weight: 700;
   text-transform: lowercase;
+  margin: 0;
 }
 
-/* ── Submit button ── */
+.auth-hint {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: #555;
+  margin: 0 0 4px;
+  line-height: 1.35;
+}
+
 .send-btn {
-  margin-top: 4px; /* tight */
-  align-self: flex-start;
+  margin-top: 4px;
+  align-self: stretch;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: #111;
   color: #fff;
   border: none;
-  padding: 6px 18px; /* compact */
+  padding: 12px 20px;
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(0.85rem, 1.4vh, 1.05rem);
-  letter-spacing: 0.15em;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
   cursor: pointer;
   border-radius: 2px;
   text-transform: lowercase;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
   transition: transform 0.15s, background 0.2s;
+  width: 100%;
+  min-height: 44px;
 }
+
 .send-btn:hover {
   background: #333;
   transform: translateY(-2px);
 }
+
 .send-btn:active {
   transform: translateY(2px);
+}
+
+.send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.auth-link-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-text-link {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  padding: 8px 0;
+  text-transform: lowercase;
 }
 
 .seal {
@@ -288,9 +360,66 @@
   flex-shrink: 0;
 }
 
-/* ── Responsive ── */
-@media (max-width: 480px) {
+/* ── Desktop: slightly larger stamp ── */
+@media (min-width: 769px) {
   .postcard-card {
-    width: 90vw;
+    width: min(580px, 90vw);
+    border-width: 100px 80px 130px 80px;
+    padding: 10px 24px 20px 24px;
+  }
+
+  .postcard-brand {
+    font-size: 2.25rem;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .postcard-bg {
+    padding: 56px 12px 24px;
+    align-items: center;
+  }
+
+  .postcard-card {
+    width: min(100%, 460px);
+    border-width: 80px 60px 100px 60px;
+    padding: 5px 12px 10px 12px;
+  }
+
+  .postcard-brand {
+    font-size: clamp(1.35rem, 9vw, 1.85rem);
+    margin-bottom: 10px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .postcard-bg {
+    padding-top: 52px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .postcard-card {
+    width: 95vw;
+    border-width: 60px 45px 80px 45px;
+    padding: 0px 8px 10px 8px;
+  }
+
+  .phone-input-group,
+  .otp-input-group {
+    flex-wrap: wrap;
+  }
+
+  .otp-btn,
+  .verify-btn {
+    width: 100%;
+    margin-top: 4px;
+    text-align: center;
   }
 }

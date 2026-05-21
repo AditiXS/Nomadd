@@ -1,0 +1,544 @@
+/* ═══════════════════════════════════════════════════════════
+   NOMAD — global responsive (phone, tablet, desktop)
+   Breakpoints: 1200 | 992 | 768 | 480 | 380
+═══════════════════════════════════════════════════════════ */
+
+html, body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video,
+svg,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ── Home: Hero ── */
+@media (max-width: 992px) {
+  .hindi-subtitle {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    right: 3%;
+    bottom: 5%;
+    letter-spacing: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 100svh;
+    height: auto;
+  }
+
+  .hero-slices-container {
+    min-height: 100svh;
+  }
+
+  .hero-letter {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .hindi-subtitle {
+    font-size: clamp(1.2rem, 4.5vw, 2rem);
+    letter-spacing: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-slice {
+    min-width: 0;
+  }
+
+  .hero-letter {
+    font-size: clamp(2rem, 14vw, 3rem);
+  }
+}
+
+/* ── Home: Map intro stamp ── */
+@media (max-width: 768px) {
+  .map-intro-section {
+    padding: 40px 16px;
+  }
+
+  .map-intro-inner {
+    padding: 28px 20px;
+  }
+
+  .map-intro-heading {
+    white-space: normal;
+    font-size: clamp(1.75rem, 8vw, 3rem);
+    line-height: 1.15;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-intro-inner {
+    padding: 22px 16px;
+  }
+}
+
+/* ── Home: India map (SVG states) ── */
+@media (max-width: 992px) {
+  .map-canvas {
+    padding: 24px 16px 0;
+  }
+
+  .india-svg {
+    height: min(75vh, 85vw);
+    transform: translateX(0);
+  }
+
+  .map-tooltip {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-section {
+    min-height: auto;
+  }
+
+  .india-svg {
+    height: min(68vh, 92vw);
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-canvas {
+    padding: 16px 8px 0;
+  }
+
+  .india-svg {
+    height: min(62vh, 95vw);
+  }
+
+  .state-path {
+    stroke-width: 2.5px;
+  }
+}
+
+/* ── Home: Footer marquee ── */
+@media (max-width: 768px) {
+  .footer-marquee-container {
+    margin-top: -24px;
+    padding: 12px 0;
+  }
+
+  .stamp-item {
+    height: 88px;
+  }
+
+  .marquee-track {
+    gap: 16px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stamp-item {
+    height: 72px;
+  }
+}
+
+/* Login page: see LoginPage.css */
+
+/* ── Intro sequences (Hyderabad / Delhi) ── */
+@media (max-width: 768px) {
+  .epic-intro-text {
+    font-size: clamp(3rem, 14vw, 6rem);
+  }
+}
+
+/* ── Loading screen ── */
+@media (max-width: 480px) {
+  .loading-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  .loading-subtext {
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 0 16px;
+  }
+}
+
+/* ── City page: sticky header + nav ── */
+@media (max-width: 1024px) {
+  .city-gallery-header {
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 10px 14px;
+  }
+
+  .header-branding {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .brand-city {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+  }
+
+  .header-user-badge {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    padding: 5px 10px;
+  }
+
+  .header-weather-pill {
+    display: flex !important;
+    flex-shrink: 0;
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
+
+  .header-weather-pill .weather-desc {
+    display: none;
+  }
+
+  .header-nav {
+    flex: 1 1 100%;
+    width: 100%;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    mask-image: linear-gradient(90deg, #000 92%, transparent);
+  }
+
+  .header-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 12px 6px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .city-hero {
+    min-height: min(85svh, 700px);
+    margin-top: 0;
+  }
+
+  .city-back-btn {
+    top: 72px;
+    left: 16px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-separator {
+    width: calc(100% - 32px);
+    margin: 24px auto;
+  }
+
+  .realtime-section {
+    padding: 40px 16px 56px;
+  }
+
+  .realtime-section-header {
+    margin-bottom: 32px;
+    padding: 0 4px;
+  }
+
+  .realtime-title {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+  }
+
+  .realtime-subtitle {
+    font-size: 0.9rem;
+    padding: 0 8px;
+  }
+
+  .events-featured-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .event-row {
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .food-card {
+    flex-direction: column;
+  }
+
+  .food-card-img-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 200px;
+  }
+
+  .event-featured-img-wrap {
+    height: 240px;
+  }
+
+  .acc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acc-filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .acc-filter-label {
+    width: auto;
+  }
+
+  .fare-estimator-card {
+    padding: 20px 16px;
+  }
+
+  .fare-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .carpool-form-row,
+  .carpool-route-row,
+  .carpool-meta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .carpool-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+
+  .community-composer {
+    padding: 16px;
+  }
+
+  .composer-textarea,
+  .composer-name {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .event-modal {
+    max-height: 92svh;
+    border-radius: 16px;
+  }
+
+  .event-modal-body {
+    padding: 20px 18px 24px;
+  }
+
+  .event-modal-title {
+    font-size: 1.35rem;
+  }
+
+  .city-footer {
+    padding: 24px 16px;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-gallery-header {
+    padding: 10px 12px;
+  }
+
+  .brand-nomad {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+  }
+
+  .header-user-badge .user-tag {
+    font-size: 0.65rem;
+  }
+
+  .hyderabad-map-panel {
+    margin: 0 -4px;
+  }
+
+  .hyderabad-map-paper {
+    min-height: 640px;
+  }
+
+  .hyderabad-map-pin {
+    width: 100px !important;
+  }
+
+  .hyderabad-map-pin--hero,
+  .hyderabad-map-pin--large {
+    width: 118px !important;
+  }
+
+  .hyderabad-map-pin--small {
+    width: 88px !important;
+  }
+
+  .map-pin-label strong {
+    font-size: 0.9rem;
+  }
+
+  .map-pin-label span {
+    font-size: 0.65rem;
+  }
+
+  .food-card-body {
+    padding: 16px;
+  }
+
+  .transport-map-wrap {
+    height: 220px;
+  }
+
+  .transit-stops-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Event calendar (extra) ── */
+@media (max-width: 480px) {
+  .stamp-calendar.hyd-calendar,
+  .hyd-calendar {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .stamp-cal-month {
+    font-size: 1.75rem;
+  }
+
+  .stamp-nav-btn {
+    padding: 8px 12px;
+    font-size: 0.7rem;
+  }
+}
+
+/* ── Touch: reduce hover-only transforms on coarse pointers ── */
+@media (hover: none) and (pointer: coarse) {
+  .hero-slices-container:hover .hero-slice {
+    filter: grayscale(100%) brightness(0.55);
+  }
+
+  .hero-slices-container:hover .hero-slice.active {
+    flex: 1;
+    filter: grayscale(0%) brightness(1.05);
+  }
+
+  .state-path:active {
+    fill: var(--hover-color, #1e1e1e);
+  }
+}
+
+/* ── Landscape phones: shorter hero ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .city-hero {
+    min-height: 100svh;
+  }
+
+  .postcard-card {
+    max-height: 88svh;
+  }
+
+  .hero-section,
+  .hero-slices-container {
+    min-height: 100svh;
+  }
+}
+
+/* ── Community + sections ── */
+@media (max-width: 768px) {
+  .city-section {
+    padding: 40px 16px 56px;
+  }
+
+  .city-section--calendar {
+    padding: 32px 0 48px;
+  }
+
+  .section-header {
+    margin-bottom: 28px;
+    padding: 0 8px;
+  }
+
+  .posts-feed {
+    padding: 0 4px;
+  }
+
+  .post-card {
+    padding: 14px;
+  }
+
+  .places-scrapbook-title {
+    font-size: clamp(2rem, 10vw, 3.5rem) !important;
+  }
+}
+
+/* ── Small phones ── */
+@media (max-width: 380px) {
+  .nav-link {
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .header-branding {
+    gap: 8px;
+  }
+
+  .brand-nomad {
+    display: none;
+  }
+
+  .epic-intro-text {
+    font-size: clamp(2.5rem, 16vw, 4rem) !important;
+  }
+
+  .fare-estimate-btn {
+    width: 100%;
+  }
+
+}
+
+/* ── Notched devices (iPhone, etc.) ── */
+@supports (padding: max(0px)) {
+  .city-gallery-header {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .city-back-btn {
+    left: max(16px, env(safe-area-inset-left));
+  }
+
+  .back-btn {
+    left: max(16px, env(safe-area-inset-left));
+  }
+}

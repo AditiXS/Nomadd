@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { getPostAuthCityPath } from '../utils/cityNavigation';
+import API_BASE from '../utils/api';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -39,7 +41,7 @@ const LoginPage = () => {
     setOtpTimer(60);
 
     try {
-      const res = await fetch('http://localhost:3001/api/send-email-otp', {
+      const res = await fetch(${API_BASE}/api/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: signupData.email, otp })
@@ -68,7 +70,7 @@ const LoginPage = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3001/api/login', {
+      const res = await fetch(${API_BASE}/api/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData)
@@ -78,12 +80,7 @@ const LoginPage = () => {
         alert(data.message);
         // Save user details including designation in sessionStorage
         sessionStorage.setItem('user', JSON.stringify(data.user));
-        const city = searchParams.get('city');
-        if (city) {
-          navigate(`/city/${city}`);
-        } else {
-          navigate('/');
-        }
+        navigate(getPostAuthCityPath(searchParams.get('city')));
       } else {
         alert(`Login failed: ${data.message}`);
       }
@@ -119,7 +116,7 @@ const LoginPage = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/signup', {
+      const res = await fetch(${API_BASE}/api/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupData)
@@ -133,12 +130,7 @@ const LoginPage = () => {
           email: signupData.email,
           designation: signupData.designation
         }));
-        const city = searchParams.get('city');
-        if (city) {
-          navigate(`/city/${city}`);
-        } else {
-          navigate('/');
-        }
+        navigate(getPostAuthCityPath(searchParams.get('city')));
       } else {
         alert(`Signup failed: ${data.message}`);
       }
@@ -159,7 +151,7 @@ const LoginPage = () => {
     setOtpTimer(60);
 
     try {
-      const res = await fetch('http://localhost:3001/api/send-email-otp', {
+      const res = await fetch(${API_BASE}/api/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotPasswordData.email, otp })
@@ -192,7 +184,7 @@ const LoginPage = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/reset-password', {
+      const res = await fetch(${API_BASE}/api/, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotPasswordData.email, newPassword: forgotPasswordData.newPassword })
@@ -244,11 +236,11 @@ const LoginPage = () => {
                 <input type="password" placeholder="••••••••" value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })} required />
               </div>
-              <button type="submit" className="send-btn" style={{marginTop: '6px'}}>
+              <button type="submit" className="send-btn">
                 <span className="seal" /> send →
               </button>
-              <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
-                <button type="button" onClick={() => { setTab('forgot'); setOtpSent(false); setOtpVerified(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
+              <div className="auth-link-row">
+                <button type="button" className="auth-text-link" onClick={() => { setTab('forgot'); setOtpSent(false); setOtpVerified(false); }}>
                   forgot password?
                 </button>
               </div>
@@ -329,7 +321,7 @@ const LoginPage = () => {
           {/* ── FORGOT PASSWORD ── */}
           {tab === 'forgot' && (
             <form className="auth-form" onSubmit={handleForgotPasswordSubmit}>
-              <p style={{fontFamily: 'Courier New', fontSize: '0.75rem', color: '#555', marginBottom: '8px', lineHeight: '1.2'}}>
+              <p className="auth-hint">
                 enter your registered email to reset your password.
               </p>
               <div className="form-field">
@@ -360,11 +352,11 @@ const LoginPage = () => {
                     onChange={e => setForgotPasswordData({ ...forgotPasswordData, newPassword: e.target.value })} required />
                 </div>
               )}
-              <button type="submit" className="send-btn" disabled={!otpVerified} style={{marginTop: '6px'}}>
+              <button type="submit" className="send-btn" disabled={!otpVerified}>
                 <span className="seal" /> reset password →
               </button>
-              <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
-                <button type="button" onClick={() => { setTab('login'); setOtpVerified(false); setOtpSent(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
+              <div className="auth-link-row">
+                <button type="button" className="auth-text-link" onClick={() => { setTab('login'); setOtpVerified(false); setOtpSent(false); }}>
                   back to login
                 </button>
               </div>

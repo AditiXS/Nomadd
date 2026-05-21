@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import HyderabadIntro from './pages/HyderabadIntro';
+import DelhiIntro from './pages/DelhiIntro';
 import HyderabadPage from './pages/HyderabadPage';
 import './index.css';
 
@@ -13,7 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/intro/hyderabad" element={<HyderabadIntro />} />
-        {/* Generic city route — works for ALL cities */}
+        <Route path="/intro/delhi" element={<DelhiIntro />} />
         <Route path="/city/:city" element={<HyderabadPage />} />
       </Routes>
     </BrowserRouter>

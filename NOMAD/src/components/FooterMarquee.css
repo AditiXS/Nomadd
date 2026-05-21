@@ -1,5 +1,6 @@
 .footer-marquee-container {
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   background-color: #000; /* Match the dark theme */
   overflow: hidden;
   padding: 15px 0; /* Reduced padding to make the containing box smaller */

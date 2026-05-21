@@ -88,7 +88,8 @@
   transform: translateX(-50%);
   height: 90vh;
   /* Reduced from 100vh to ensure Charminar top is visible */
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
   object-fit: contain;
   object-position: bottom center;
   z-index: 2;
@@ -210,6 +211,10 @@
 }
 
 @media (max-width: 768px) {
+  .layered-img {
+    pointer-events: none;
+  }
+
   .img-2 {
     height: 90vh;
     left: -15%;
@@ -263,7 +268,36 @@
   }
 }
 
+@media (max-width: 480px) {
+  .city-hero {
+    min-height: 72svh;
+  }
 
+  .img-1,
+  .img-3,
+  .img-6,
+  .img-7,
+  .img-8,
+  .img-9 {
+    opacity: 0.85;
+  }
+
+  .img-2 {
+    height: 75vh;
+    left: -20%;
+  }
+
+  .img-5 {
+    height: 62vh;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .img-4 {
+    height: 65vh;
+    right: -12%;
+  }
+}
 
 /* Gradient fade — sits below hover pop (z-index 2) */
 .city-hero-fade {
@@ -1478,7 +1512,6 @@
   .food-card-img-wrap { width: 100%; min-height: 200px; }
   .event-row { grid-template-columns: 80px 1fr; }
   .event-row-venue, .event-row-type { display: none; }
-  .header-weather-pill { display: none; }
 }
 
 /* --- ORDER LINKS (Zomato/Swiggy) --- */
@@ -2272,7 +2305,8 @@
 }
 
 .places-scrapbook-header,
-.places-scrapbook-grid {
+.places-scrapbook-grid,
+.hyderabad-map-panel {
   position: relative;
   z-index: 1;
 }
@@ -2318,6 +2352,184 @@
   align-items: start;
 }
 
+.hyderabad-map-panel {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.hyderabad-map-paper {
+  position: relative;
+  min-height: clamp(660px, 72vw, 920px);
+  background:
+    radial-gradient(circle at 16% 22%, rgba(201, 82, 52, 0.08), transparent 18%),
+    radial-gradient(circle at 84% 72%, rgba(55, 111, 124, 0.08), transparent 20%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(247, 239, 215, 0.92));
+  border: 1px solid rgba(44, 39, 29, 0.2);
+  box-shadow: 0 26px 70px rgba(40, 34, 20, 0.22);
+  overflow: hidden;
+  color: #171510;
+  isolation: isolate;
+}
+
+.hyderabad-map-paper::before {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(31, 28, 22, 0.12);
+  pointer-events: none;
+}
+
+.hyderabad-map-paper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 33px, rgba(42, 36, 26, 0.035) 34px 35px),
+    repeating-linear-gradient(90deg, transparent 0 33px, rgba(42, 36, 26, 0.03) 34px 35px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hyderabad-map-outline {
+  position: absolute;
+  inset: 5% 12% 3% 10%;
+  width: 78%;
+  height: 92%;
+  overflow: visible;
+  opacity: 0.82;
+  filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.7));
+}
+
+.hyderabad-map-outline path:not(:first-child) {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 9 16;
+  opacity: 0.42;
+}
+
+.hyderabad-map-water {
+  position: absolute;
+  height: 15px;
+  width: 142px;
+  border-top: 2px dashed rgba(28, 83, 94, 0.42);
+  border-bottom: 2px dashed rgba(28, 83, 94, 0.28);
+  opacity: 0.8;
+}
+
+.hyderabad-map-water--one {
+  left: 52%;
+  top: 32%;
+  transform: rotate(-8deg);
+}
+
+.hyderabad-map-water--two {
+  left: 25%;
+  top: 73%;
+  transform: rotate(7deg);
+}
+
+.hyderabad-map-city-name {
+  position: absolute;
+  right: 6%;
+  bottom: 8%;
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(3rem, 8vw, 6.8rem);
+  line-height: 0.9;
+  color: #171510;
+  transform: rotate(-4deg);
+  text-shadow: 3px 5px 0 rgba(201, 82, 52, 0.12);
+  pointer-events: none;
+}
+
+.hyderabad-map-pin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: clamp(108px, 13vw, 174px);
+  color: #171510;
+  text-decoration: none;
+  transform: translate(-50%, -50%) rotate(var(--map-tilt, -2deg));
+  transition: transform 0.22s ease, filter 0.22s ease;
+  z-index: 2;
+}
+
+.hyderabad-map-pin:nth-of-type(odd) {
+  --map-tilt: 2deg;
+}
+
+.hyderabad-map-pin:hover,
+.hyderabad-map-pin:focus-visible {
+  transform: translate(-50%, -54%) rotate(0deg) scale(1.04);
+  filter: drop-shadow(0 16px 18px rgba(37, 31, 20, 0.22));
+  outline: none;
+}
+
+.hyderabad-map-pin:focus-visible .map-pin-label {
+  box-shadow: 0 0 0 3px rgba(201, 82, 52, 0.32);
+}
+
+.map-pin-art {
+  display: grid;
+  place-items: end center;
+  width: 100%;
+  aspect-ratio: 1 / 0.72;
+}
+
+.map-pin-art img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: saturate(0) contrast(1.12);
+}
+
+.map-pin-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 5px 9px 7px;
+  background: rgba(255, 252, 239, 0.82);
+  border: 1px solid rgba(26, 23, 18, 0.2);
+  box-shadow: 4px 5px 0 rgba(96, 121, 92, 0.18);
+  text-align: center;
+}
+
+.map-pin-label strong {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1.05rem, 1.7vw, 1.55rem);
+  line-height: 0.92;
+}
+
+.map-pin-label span {
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(25, 22, 16, 0.54);
+}
+
+.hyderabad-map-pin--hero {
+  width: clamp(156px, 18vw, 246px);
+}
+
+.hyderabad-map-pin--large {
+  width: clamp(132px, 16vw, 210px);
+}
+
+.hyderabad-map-pin--small {
+  width: clamp(94px, 11vw, 140px);
+}
+
+.places-scrapbook-grid--below-map {
+  margin-top: 56px;
+}
+
 .place-scrap {
   background: transparent;
   border: 0;
@@ -2327,6 +2539,8 @@
   cursor: default;
   transform: rotate(var(--tilt));
   transition: transform 0.28s ease;
+  color: inherit;
+  text-decoration: none;
 }
 
 .place-scrap:hover {
@@ -2441,6 +2655,28 @@
   .places-scrapbook-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .hyderabad-map-paper {
+    min-height: 720px;
+  }
+
+  .hyderabad-map-pin {
+    width: 128px;
+  }
+
+  .hyderabad-map-pin--hero,
+  .hyderabad-map-pin--large {
+    width: 154px;
+  }
+
+  .hyderabad-map-pin--small {
+    width: 112px;
+  }
+
+  .hyderabad-map-city-name {
+    right: 8%;
+    bottom: 4%;
+  }
 }
 
 @media (max-width: 620px) {
@@ -2463,6 +2699,48 @@
     padding: 0 12px;
   }
 
+  .hyderabad-map-paper {
+    min-height: 820px;
+  }
+
+  .hyderabad-map-paper::before {
+    inset: 12px;
+  }
+
+  .hyderabad-map-outline {
+    inset: 4% 4% 12% 3%;
+    width: 93%;
+    height: 82%;
+  }
+
+  .hyderabad-map-pin {
+    width: 116px;
+  }
+
+  .hyderabad-map-pin--hero,
+  .hyderabad-map-pin--large {
+    width: 136px;
+  }
+
+  .hyderabad-map-pin--small {
+    width: 98px;
+  }
+
+  .map-pin-label {
+    padding-inline: 6px;
+  }
+
+  .map-pin-label strong {
+    font-size: 1.05rem;
+  }
+
+  .hyderabad-map-city-name {
+    left: 10%;
+    right: auto;
+    bottom: 3%;
+    font-size: 3.15rem;
+  }
+
   .place-scrap,
   .place-scrap:nth-child(2),
   .place-scrap:nth-child(5),
@@ -2475,4 +2753,27 @@
   .place-scrap:nth-child(4n) .place-scrap-photo {
     aspect-ratio: 1 / 0.86;
   }
+}
+
+/* Delhi — warm capital palette */
+.city-page--delhi .places-scrapbook-badge {
+  background: #8b1e1e;
+  box-shadow: 8px 7px 0 rgba(180, 120, 40, 0.35);
+}
+
+.city-page--delhi .hyderabad-map-water--one {
+  background: radial-gradient(ellipse 55% 45% at 30% 40%, rgba(180, 90, 50, 0.22), transparent 70%);
+}
+
+.city-page--delhi .hyderabad-map-water--two {
+  background: radial-gradient(ellipse 50% 40% at 75% 65%, rgba(120, 60, 140, 0.15), transparent 72%);
+}
+
+.city-page--delhi .hyderabad-map-city-name {
+  color: rgba(139, 30, 30, 0.88);
+}
+
+.city-page--delhi .map-pin-art img {
+  border-radius: 50%;
+  object-fit: cover;
 }

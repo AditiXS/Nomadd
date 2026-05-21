@@ -32,6 +32,11 @@ const LoadingPage = () => {
             <h2 className="loading-text">arriving at Hyderabad...</h2>
             <p className="loading-subtext">preparing your city experience</p>
           </div>
+        ) : city.toLowerCase() === 'delhi' ? (
+          <div className="loader-generic">
+            <h2 className="loading-text">arriving at Delhi...</h2>
+            <p className="loading-subtext">preparing your capital city experience</p>
+          </div>
         ) : (
           <h2 className="loading-text">loading {city}...</h2>
         )}

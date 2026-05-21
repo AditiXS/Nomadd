@@ -39,8 +39,11 @@ const MapSection = () => {
               }}
               onMouseLeave={() => setTooltip(null)}
               onClick={() => {
-                const destination = state.label === 'Telangana' ? 'hyderabad' : state.label.toLowerCase();
-                navigate(`/login?city=${encodeURIComponent(destination)}`);
+                const citySlug =
+                  state.label === 'Telangana' ? 'hyderabad'
+                  : state.label === 'Delhi' ? 'delhi'
+                  : state.label.toLowerCase();
+                navigate(`/login?city=${encodeURIComponent(citySlug)}`);
               }}
             />
           ))}

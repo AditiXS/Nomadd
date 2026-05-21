@@ -1,7 +1,11 @@
 .map-container {
   position: relative;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   height: 100vh;
+  height: 100svh;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -15,7 +19,7 @@
   position: relative;
   /* Force it to match the exact size and aspect ratio of your image */
   height: 100vh;
-  max-width: 100vw;
+  max-width: 100%;
   margin: 0 auto;
   aspect-ratio: 4 / 5;
   /* Matches the portrait proportions of your illustration */

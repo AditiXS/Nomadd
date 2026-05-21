@@ -4,93 +4,30 @@ import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
-import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { connectDB } from './db/connect.js';
+import {
+  User,
+  CommunityPost,
+  FoodReview,
+  CarpoolPost,
+  toApiDoc,
+  toApiDocs,
+} from './db/models.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Database connection pool
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASS || '',
-  database: process.env.DB_NAME || 'nomad_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Auto-create tables on launch
-async function initDB() {
-  try {
-    const connection = await pool.getConnection();
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        idType VARCHAR(50),
-        idNumber VARCHAR(255),
-        phone VARCHAR(20),
-        designation VARCHAR(50) DEFAULT 'nomad'
-      )
-    `);
-    
-    // Dynamically migrate existing users table if designation column is missing
-    try {
-      const [columns] = await connection.query(`SHOW COLUMNS FROM users LIKE 'designation'`);
-      if (columns.length === 0) {
-        await connection.query(`ALTER TABLE users ADD COLUMN designation VARCHAR(50) DEFAULT 'nomad'`);
-        console.log('✅ Added designation column to existing users table');
-      }
-    } catch (err) {
-      console.warn('⚠️ Non-critical migration warning (designation column check):', err.message);
-    }
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS community_posts (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        city VARCHAR(100) NOT NULL,
-        author_name VARCHAR(255) NOT NULL,
-        content TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS food_reviews (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        city VARCHAR(100) NOT NULL,
-        restaurant_name VARCHAR(255) NOT NULL,
-        user_name VARCHAR(255) NOT NULL,
-        stars INT NOT NULL DEFAULT 5,
-        review_text TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS carpool_posts (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        city VARCHAR(100) NOT NULL,
-        author_name VARCHAR(255) NOT NULL,
-        origin VARCHAR(255) NOT NULL,
-        destination VARCHAR(255) NOT NULL,
-        travel_date VARCHAR(50) NOT NULL,
-        travel_time VARCHAR(50) NOT NULL,
-        seats INT NOT NULL DEFAULT 1,
-        note TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    connection.release();
-    console.log('✅ MySQL tables ready (users + community_posts + food_reviews + carpool_posts)');
-  } catch (err) {
-    console.error('❌ Failed to initialize MySQL tables:', err.message);
-  }
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
 }
-initDB();
 
 app.use(cors());
 app.use(express.json());
@@ -177,21 +114,30 @@ app.post('/api/signup', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (rows.length > 0) {
+    const emailNorm = normalizeEmail(email);
+    const existing = await User.findOne({ email: emailNorm });
+    if (existing) {
       return res.status(400).json({ success: false, message: 'Email already exists!' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    await pool.query(
-      'INSERT INTO users (name, email, password, idType, idNumber, phone, designation) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [name, email, hashedPassword, idType, idNumber, phone, designation || 'nomad']
-    );
+
+    await User.create({
+      name,
+      email: emailNorm,
+      password: hashedPassword,
+      idType,
+      idNumber,
+      phone,
+      designation: designation || 'nomad',
+    });
 
     res.json({ success: true, message: 'User signed up successfully' });
   } catch (err) {
     console.error('Signup error:', err);
+    if (err.code === 11000) {
+      return res.status(400).json({ success: false, message: 'Email already exists!' });
+    }
     res.status(500).json({ success: false, message: 'Server error during signup' });
   }
 });
@@ -204,18 +150,32 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (rows.length === 0) {
+    const emailNorm = normalizeEmail(email);
+    const user = await User.findOne({ email: emailNorm });
+    if (!user) {
       return res.status(401).json({ success: false, message: 'User not found. Please sign up' });
     }
 
-    const user = rows[0];
-    const match = await bcrypt.compare(password, user.password);
+    if (!user.password) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    let match = false;
+    if (user.password.startsWith('$2')) {
+      match = await bcrypt.compare(password, user.password);
+    } else {
+      match = password === user.password;
+    }
+
     if (!match) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    res.json({ success: true, message: 'Login successful', user: { name: user.name, email: user.email, designation: user.designation }});
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: { name: user.name, email: user.email, designation: user.designation || 'nomad' },
+    });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ success: false, message: 'Server error during login' });
@@ -230,13 +190,15 @@ app.post('/api/reset-password', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (rows.length === 0) {
+    const emailNorm = normalizeEmail(email);
+    const user = await User.findOne({ email: emailNorm });
+    if (!user) {
       return res.status(404).json({ success: false, message: 'User not found. Cannot reset password.' });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await pool.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
+    user.password = hashedPassword;
+    await user.save();
 
     res.json({ success: true, message: 'Password updated successfully' });
   } catch (err) {
@@ -610,6 +572,16 @@ app.get('/api/places/:city', async (req, res) => {
       { id: 1, name: 'Lalbagh Botanical Garden', category: 'Park', description: 'Historic botanical garden with a famous glass house.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Lalbagh_Glass_House.jpg/640px-Lalbagh_Glass_House.jpg', rating: 4.6, timings: '6:00 AM - 7:00 PM', entry: '₹30' },
       { id: 2, name: 'Bangalore Palace', category: 'Heritage Fort', description: 'Majestic palace built in Tudor Revival style architecture.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Bangalore_Palace.jpg/640px-Bangalore_Palace.jpg', rating: 4.5, timings: '10:00 AM - 5:30 PM', entry: '₹250' },
       { id: 3, name: 'Cubbon Park', category: 'Park', description: 'Landmark park in the heart of the city.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Cubbon_Park_Bengaluru.jpg/640px-Cubbon_Park_Bengaluru.jpg', rating: 4.7, timings: '6:00 AM - 6:00 PM', entry: 'Free' }
+    ],
+    delhi: [
+      { id: 1, name: 'India Gate', category: 'Heritage Fort', description: 'War memorial arch on Rajpath, the heart of ceremonial New Delhi.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/India_Gate_in_New_Delhi_03-2016_img3.jpg/640px-India_Gate_in_New_Delhi_03-2016_img3.jpg', rating: 4.8, timings: 'Open 24/7', entry: 'Free' },
+      { id: 2, name: 'Red Fort', category: 'Heritage Fort', description: 'Mughal-era fortress and UNESCO site where the Prime Minister hoists the flag on Independence Day.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Red_Fort_in_Delhi_03-2016.jpg/640px-Red_Fort_in_Delhi_03-2016.jpg', rating: 4.7, timings: '9:30 AM – 4:30 PM', entry: '₹35' },
+      { id: 3, name: 'Qutub Minar', category: 'Heritage Fort', description: '73-metre victory tower and the tallest brick minaret in the world.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Qutub_Minar_in_the_monsoons.jpg/640px-Qutub_Minar_in_the_monsoons.jpg', rating: 4.6, timings: '7:00 AM – 5:00 PM', entry: '₹30' },
+      { id: 4, name: 'Lotus Temple', category: 'Temple', description: 'Striking Baháʼí House of Worship shaped like a blooming lotus flower.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Lotus_temple_in_India.jpg/640px-Lotus_temple_in_India.jpg', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: 'Free' },
+      { id: 5, name: 'Humayun\'s Tomb', category: 'Heritage Fort', description: 'Garden tomb that inspired the Taj Mahal — a masterpiece of Mughal architecture.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Humayun%27s_Tomb%2C_Delhi.jpg/640px-Humayun%27s_Tomb%2C_Delhi.jpg', rating: 4.7, timings: '6:00 AM – 6:00 PM', entry: '₹30' },
+      { id: 6, name: 'Akshardham', category: 'Temple', description: 'Sprawling Hindu temple complex with exhibitions, gardens, and a musical fountain.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Akshardham_Temple_-_Delhi.jpg/640px-Akshardham_Temple_-_Delhi.jpg', rating: 4.8, timings: '10:00 AM – 6:30 PM', entry: 'Free (exhibits extra)' },
+      { id: 7, name: 'Chandni Chowk', category: 'Attraction', description: 'Legendary Old Delhi bazaar — spices, jewellery, street food, and Mughal lanes.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Crowded_street_-_geograph.org.uk_-_1002342.jpg/640px-Crowded_street_-_geograph.org.uk_-_1002342.jpg', rating: 4.5, timings: '10:00 AM – 9:00 PM', entry: 'Free' },
+      { id: 8, name: 'Connaught Place', category: 'Attraction', description: 'Colonial-era circular market and Delhi\'s commercial and nightlife hub.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Crowded_street_-_geograph.org.uk_-_1002342.jpg/640px-Crowded_street_-_geograph.org.uk_-_1002342.jpg', rating: 4.4, timings: 'Open 24/7', entry: 'Free' }
     ]
   };
 
@@ -690,7 +662,10 @@ app.get('/api/foods/:city', async (req, res) => {
     delhi: [
       { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: null, must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
       { id: 'f2', name: 'Chole Bhature', type: 'Street Food', description: 'Fluffy fried bread with spicy chickpea curry — the ultimate Delhi breakfast.', image: null, must_try_at: 'Sitaram Diwan Chand, Kwality', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: null, must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 }
+      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: null, must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f4', name: 'Kebabs', type: 'Local Famous', description: 'Smoky seekh and galouti kebabs from Old Delhi\'s legendary grill houses.', image: null, must_try_at: 'Karim\'s, Al Jawahar, Qureshi Kabab', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f5', name: 'Chole Kulche', type: 'Street Food', description: 'Soft kulcha bread with tangy chole — a Delhi street-food classic.', image: null, must_try_at: 'Chache Di Hatti, Nagpal Chole Bhature', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: null, must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
     ],
     chennai: [
       { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: null, must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
@@ -724,9 +699,16 @@ app.get('/api/foods/:city', async (req, res) => {
   // Attach reviews and order links
   for (let f of foods) {
     try {
-      const [dbReviews] = await pool.query('SELECT * FROM food_reviews WHERE city = ? AND restaurant_name = ?', [city, f.name]);
-      f.reviews = dbReviews.map(r => ({ user: r.user_name, text: r.review_text, stars: r.stars, created_at: r.created_at }));
-      f.avg_rating = dbReviews.length > 0 ? (dbReviews.reduce((s, r) => s + r.stars, 0) / dbReviews.length).toFixed(1) : f.avg_rating;
+      const dbReviews = await FoodReview.find({ city, restaurant_name: f.name }).sort({ createdAt: -1 });
+      f.reviews = dbReviews.map((r) => ({
+        user: r.user_name,
+        text: r.review_text,
+        stars: r.stars,
+        created_at: r.createdAt,
+      }));
+      f.avg_rating = dbReviews.length > 0
+        ? (dbReviews.reduce((s, r) => s + r.stars, 0) / dbReviews.length).toFixed(1)
+        : f.avg_rating;
     } catch (e) {
       console.error(e);
     }
@@ -743,11 +725,13 @@ app.get('/api/foods/:city', async (req, res) => {
 // GET /api/reviews/:city/:restaurant — fetch reviews for a restaurant
 app.get('/api/reviews/:city/:restaurant', async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      'SELECT * FROM food_reviews WHERE city = ? AND restaurant_name = ? ORDER BY created_at DESC LIMIT 20',
-      [req.params.city, decodeURIComponent(req.params.restaurant)]
-    );
-    res.json({ success: true, reviews: rows });
+    const rows = await FoodReview.find({
+      city: req.params.city.toLowerCase(),
+      restaurant_name: decodeURIComponent(req.params.restaurant),
+    })
+      .sort({ createdAt: -1 })
+      .limit(20);
+    res.json({ success: true, reviews: toApiDocs(rows) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to fetch reviews' });
   }
@@ -763,10 +747,13 @@ app.post('/api/reviews', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Stars must be 1-5' });
   }
   try {
-    await pool.query(
-      'INSERT INTO food_reviews (city, restaurant_name, user_name, stars, review_text) VALUES (?, ?, ?, ?, ?)',
-      [city, restaurant_name, user_name, parseInt(stars), review_text]
-    );
+    await FoodReview.create({
+      city: city.toLowerCase(),
+      restaurant_name,
+      user_name,
+      stars: parseInt(stars, 10),
+      review_text,
+    });
     res.json({ success: true, message: 'Review submitted successfully' });
   } catch (err) {
     console.error('Review submit error:', err);
@@ -778,11 +765,10 @@ app.post('/api/reviews', async (req, res) => {
 app.get('/api/community/posts', async (req, res) => {
   const city = req.query.city || 'hyderabad';
   try {
-    const [rows] = await pool.query(
-      'SELECT * FROM community_posts WHERE city = ? ORDER BY created_at DESC LIMIT 50',
-      [city]
-    );
-    res.json({ success: true, posts: rows });
+    const rows = await CommunityPost.find({ city: city.toLowerCase() })
+      .sort({ createdAt: -1 })
+      .limit(50);
+    res.json({ success: true, posts: toApiDocs(rows) });
   } catch (err) {
     console.error('Community fetch error:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch community posts' });
@@ -799,10 +785,11 @@ app.post('/api/community/posts', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Post too long (max 500 characters)' });
   }
   try {
-    await pool.query(
-      'INSERT INTO community_posts (city, author_name, content) VALUES (?, ?, ?)',
-      [city, author_name, content]
-    );
+    await CommunityPost.create({
+      city: city.toLowerCase(),
+      author_name,
+      content,
+    });
     res.json({ success: true, message: 'Post created successfully' });
   } catch (err) {
     console.error('Community post error:', err);
@@ -919,6 +906,13 @@ const LOCAL_ROUTES = {
     { from: 'Airport (RGIA)', to: 'Banjara Hills', mode: 'Cab / Bus', tip: 'Pushpak airport bus to Lakdi ka Pul. Uber costs ~₹500', time: '45-70 min', cost: '₹200-600' },
     { from: 'LB Nagar', to: 'Hussain Sagar', mode: 'Metro', tip: 'Direct Blue Line metro to Lakdi ka Pul, walk to the lake', time: '30 min', cost: '₹30' },
   ],
+  delhi: [
+    { from: 'New Delhi Station', to: 'India Gate', mode: 'Metro / Auto', tip: 'Yellow Line to Central Secretariat, then walk or auto', time: '20 min', cost: '₹30-80' },
+    { from: 'Chandni Chowk', to: 'Red Fort', mode: 'Walk / Metro', tip: '5-minute walk from Chandni Chowk metro to Lahori Gate', time: '10 min', cost: 'Free-₹30' },
+    { from: 'Connaught Place', to: 'Hauz Khas', mode: 'Metro', tip: 'Yellow Line to Green Park, short auto to Hauz Khas Village', time: '25 min', cost: '₹40-60' },
+    { from: 'IGI Airport', to: 'Saket', mode: 'Metro / Cab', tip: 'Airport Express to New Delhi, then Yellow Line to Saket', time: '50-70 min', cost: '₹100-500' },
+    { from: 'Dwarka', to: 'Akshardham', mode: 'Metro', tip: 'Blue Line to Rajiv Chowk, switch to Violet Line to Akshardham', time: '55 min', cost: '₹50' },
+  ],
 };
 
 // GET /api/transport/:city — transport info, local routes, transit stops
@@ -1022,11 +1016,10 @@ app.post('/api/transport/estimate-fare', (req, res) => {
 app.get('/api/carpool/posts', async (req, res) => {
   const city = req.query.city || 'hyderabad';
   try {
-    const [rows] = await pool.query(
-      'SELECT * FROM carpool_posts WHERE city = ? ORDER BY created_at DESC LIMIT 50',
-      [city]
-    );
-    res.json({ success: true, posts: rows });
+    const rows = await CarpoolPost.find({ city: city.toLowerCase() })
+      .sort({ createdAt: -1 })
+      .limit(50);
+    res.json({ success: true, posts: toApiDocs(rows) });
   } catch (err) {
     console.error('Carpool fetch error:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch carpool posts' });
@@ -1040,10 +1033,16 @@ app.post('/api/carpool/posts', async (req, res) => {
     return res.status(400).json({ success: false, message: 'All fields except note are required' });
   }
   try {
-    await pool.query(
-      'INSERT INTO carpool_posts (city, author_name, origin, destination, travel_date, travel_time, seats, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [city, author_name, origin, destination, travel_date, travel_time, parseInt(seats), note || null]
-    );
+    await CarpoolPost.create({
+      city: city.toLowerCase(),
+      author_name,
+      origin,
+      destination,
+      travel_date,
+      travel_time,
+      seats: parseInt(seats, 10) || 1,
+      note: note || undefined,
+    });
     res.json({ success: true, message: 'Carpool offer posted successfully' });
   } catch (err) {
     console.error('Carpool post error:', err);
@@ -1126,13 +1125,16 @@ app.get('/api/accommodations/:city', async (req, res) => {
 
   // Fallback to mock data if scraping fails
   if (data.length === 0) {
+    const areas = city === 'delhi'
+      ? ['Connaught Place', 'Hauz Khas', 'Saket', 'Dwarka', 'Karol Bagh', 'Lajpat Nagar']
+      : ['Gachibowli', 'Madhapur', 'Kondapur', 'Banjara Hills', 'Jubilee Hills', 'Hi-Tech City'];
     data = [
-      { id: 'acc-1', source: 'NoBroker', furnishing: 'Semi-Furnished', name: `Cozy Stay PG for Men ${capCity}`, type: 'PG', price: 8000, deposit: 8000, amenities: ['WiFi', 'Food Included', 'AC'], rating: 4.2, image: ROOM_PICS[0], address: `Gachibowli, ${capCity}`, reviews: [{user: 'Rahul', rating: 4, text: 'Good food and wifi.'}, {user: 'Amit', rating: 5, text: 'Very clean.'}] },
-      { id: 'acc-2', source: 'Housing.com', furnishing: 'Fully-Furnished', name: `Elite Women's PG`, type: 'PG', price: 12000, deposit: 12000, amenities: ['WiFi', 'Washing Machine', 'AC', 'Security'], rating: 4.7, image: ROOM_PICS[1], address: `Madhapur, ${capCity}`, reviews: [{user: 'Priya', rating: 5, text: 'Safe and secure.'}] },
-      { id: 'acc-3', source: 'MagicBricks', furnishing: 'Fully-Furnished', name: `2BHK Fully Furnished Flat`, type: 'Flat', price: 25000, deposit: 50000, amenities: ['Gym', 'Pool', 'Parking'], rating: 4.8, image: ROOM_PICS[2], address: `Kondapur, ${capCity}`, reviews: [{user: 'Sandeep', rating: 5, text: 'Great society.'}] },
-      { id: 'acc-4', source: 'NoBroker', furnishing: 'Unfurnished', name: `1BHK Cozy Apartment`, type: 'Flat', price: 15000, deposit: 30000, amenities: ['Parking', 'Balcony'], rating: 4.1, image: ROOM_PICS[3], address: `Banjara Hills, ${capCity}`, reviews: [{user: 'Sneha', rating: 4, text: 'A bit old but location is prime.'}] },
-      { id: 'acc-5', source: 'Nestaway', furnishing: 'Fully-Furnished', name: `Luxury Co-living Space`, type: 'PG', price: 18000, deposit: 18000, amenities: ['WiFi', 'Gym', 'Food Included', 'AC', 'Housekeeping'], rating: 4.9, image: ROOM_PICS[4], address: `Jubilee Hills, ${capCity}`, reviews: [{user: 'Karan', rating: 5, text: 'Best co-living space!'}] },
-      { id: 'acc-6', source: 'Housing.com', furnishing: 'Semi-Furnished', name: `Spacious 3BHK Villa`, type: 'Rental', price: 40000, deposit: 100000, amenities: ['Garden', 'Parking', 'Security'], rating: 4.6, image: ROOM_PICS[5], address: `Hi-Tech City, ${capCity}`, reviews: [{user: 'Megha', rating: 4, text: 'Very spacious but slightly overpriced.'}] }
+      { id: 'acc-1', source: 'NoBroker', furnishing: 'Semi-Furnished', name: `Cozy Stay PG for Men ${capCity}`, type: 'PG', price: 8000, deposit: 8000, amenities: ['WiFi', 'Food Included', 'AC'], rating: 4.2, image: ROOM_PICS[0], address: `${areas[0]}, ${capCity}`, reviews: [{user: 'Rahul', rating: 4, text: 'Good food and wifi.'}, {user: 'Amit', rating: 5, text: 'Very clean.'}] },
+      { id: 'acc-2', source: 'Housing.com', furnishing: 'Fully-Furnished', name: `Elite Women's PG`, type: 'PG', price: 12000, deposit: 12000, amenities: ['WiFi', 'Washing Machine', 'AC', 'Security'], rating: 4.7, image: ROOM_PICS[1], address: `${areas[1]}, ${capCity}`, reviews: [{user: 'Priya', rating: 5, text: 'Safe and secure.'}] },
+      { id: 'acc-3', source: 'MagicBricks', furnishing: 'Fully-Furnished', name: `2BHK Fully Furnished Flat`, type: 'Flat', price: 25000, deposit: 50000, amenities: ['Gym', 'Pool', 'Parking'], rating: 4.8, image: ROOM_PICS[2], address: `${areas[2]}, ${capCity}`, reviews: [{user: 'Sandeep', rating: 5, text: 'Great society.'}] },
+      { id: 'acc-4', source: 'NoBroker', furnishing: 'Unfurnished', name: `1BHK Cozy Apartment`, type: 'Flat', price: 15000, deposit: 30000, amenities: ['Parking', 'Balcony'], rating: 4.1, image: ROOM_PICS[3], address: `${areas[3]}, ${capCity}`, reviews: [{user: 'Sneha', rating: 4, text: 'A bit old but location is prime.'}] },
+      { id: 'acc-5', source: 'Nestaway', furnishing: 'Fully-Furnished', name: `Luxury Co-living Space`, type: 'PG', price: 18000, deposit: 18000, amenities: ['WiFi', 'Gym', 'Food Included', 'AC', 'Housekeeping'], rating: 4.9, image: ROOM_PICS[4], address: `${areas[4]}, ${capCity}`, reviews: [{user: 'Karan', rating: 5, text: 'Best co-living space!'}] },
+      { id: 'acc-6', source: 'Housing.com', furnishing: 'Semi-Furnished', name: `Spacious 3BHK Villa`, type: 'Rental', price: 40000, deposit: 100000, amenities: ['Garden', 'Parking', 'Security'], rating: 4.6, image: ROOM_PICS[5], address: `${areas[5]}, ${capCity}`, reviews: [{user: 'Megha', rating: 4, text: 'Very spacious but slightly overpriced.'}] }
     ];
   }
 
@@ -1143,6 +1145,23 @@ app.get('/api/accommodations/:city', async (req, res) => {
   res.json({ success: true, accommodations: data });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 NOMAD backend running at http://localhost:${PORT}`);
+// Serve static frontend
+app.use(express.static(path.join(__dirname, 'dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
+async function start() {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`🚀 NOMAD backend running at http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ Failed to start server:', err.message);
+    process.exit(1);
+  }
+}
+
+start();

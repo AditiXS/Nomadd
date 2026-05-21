@@ -1,10 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './IndiaMap.css';
 
 const IndiaMap = () => {
+  const navigate = useNavigate();
+
   const handleCityClick = (city, e) => {
     e.stopPropagation();
-    alert(`Clicked on ${city}. This will redirect to Login/Signup page shortly!`);
+    const slug = city === 'Hyderabad' ? 'hyderabad' : city.toLowerCase();
+    navigate(`/login?city=${encodeURIComponent(slug)}`);
   };
 
   const cities = [
