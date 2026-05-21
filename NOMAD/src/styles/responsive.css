@@ -542,3 +542,765 @@ iframe {
     left: max(16px, env(safe-area-inset-left));
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   COMPREHENSIVE MOBILE RESPONSIVE OVERRIDES
+   Covers: Home, City Pages, All Sections
+═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet: 992px ── */
+@media (max-width: 992px) {
+  /* IndiaMap visual layer */
+  .map-visual-layer {
+    height: 80vh;
+    aspect-ratio: auto;
+    width: 100%;
+  }
+
+  .map-text-content {
+    margin-top: -15vh;
+    padding: 28px;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  /* City pin sizes */
+  .city-pin {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* Journal entries */
+  .journal-entry {
+    gap: 40px;
+  }
+
+  .entry-img-wrap {
+    height: 450px;
+  }
+
+  .entry-title {
+    font-size: 2.5rem;
+  }
+
+  .entry-desc {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  /* Illustrated map */
+  .illustrated-map-section {
+    padding: 60px 20px;
+  }
+
+  .illustrated-map-container {
+    height: auto;
+    min-height: 700px;
+    border-radius: 24px;
+  }
+}
+
+/* ── Tablet small: 768px ── */
+@media (max-width: 768px) {
+  /* ─ IndiaMap component ─ */
+  .map-container {
+    min-height: auto;
+    height: auto;
+    padding: 40px 0;
+  }
+
+  .map-visual-layer {
+    height: auto;
+    min-height: 60vh;
+    aspect-ratio: auto;
+    width: 100%;
+    margin: 0;
+  }
+
+  .map-text-content {
+    margin-top: 0;
+    padding: 24px 20px;
+    margin: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 7vw, 2.5rem);
+    letter-spacing: 2px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .city-pin {
+    width: 26px;
+    height: 26px;
+    border-width: 2px;
+  }
+
+  .city-label {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  /* ─ Places grid: fix 340px minmax overflow ─ */
+  .places-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  /* ─ Journal entries: stack vertically ─ */
+  .journal-entries-container {
+    padding: 0 16px 60px;
+  }
+
+  .journal-entry {
+    flex-direction: column !important;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .entry--right {
+    flex-direction: column !important;
+  }
+
+  .entry-img-wrap {
+    flex: none;
+    width: 100%;
+    height: 300px;
+  }
+
+  .entry-content {
+    padding: 0 4px;
+  }
+
+  .entry-title {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+  }
+
+  .entry-desc {
+    font-size: 0.95rem;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .entry-meta {
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+  }
+
+  .entry-type {
+    top: 16px;
+    left: 16px;
+  }
+
+  .entry--right .entry-type {
+    left: 16px;
+    right: auto;
+  }
+
+  /* ─ Illustrated map: remove fixed height ─ */
+  .illustrated-map-section {
+    padding: 40px 12px;
+  }
+
+  .illustrated-map-container {
+    height: auto;
+    min-height: auto;
+    border-radius: 20px;
+    padding-bottom: 40px;
+  }
+
+  .map-story-canvas {
+    position: relative;
+    inset: auto;
+    padding: 60px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .monument-marker {
+    position: static;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  .monument-marker:hover .monument-icon-container {
+    transform: scale(1.15);
+  }
+
+  .monument-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .monument-label {
+    font-size: 0.8rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .monument-label.cursive {
+    font-size: 0.85rem;
+  }
+
+  .monument-pop-card {
+    display: none;
+  }
+
+  .map-branding {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    text-align: center;
+    padding: 20px 16px 0;
+  }
+
+  .map-branding h3 {
+    font-size: 1.6rem;
+  }
+
+  .map-branding p {
+    font-size: 0.75rem;
+  }
+
+  /* ─ Transport ─ */
+  .transport-apps {
+    grid-template-columns: 1fr !important;
+  }
+
+  .transport-map-wrap {
+    height: 250px;
+  }
+
+  .transit-stops-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─ Fare estimator ─ */
+  .fare-estimator-card {
+    padding: 18px 14px;
+  }
+
+  .fare-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .fare-estimator-header {
+    flex-wrap: wrap;
+  }
+
+  /* ─ Accommodation ─ */
+  .acc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─ Carpool ─ */
+  .carpool-form-row,
+  .carpool-route-row,
+  .carpool-meta-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .carpool-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+
+  /* ─ Community ─ */
+  .community-composer {
+    padding: 14px;
+  }
+
+  .post-card {
+    padding: 12px;
+  }
+
+  /* ─ Event modal ─ */
+  .event-modal {
+    width: calc(100vw - 24px) !important;
+    max-width: 100% !important;
+    max-height: 90svh;
+    border-radius: 16px;
+  }
+
+  .event-modal-body {
+    padding: 16px 14px 20px;
+  }
+
+  /* ─ Review form ─ */
+  .review-form {
+    padding: 14px;
+  }
+
+  .review-form-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .review-submit-btn,
+  .review-cancel-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ─ Order buttons ─ */
+  .food-order-links {
+    flex-direction: column;
+  }
+
+  .order-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ─ Section badges ─ */
+  .section-badge {
+    font-size: 0.65rem;
+    padding: 5px 14px;
+  }
+
+  /* ─ Postcard card overlay ─ */
+  .postcard-card {
+    max-height: 90svh;
+  }
+
+  /* ─ Scrapbook places ─ */
+  .places-scrapbook-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px;
+    padding: 0 8px;
+  }
+
+  .place-scrap {
+    margin-top: 0 !important;
+  }
+
+  .place-scrap-photo {
+    aspect-ratio: 1 / 1 !important;
+  }
+}
+
+/* ── Phone: 480px ── */
+@media (max-width: 480px) {
+  /* ─ IndiaMap ─ */
+  .map-container {
+    padding: 20px 0;
+  }
+
+  .map-visual-layer {
+    min-height: 50vh;
+  }
+
+  .map-text-content {
+    padding: 18px 14px;
+    margin: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.4rem, 8vw, 1.8rem);
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .city-pin {
+    width: 22px;
+    height: 22px;
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ─ Places grid ─ */
+  .places-grid {
+    gap: 14px;
+  }
+
+  .place-img-wrap {
+    height: 180px;
+  }
+
+  .place-info {
+    padding: 16px 14px 18px;
+  }
+
+  .place-name {
+    font-size: 1.05rem;
+  }
+
+  .place-desc {
+    font-size: 0.82rem;
+  }
+
+  /* ─ Journal entries ─ */
+  .journal-entries-container {
+    padding: 0 10px 40px;
+  }
+
+  .journal-entry {
+    margin-bottom: 40px;
+    gap: 16px;
+  }
+
+  .entry-img-wrap {
+    height: 240px;
+    border-radius: 8px;
+  }
+
+  .entry-title {
+    font-size: clamp(1.5rem, 9vw, 2rem);
+  }
+
+  .entry-desc {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .entry-meta {
+    gap: 14px;
+  }
+
+  /* ─ Illustrated map ─ */
+  .illustrated-map-section {
+    padding: 24px 8px;
+  }
+
+  .illustrated-map-container {
+    border-radius: 16px;
+    border-width: 2px;
+  }
+
+  .map-story-canvas {
+    padding: 40px 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .monument-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .monument-label {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  .monument-label.cursive {
+    font-size: 0.72rem;
+  }
+
+  .map-branding h3 {
+    font-size: 1.2rem;
+  }
+
+  .map-branding p {
+    font-size: 0.65rem;
+    letter-spacing: 0.1rem;
+  }
+
+  /* ─ Realtime sections ─ */
+  .realtime-section {
+    padding: 32px 12px 48px !important;
+  }
+
+  .realtime-title {
+    font-size: clamp(1.3rem, 6.5vw, 1.8rem) !important;
+  }
+
+  .realtime-subtitle {
+    font-size: 0.82rem;
+  }
+
+  /* ─ Food cards ─ */
+  .food-card {
+    border-radius: 14px;
+  }
+
+  .food-card-img-wrap {
+    min-height: 180px;
+  }
+
+  .food-info {
+    padding: 14px;
+  }
+
+  /* ─ Events ─ */
+  .event-row {
+    grid-template-columns: 70px 1fr;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .event-featured-img-wrap {
+    height: 200px;
+  }
+
+  /* ─ Transport ─ */
+  .transport-app-btn {
+    padding: 14px 16px;
+  }
+
+  .transport-map-wrap {
+    height: 200px;
+  }
+
+  .route-details {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* ─ Fare estimator ─ */
+  .fare-estimator-card {
+    padding: 14px 12px;
+    border-radius: 16px;
+  }
+
+  .fare-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    border-radius: 10px;
+  }
+
+  .fare-estimator-title {
+    font-size: 1.15rem;
+  }
+
+  .fare-estimate-btn {
+    width: 100%;
+  }
+
+  /* ─ Accommodation ─ */
+  .acc-filter-group {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px;
+  }
+
+  /* ─ Community ─ */
+  .composer-textarea,
+  .composer-name {
+    font-size: 16px !important;
+  }
+
+  .community-composer {
+    padding: 12px;
+  }
+
+  /* ─ Review ─ */
+  .review-input,
+  .review-textarea {
+    font-size: 16px;
+  }
+
+  /* ─ Scrapbook ─ */
+  .places-scrapbook-title {
+    font-size: clamp(1.5rem, 10vw, 2.5rem) !important;
+  }
+
+  .places-scrapbook-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  /* ─ City hero adjustments ─ */
+  .city-hero-overlay-text {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+
+  /* ─ City footer ─ */
+  .city-footer {
+    padding: 20px 12px;
+    font-size: 0.75rem;
+  }
+
+  /* ─ Gallery separator ─ */
+  .gallery-separator {
+    width: calc(100% - 20px);
+    margin: 16px auto;
+  }
+
+  /* ─ Section header ─ */
+  .section-header {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: clamp(1.3rem, 7vw, 2rem);
+  }
+}
+
+/* ── Very small phones: 380px ── */
+@media (max-width: 380px) {
+  /* ─ Map story canvas: single column ─ */
+  .map-story-canvas {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  /* ─ Journal ─ */
+  .entry-img-wrap {
+    height: 200px;
+  }
+
+  .entry-title {
+    font-size: 1.4rem;
+  }
+
+  /* ─ Realtime ─ */
+  .realtime-section {
+    padding: 24px 8px 36px !important;
+  }
+
+  /* ─ Place cards ─ */
+  .place-img-wrap {
+    height: 160px;
+  }
+
+  .place-info {
+    padding: 12px 10px 14px;
+  }
+
+  /* ─ Transport ─ */
+  .transport-app-btn {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  /* ─ Scrapbook ─ */
+  .places-scrapbook-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─ Events ─ */
+  .events-featured-row {
+    gap: 12px;
+  }
+
+  .event-featured-img-wrap {
+    height: 180px;
+  }
+
+  /* ─ Food order links ─ */
+  .order-btn {
+    padding: 8px 14px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EVENT CALENDAR — EXTRA MOBILE OVERRIDES
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .stamp-calendar {
+    padding: 28px 10px 60px;
+  }
+
+  .stamp-day-grid,
+  .stamp-weekday-row {
+    gap: 3px;
+  }
+
+  .stamp-day-num {
+    font-size: 0.75rem;
+  }
+
+  .stamp-day-preview {
+    font-size: 0.6rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .stamp-day-text {
+    padding: 3px 4px 2px;
+  }
+
+  .stamp-day-footer {
+    padding: 2px 4px 3px;
+  }
+
+  .stamp-weekday-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  .stamp-cal-month {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+  }
+
+  .stamp-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.65rem;
+  }
+
+  /* Calendar modal on mobile */
+  .stamp-modal {
+    max-width: calc(100vw - 24px);
+    max-height: 88svh;
+  }
+
+  .stamp-modal-head {
+    padding: 20px 18px 16px;
+    gap: 14px;
+  }
+
+  .stamp-modal-big-num {
+    font-size: 3.5rem;
+  }
+
+  .stamp-modal-list {
+    padding: 12px 14px 20px;
+  }
+
+  /* Hyderabad calendar specific */
+  .hyd-calendar {
+    margin: 40px auto 60px;
+    padding: 20px 10px 28px;
+  }
+
+  .hyd-calendar .stamp-day-preview {
+    font-size: clamp(0.5rem, 0.8vw, 0.7rem);
+  }
+
+  .hyd-calendar .stamp-day-num {
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .stamp-day-grid,
+  .stamp-weekday-row {
+    gap: 2px;
+  }
+
+  .stamp-event-badge {
+    font-size: 0.48rem;
+    padding: 1px 4px;
+  }
+
+  .stamp-today-ribbon {
+    font-size: 0.42rem;
+    padding: 2px 6px;
+  }
+
+  .stamp-day-preview {
+    display: none;
+  }
+}
