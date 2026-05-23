@@ -74,6 +74,7 @@ app.post('/api/send-otp', async (req, res) => {
 
 // POST /api/send-email-otp
 // Body: { email: "user@example.com", otp: "123456" }
+// Uses Resend HTTP API (works on Render — no SMTP needed)
 app.post('/api/send-email-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -81,56 +82,43 @@ app.post('/api/send-email-otp', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Email and OTP are required.' });
   }
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Your NOMAD Verification Code',
-    text: `Welcome to NOMAD!\n\nYour verification OTP is: ${otp}\n\nPlease enter this code to complete your signup.`
-  };
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
-  // Try multiple SMTP configurations to handle Render port blocking
-  const smtpConfigs = [
-    {
-      name: 'Gmail SSL (465)',
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      family: 4, // Force IPv4 — Render cannot reach Gmail via IPv6
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    },
-    {
-      name: 'Gmail STARTTLS (587)',
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      requireTLS: true,
-      family: 4, // Force IPv4
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    }
-  ];
-
-  for (const config of smtpConfigs) {
-    try {
-      console.log(`📧 Trying ${config.name}...`);
-      const { name, ...transportConfig } = config;
-      const transporter = nodemailer.createTransport(transportConfig);
-      await transporter.sendMail(mailOptions);
-      console.log(`✅ Email OTP sent to ${email} via ${name}`);
-      return res.json({ success: true, message: 'OTP sent to email successfully.' });
-    } catch (err) {
-      console.error(`❌ ${config.name} failed:`, err.message);
-    }
+  if (!RESEND_API_KEY) {
+    console.error('❌ RESEND_API_KEY not set in environment variables');
+    return res.status(500).json({ success: false, message: 'Email service not configured.' });
   }
 
-  // All SMTP methods failed
-  console.error('All email methods failed for', email);
-  res.status(500).json({ success: false, message: 'Failed to send OTP to email. All SMTP connections timed out.' });
+  try {
+    console.log(`📧 Sending OTP to ${email} via Resend API...`);
+    const response = await axios.post('https://api.resend.com/emails', {
+      from: 'NOMAD <onboarding@resend.dev>',
+      to: [email],
+      subject: 'Your NOMAD Verification Code',
+      html: `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #FF6B35;">Welcome to NOMAD! 🌍</h2>
+        <p>Your verification OTP is:</p>
+        <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #333;">${otp}</span>
+        </div>
+        <p>Please enter this code to complete your signup.</p>
+        <p style="color: #888; font-size: 12px;">If you didn't request this, please ignore this email.</p>
+      </div>`
+    }, {
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 10000
+    });
+
+    console.log(`✅ Email OTP sent to ${email} via Resend`, response.data);
+    return res.json({ success: true, message: 'OTP sent to email successfully.' });
+  } catch (err) {
+    const errorDetail = err.response?.data || err.message;
+    console.error('❌ Resend API error:', JSON.stringify(errorDetail));
+    return res.status(500).json({ success: false, message: 'Failed to send OTP email.', detail: errorDetail });
+  }
 });
 
 // POST /api/signup
