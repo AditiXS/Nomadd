@@ -585,7 +585,7 @@
 
 .header-nav {
   display: flex;
-  gap: 32px;
+  gap: 20px;
 }
 
 .nav-link {
@@ -593,9 +593,9 @@
   border: none;
   color: rgba(255, 255, 255, 0.6);
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
