@@ -32,7 +32,45 @@ function normalizeEmail(email) {
 app.use(cors());
 app.use(express.json());
 
-// (SMS OTP route removed per user request)
+// POST /api/send-otp
+// Body: { phone: "9876543210", otp: "123456" }
+app.post('/api/send-otp', async (req, res) => {
+  const { phone, otp } = req.body;
+
+  if (!phone || !otp) {
+    return res.status(400).json({ success: false, message: 'Phone and OTP are required.' });
+  }
+
+  if (!/^\d{10}$/.test(phone)) {
+    return res.status(400).json({ success: false, message: 'Invalid phone number.' });
+  }
+
+  try {
+    const response = await axios.post('https://www.fast2sms.com/dev/bulkV2', {
+      route: 'q',
+      message: `Your NOMAD verification OTP is ${otp}`,
+      language: 'english',
+      flash: 0,
+      numbers: String(phone),
+    }, {
+      headers: {
+        authorization: process.env.FAST2SMS_KEY
+      }
+    });
+
+    if (response.data.return === true) {
+      console.log(`✅ OTP sent to +91${phone}`);
+      return res.json({ success: true, message: 'OTP sent successfully.' });
+    } else {
+      console.error('Fast2SMS error:', response.data);
+      return res.status(500).json({ success: false, message: 'Failed to send OTP.', detail: response.data });
+    }
+  } catch (err) {
+    const errorDetail = err.response?.data || err.message;
+    console.error('Fast2SMS Error Detail:', errorDetail);
+    return res.status(500).json({ success: false, message: 'Server error while sending OTP.', detail: errorDetail });
+  }
+});
 
 // POST /api/send-email-otp
 // Body: { email: "user@example.com", otp: "123456" }
@@ -43,32 +81,54 @@ app.post('/api/send-email-otp', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Email and OTP are required.' });
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Your NOMAD Verification Code',
+    text: `Welcome to NOMAD!\n\nYour verification OTP is: ${otp}\n\nPlease enter this code to complete your signup.`
+  };
+
+  // Try multiple SMTP configurations to handle Render port blocking
+  const smtpConfigs = [
+    {
+      name: 'Gmail SSL (465)',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+    },
+    {
+      name: 'Gmail STARTTLS (587)',
       host: 'smtp.gmail.com',
       port: 587,
-      secure: false, // true for 465, false for other ports
+      secure: false,
       requireTLS: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+    }
+  ];
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Your NOMAD Verification Code',
-      text: `Welcome to NOMAD!\n\nYour verification OTP is: ${otp}\n\nPlease enter this code to complete your signup.`
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log(`✅ Email OTP sent to ${email}`);
-    res.json({ success: true, message: 'OTP sent to email successfully.' });
-  } catch (err) {
-    console.error('Email sending failed:', err.message);
-    res.status(500).json({ success: false, message: 'Failed to send OTP to email.', detail: err.message });
+  for (const config of smtpConfigs) {
+    try {
+      console.log(`📧 Trying ${config.name}...`);
+      const { name, ...transportConfig } = config;
+      const transporter = nodemailer.createTransport(transportConfig);
+      await transporter.sendMail(mailOptions);
+      console.log(`✅ Email OTP sent to ${email} via ${name}`);
+      return res.json({ success: true, message: 'OTP sent to email successfully.' });
+    } catch (err) {
+      console.error(`❌ ${config.name} failed:`, err.message);
+    }
   }
+
+  // All SMTP methods failed
+  console.error('All email methods failed for', email);
+  res.status(500).json({ success: false, message: 'Failed to send OTP to email. All SMTP connections timed out.' });
 });
 
 // POST /api/signup

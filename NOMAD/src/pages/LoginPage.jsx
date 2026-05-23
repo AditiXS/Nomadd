@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import API_BASE from '../utils/api';
 import './LoginPage.css';
@@ -215,7 +215,7 @@ const LoginPage = () => {
   return (
     <div className={`postcard-bg ${visible ? 'fade-in' : ''}`}>
 
-      <button className="back-btn" onClick={() => navigate('/')}>← back</button>
+      <button className="back-btn" onClick={() => navigate('/')}>ΓåÉ back</button>
 
       {/* Stamp-shaped card */}
       <div className={`postcard-card ${visible ? 'slide-up' : ''}`}>
@@ -232,7 +232,7 @@ const LoginPage = () => {
             <button className={`tab-btn ${tab === 'signup' ? 'active' : ''}`} onClick={() => setTab('signup')}>sign up</button>
           </div>
 
-          {/* ── LOGIN ── */}
+          {/* ΓöÇΓöÇ LOGIN ΓöÇΓöÇ */}
           {tab === 'login' && (
             <form className="auth-form" onSubmit={handleLoginSubmit}>
               <div className="form-field">
@@ -242,11 +242,11 @@ const LoginPage = () => {
               </div>
               <div className="form-field">
                 <label>password :</label>
-                <input type="password" placeholder="••••••••" value={loginData.password}
+                <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })} required />
               </div>
               <button type="submit" className="send-btn" style={{marginTop: '6px'}}>
-                <span className="seal" /> send →
+                <span className="seal" /> send ΓåÆ
               </button>
               <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
                 <button type="button" onClick={() => { setTab('forgot'); setOtpSent(false); setOtpVerified(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
@@ -256,7 +256,7 @@ const LoginPage = () => {
             </form>
           )}
 
-          {/* ── SIGN UP ── */}
+          {/* ΓöÇΓöÇ SIGN UP ΓöÇΓöÇ */}
           {tab === 'signup' && (
             <form className="auth-form" onSubmit={handleSignupSubmit}>
               <div className="form-field">
@@ -284,10 +284,10 @@ const LoginPage = () => {
                   </div>
                 </div>
               )}
-              {otpVerified && <p className="verified-badge">✓ email verified</p>}
+              {otpVerified && <p className="verified-badge">Γ£ô email verified</p>}
               <div className="form-field">
                 <label>password :</label>
-                <input type="password" placeholder="••••••••" value={signupData.password}
+                <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={signupData.password}
                   onChange={e => setSignupData({ ...signupData, password: e.target.value })} required />
               </div>
               <div className="form-field">
@@ -322,12 +322,12 @@ const LoginPage = () => {
                 </div>
               </div>
               <button type="submit" className="send-btn">
-                <span className="seal" /> join nomad →
+                <span className="seal" /> join nomad ΓåÆ
               </button>
             </form>
           )}
 
-          {/* ── FORGOT PASSWORD ── */}
+          {/* ΓöÇΓöÇ FORGOT PASSWORD ΓöÇΓöÇ */}
           {tab === 'forgot' && (
             <form className="auth-form" onSubmit={handleForgotPasswordSubmit}>
               <p style={{fontFamily: 'Courier New', fontSize: '0.75rem', color: '#555', marginBottom: '8px', lineHeight: '1.2'}}>
@@ -353,16 +353,16 @@ const LoginPage = () => {
                   </div>
                 </div>
               )}
-              {otpVerified && <p className="verified-badge">✓ email verified</p>}
+              {otpVerified && <p className="verified-badge">Γ£ô email verified</p>}
               {otpVerified && (
                 <div className="form-field">
                   <label>new password :</label>
-                  <input type="password" placeholder="••••••••" value={forgotPasswordData.newPassword}
+                  <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={forgotPasswordData.newPassword}
                     onChange={e => setForgotPasswordData({ ...forgotPasswordData, newPassword: e.target.value })} required />
                 </div>
               )}
               <button type="submit" className="send-btn" disabled={!otpVerified} style={{marginTop: '6px'}}>
-                <span className="seal" /> reset password →
+                <span className="seal" /> reset password ΓåÆ
               </button>
               <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
                 <button type="button" onClick={() => { setTab('login'); setOtpVerified(false); setOtpSent(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
