@@ -169,14 +169,14 @@
   left: 28%;
   height: 80vh;
   bottom: 0;
-  z-index: 4; /* Layered in front of Tomb */
+  z-index: 4;
 }
 
 .delhi-img-4 {
-  /* New Delhi Board */
+  /* New Delhi Board (ign.png) */
   left: 3%;
-  height: 80vh; /* Bigger, but smaller than India Gate's 95vh */
-  bottom: -5vh; /* Touches/goes below ground */
+  height: 60vh;
+  bottom: 0; /* Touch ground like India Gate */
   z-index: 5;
 }
 
@@ -185,7 +185,7 @@
   right: 20%;
   height: 55vh;
   bottom: 0;
-  z-index: 3; /* Behind Qutub Minar */
+  z-index: 3;
 }
 
 .delhi-img-6 {
@@ -199,24 +199,24 @@
 .delhi-img-7 {
   /* Chole Bhature */
   right: 12%;
-  height: 35vh;
-  bottom: -2vh;
-  z-index: 6;
+  height: 28vh; /* Bit smaller */
+  bottom: 0;
+  z-index: 8; /* Layered in front of Metro and Tomb */
 }
 
 .delhi-img-8 {
-  /* Delhi Vintage Sign */
+  /* Delhi Vintage Sign (ign2.png) */
   right: 5%;
-  height: 30vh;
-  bottom: 50vh; /* Use bottom instead of top to avoid conflicts */
+  height: 20vh; /* Make smaller */
+  bottom: 60vh; /* Layered in front of Red Fort */
   z-index: 7;
 }
 
 .delhi-img-9 {
   /* Text overlay "Mei tainu" */
-  left: 10%;
-  height: 60vh; /* Much larger to account for transparent canvas */
-  bottom: 30vh; /* Positioned high using bottom */
+  left: 20%; /* Moved to Qutub Minar's side */
+  height: 75vh; /* Bit bigger */
+  bottom: 25vh;
   z-index: 7;
 }
 
@@ -294,12 +294,12 @@
   .delhi-img-2 { height: 75vh; left: -10%; } /* India Gate */
   .delhi-img-1 { height: 70vh; right: -5%; }  /* Red Fort */
   .delhi-img-3 { height: 65vh; left: 22%; } /* Qutub Minar */
-  .delhi-img-4 { height: 60vh; left: 2%; bottom: -5vh; } /* New Delhi Board */
+  .delhi-img-4 { height: 50vh; left: 2%; bottom: 0; } /* New Delhi Board */
   .delhi-img-5 { height: 45vh; right: 15%; bottom: 0; } /* Safdarjung Tomb */
   .delhi-img-6 { height: 35vh; right: -2%; } /* Metro */
-  .delhi-img-7 { height: 25vh; right: 10%; bottom: -1vh; } /* Chole Bhature */
-  .delhi-img-8 { height: 22vh; right: 2%; bottom: 40vh; } /* Delhi Vintage Sign */
-  .delhi-img-9 { height: 40vh; left: 10%; bottom: 25vh; } /* Text overlay */
+  .delhi-img-7 { height: 20vh; right: 10%; bottom: 0; } /* Chole Bhature */
+  .delhi-img-8 { height: 15vh; right: 2%; bottom: 45vh; } /* Delhi Vintage Sign */
+  .delhi-img-9 { height: 55vh; left: 15%; bottom: 20vh; } /* Text overlay */
 }
 
 @media (max-width: 768px) {
@@ -311,12 +311,12 @@
   .delhi-img-2 { height: 50vh; left: -10%; } /* India Gate */
   .delhi-img-1 { height: 45vh; right: -5%; } /* Red Fort */
   .delhi-img-3 { height: 45vh; left: 20%; } /* Qutub Minar */
-  .delhi-img-4 { height: 40vh; left: 0%; bottom: -2vh; } /* New Delhi Board */
+  .delhi-img-4 { height: 35vh; left: 0%; bottom: 0; } /* New Delhi Board */
   .delhi-img-5 { height: 30vh; right: 10%; bottom: 0; } /* Safdarjung Tomb */
   .delhi-img-6 { height: 25vh; right: -5%; bottom: 0; } /* Metro */
-  .delhi-img-7 { height: 20vh; right: 5%; bottom: -1vh; } /* Chole Bhature */
-  .delhi-img-8 { height: 18vh; right: 2%; bottom: 35vh; } /* Delhi Vintage Sign */
-  .delhi-img-9 { height: 30vh; left: 5%; bottom: 20vh; } /* Text overlay */
+  .delhi-img-7 { height: 18vh; right: 5%; bottom: 0; } /* Chole Bhature */
+  .delhi-img-8 { height: 12vh; right: 2%; bottom: 40vh; } /* Delhi Vintage Sign */
+  .delhi-img-9 { height: 45vh; left: 10%; bottom: 15vh; } /* Text overlay */
 
   .img-2 {
     height: 90vh;
