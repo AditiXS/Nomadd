@@ -108,7 +108,7 @@ const SPARSE_STICKERS = {
 
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-const EventCalendar = () => {
+const EventCalendar = ({ cityName = 'hyderabad', displayName = 'Hyderabad' }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents]           = useState([]);
   const [holidays, setHolidays]       = useState([]);
@@ -124,8 +124,8 @@ const EventCalendar = () => {
       // Fetch events and holidays in parallel
       try {
         const [evRes, holRes] = await Promise.all([
-          fetch(`${API_BASE}/api/events/hyderabad?month=${m}&year=${y}`),
-          fetch(`${API_BASE}/api/holidays/hyderabad?month=${m}&year=${y}`),
+          fetch(`${API_BASE}/api/events/${cityName}?month=${m}&year=${y}`),
+          fetch(`${API_BASE}/api/holidays/${cityName}?month=${m}&year=${y}`),
         ]);
 
         if (evRes.ok) {
@@ -169,7 +169,7 @@ const EventCalendar = () => {
       {/* ── Header ── */}
       <div className="stamp-cal-header">
         <div>
-          <span className="stamp-cal-eyebrow">Hyderabad City Calendar {holidays.length > 0 && <span style={{color:'#8b2f24',marginLeft:8}}>• {holidays.length} holidays</span>}</span>
+          <span className="stamp-cal-eyebrow">{displayName} City Calendar {holidays.length > 0 && <span style={{color:'#8b2f24',marginLeft:8}}>• {holidays.length} holidays</span>}</span>
           <h2 className="stamp-cal-month">
             {format(currentDate, 'MMMM')}
             <span className="stamp-cal-year"> {format(currentDate, 'yyyy')}</span>
@@ -194,7 +194,7 @@ const EventCalendar = () => {
       {loading ? (
         <div className="stamp-loading">
           <div className="stamp-spinner" />
-          loading hyderabad events…
+          loading {cityName} events…
         </div>
       ) : (
         <div className="stamp-day-grid">
@@ -291,7 +291,7 @@ const EventCalendar = () => {
                         {ev.isRegional && !ev.isNational && <span className="stamp-regional-badge">Regional Holiday</span>}
                       </p>
                       <p className="stamp-modal-ev-venue">
-                        {ev.type === 'holiday' ? '🏛️' : '📍'} {ev.venue || 'Hyderabad'}
+                        {ev.type === 'holiday' ? '🏛️' : '📍'} {ev.venue || displayName}
                       </p>
                       {ev.bookingLink && (
                         <a href={ev.bookingLink} target="_blank" rel="noopener noreferrer" className="stamp-modal-book-btn">

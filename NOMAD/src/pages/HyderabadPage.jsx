@@ -593,7 +593,7 @@ const HyderabadPage = () => {
             )}
           </section>
           <div className="events-stamp-divider"><span>calendar view</span></div>
-          <EventCalendar />
+          <EventCalendar cityName={cityName} displayName={displayName} />
         </>
       )}
 
