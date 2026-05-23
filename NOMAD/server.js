@@ -95,6 +95,7 @@ app.post('/api/send-email-otp', async (req, res) => {
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
+      family: 4, // Force IPv4 — Render cannot reach Gmail via IPv6
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
@@ -106,6 +107,7 @@ app.post('/api/send-email-otp', async (req, res) => {
       port: 587,
       secure: false,
       requireTLS: true,
+      family: 4, // Force IPv4
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
