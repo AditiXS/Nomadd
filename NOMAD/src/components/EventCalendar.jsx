@@ -82,14 +82,29 @@ const STAMP_IMAGES = {
   holiday:     CALENDAR_IMAGES[6],
 };
 
+const DELHI_CALENDAR_IMAGES = [
+  '/delhi/image1.png',
+  '/delhi/ticket.png',
+  '/delhi/sarojini.png',
+  '/delhi/Lotus temple.jpg',
+  '/delhi/India gate.jpg',
+  '/delhi/Qutub minar.jpg',
+  '/delhi/Hauz khas.jpg',
+  '/delhi/MKT.jpg',
+];
+
 const HYDERABAD_DAY_IMAGES = CALENDAR_IMAGES;
 
 // Get a varied image per calendar day (day 1–31 maps to distinct images)
-const getDayImage = (dayNum, type) => {
+const getDayImage = (dayNum, type, cityName) => {
+  const images = cityName === 'delhi' ? DELHI_CALENDAR_IMAGES : HYDERABAD_DAY_IMAGES;
+  
   // Use day number to pick a varied image, biased toward type if available
-  const typeImg = STAMP_IMAGES[type];
-  const rotatingImg = HYDERABAD_DAY_IMAGES[(dayNum - 1) % HYDERABAD_DAY_IMAGES.length];
-  // Alternate: odd days use type image, even days use rotating
+  const typeImg = cityName === 'delhi' ? null : STAMP_IMAGES[type]; // Don't use Hyderabad stamps for Delhi
+  const rotatingImg = images[(dayNum - 1) % images.length];
+  
+  // Alternate: odd days use type image, even days use rotating (if typeImg exists)
+  if (!typeImg) return rotatingImg;
   return dayNum % 3 === 0 ? rotatingImg : (typeImg || rotatingImg);
 };
 
@@ -104,6 +119,19 @@ const SPARSE_STICKERS = {
   24: CALENDAR_IMAGES[9],
   27: CALENDAR_IMAGES[6],
   29: CALENDAR_IMAGES[7],
+};
+
+const DELHI_SPARSE_STICKERS = {
+  1: DELHI_CALENDAR_IMAGES[0],
+  4: DELHI_CALENDAR_IMAGES[1],
+  9: DELHI_CALENDAR_IMAGES[2],
+  12: DELHI_CALENDAR_IMAGES[3],
+  15: DELHI_CALENDAR_IMAGES[4],
+  18: DELHI_CALENDAR_IMAGES[5],
+  21: DELHI_CALENDAR_IMAGES[6],
+  24: DELHI_CALENDAR_IMAGES[7],
+  27: DELHI_CALENDAR_IMAGES[0],
+  29: DELHI_CALENDAR_IMAGES[1],
 };
 
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -208,7 +236,7 @@ const EventCalendar = ({ cityName = 'hyderabad', displayName = 'Hyderabad' }) =>
             const isNow   = isToday(day);
             const topEvt  = dayEvts[0];
             const isHoliday = dayEvts.some(e => e.type === 'holiday');
-            const imgUrl  = isHoliday ? null : (topEvt ? getDayImage(dayNum, type) : SPARSE_STICKERS[dayNum]);
+            const imgUrl  = isHoliday ? null : (topEvt ? getDayImage(dayNum, type, cityName) : (cityName === 'delhi' ? DELHI_SPARSE_STICKERS[dayNum] : SPARSE_STICKERS[dayNum]));
 
 
             return (
