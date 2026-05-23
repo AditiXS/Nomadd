@@ -74,7 +74,7 @@ app.post('/api/send-otp', async (req, res) => {
 
 // POST /api/send-email-otp
 // Body: { email: "user@example.com", otp: "123456" }
-// Uses Resend HTTP API (works on Render — no SMTP needed)
+// Uses Brevo (Sendinblue) HTTP API — free 300 emails/day, sends to ANY email
 app.post('/api/send-email-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -82,21 +82,21 @@ app.post('/api/send-email-otp', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Email and OTP are required.' });
   }
 
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  const BREVO_API_KEY = process.env.BREVO_API_KEY;
 
-  if (!RESEND_API_KEY) {
-    console.error('❌ RESEND_API_KEY not set in environment variables');
+  if (!BREVO_API_KEY) {
+    console.error('BREVO_API_KEY not set in environment variables');
     return res.status(500).json({ success: false, message: 'Email service not configured.' });
   }
 
   try {
-    console.log(`📧 Sending OTP to ${email} via Resend API...`);
-    const response = await axios.post('https://api.resend.com/emails', {
-      from: 'NOMAD <onboarding@resend.dev>',
-      to: [email],
+    console.log(`Sending OTP to ${email} via Brevo API...`);
+    const response = await axios.post('https://api.brevo.com/v3/smtp/email', {
+      sender: { name: 'NOMAD', email: process.env.EMAIL_USER || 'aditisaini.aashray@gmail.com' },
+      to: [{ email: email }],
       subject: 'Your NOMAD Verification Code',
-      html: `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #FF6B35;">Welcome to NOMAD! 🌍</h2>
+      htmlContent: `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #FF6B35;">Welcome to NOMAD!</h2>
         <p>Your verification OTP is:</p>
         <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
           <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #333;">${otp}</span>
@@ -106,17 +106,18 @@ app.post('/api/send-email-otp', async (req, res) => {
       </div>`
     }, {
       headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json'
+        'api-key': BREVO_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       timeout: 10000
     });
 
-    console.log(`✅ Email OTP sent to ${email} via Resend`, response.data);
+    console.log(`Email OTP sent to ${email} via Brevo`, response.data);
     return res.json({ success: true, message: 'OTP sent to email successfully.' });
   } catch (err) {
     const errorDetail = err.response?.data || err.message;
-    console.error('❌ Resend API error:', JSON.stringify(errorDetail));
+    console.error('Brevo API error:', JSON.stringify(errorDetail));
     return res.status(500).json({ success: false, message: 'Failed to send OTP email.', detail: errorDetail });
   }
 });
