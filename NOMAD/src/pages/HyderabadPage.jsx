@@ -373,12 +373,12 @@ const HyderabadPage = () => {
             <img src="/delhi/c9dfdfe838386eeb00ec6b43ff613950.png" alt="" className="layered-img delhi-img-1" />
             <img src="/delhi/fc8ec2c32db8368c9aacc9810a9ca25f.png" alt="" className="layered-img delhi-img-2" />
             <img src="/delhi/0666861e91a09d14019dcbfccc0f235b.png" alt="" className="layered-img delhi-img-3" />
-            <img src="/delhi/Untitled - May 20, 2026 at 21.52.57.png" alt="" className="layered-img delhi-img-4" />
-            <img src="/delhi/01859cdef37cdfec19e80d714b7b9c26.png" alt="" className="layered-img delhi-img-5" />
+            <img src="/delhi/ign.png" alt="" className="layered-img delhi-img-4" />
+            <img src="/delhi/tomb.png" alt="" className="layered-img delhi-img-5" />
             <img src="/delhi/95258dcab710aa96d1be4a3ffbf7de15.png" alt="" className="layered-img delhi-img-6" />
-            <img src="/delhi/4cd09432d553c88a6f4175be5ea86ca7.png" alt="" className="layered-img delhi-img-7" />
-            <img src="/delhi/27806531de5894111d2ae850a2ec5ddf.png" alt="" className="layered-img delhi-img-8" />
-            <img src="/delhi/Untitled - May 23, 2026 at 22.16.45.png" alt="" className="layered-img delhi-img-9" />
+            <img src="/delhi/chole bhature.png" alt="" className="layered-img delhi-img-7" />
+            <img src="/delhi/ign2.png" alt="" className="layered-img delhi-img-8" />
+            <img src="/delhi/mei tainu fer milangi.png" alt="" className="layered-img delhi-img-9" />
           </div>
         ) : (
           <div className="city-hero-layered-collage">
