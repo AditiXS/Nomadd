@@ -377,7 +377,7 @@ const HyderabadPage = () => {
             <img src="/delhi/tomb.png" alt="" className="layered-img delhi-img-5" />
             <img src="/delhi/95258dcab710aa96d1be4a3ffbf7de15.png" alt="" className="layered-img delhi-img-6" />
             <img src="/delhi/chole bhature.png" alt="" className="layered-img delhi-img-7" />
-            <img src="/delhi/ign2.png" alt="" className="layered-img delhi-img-8" />
+            <img src="/delhi/sign2.png" alt="" className="layered-img delhi-img-8" />
             <img src="/delhi/mei tainu fer milangi.png" alt="" className="layered-img delhi-img-9" />
           </div>
         ) : (
