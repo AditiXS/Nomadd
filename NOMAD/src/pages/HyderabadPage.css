@@ -139,6 +139,87 @@
   mask-image: linear-gradient(to top, transparent 10%, black 40%);
 }
 
+/* ================================== */
+/* DELHI HERO COLLAGE STYLES          */
+/* ================================== */
+.delhi-hero-collage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.delhi-img-1 {
+  /* Red Fort */
+  right: -5%;
+  height: 95vh;
+  bottom: 0;
+  z-index: 2;
+}
+
+.delhi-img-2 {
+  /* India Gate */
+  left: -10%;
+  height: 100vh;
+  bottom: 0;
+  z-index: 1;
+}
+
+.delhi-img-3 {
+  /* Qutub Minar */
+  left: 30%;
+  height: 90vh;
+  bottom: 0;
+  z-index: 3;
+}
+
+.delhi-img-4 {
+  /* Safdarjung Tomb */
+  right: 20%;
+  height: 60vh;
+  bottom: 0;
+  z-index: 4;
+}
+
+.delhi-img-5 {
+  /* Chole Bhature */
+  left: 10%;
+  height: 35vh;
+  bottom: 5vh;
+  z-index: 6;
+}
+
+.delhi-img-6 {
+  /* Delhi Metro */
+  right: 5%;
+  height: 40vh;
+  bottom: 0;
+  z-index: 7;
+}
+
+.delhi-img-7 {
+  /* New Delhi Board */
+  left: 5%;
+  height: 30vh;
+  bottom: 25vh;
+  z-index: 5;
+}
+
+.delhi-img-8 {
+  /* Delhi Vintage Sign */
+  right: 15%;
+  height: 25vh;
+  top: 20vh;
+  z-index: 5;
+}
+
+.delhi-img-9 {
+  /* Text overlay */
+  left: 20%;
+  height: 15vh;
+  top: 25vh;
+  z-index: 5;
+}
+
 /* Minarets close-up — far right, bleeds off right edge */
 .img-4 {
   right: -6%;
@@ -208,12 +289,30 @@
     height: 34vh;
     right: 4%;
   }
+
+  /* Delhi Responsive */
+  .delhi-img-2 { height: 80vh; left: -15%; }
+  .delhi-img-1 { height: 75vh; right: -10%; }
+  .delhi-img-3 { height: 70vh; left: 25%; }
+  .delhi-img-4 { height: 50vh; right: 15%; }
+  .delhi-img-6 { height: 35vh; right: 0%; }
 }
 
 @media (max-width: 768px) {
   .layered-img {
     pointer-events: none;
   }
+
+  /* Delhi Responsive Mobile */
+  .delhi-img-2 { height: 65vh; left: -20%; }
+  .delhi-img-1 { height: 60vh; right: -15%; }
+  .delhi-img-3 { height: 60vh; left: 15%; }
+  .delhi-img-4 { height: 45vh; right: 5%; }
+  .delhi-img-5 { height: 25vh; left: 5%; bottom: 5vh; }
+  .delhi-img-6 { height: 25vh; right: -5%; }
+  .delhi-img-7 { height: 20vh; left: 0%; }
+  .delhi-img-8 { height: 18vh; right: 5%; top: 15vh; }
+  .delhi-img-9 { height: 10vh; left: 10%; top: 20vh; }
 
   .img-2 {
     height: 90vh;
