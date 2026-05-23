@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import API_BASE from '../utils/api';
 import './LoginPage.css';
@@ -47,17 +47,16 @@ const LoginPage = () => {
       });
       const data = await res.json();
       if (data.success) {
-        console.log('real otp sent via email!');
-        alert(`OTP sent successfully to ${signupData.email}`);
+        console.log('OTP sent via email!');
+        alert(`OTP sent successfully to ${signupData.email}! Check your inbox.`);
       } else {
-        alert(`Could not send real Email (check .env for EMAIL_USER and EMAIL_PASS).\n\n[DEMO MODE] Your OTP is: ${otp}`);
-        console.log(`[demo fallback] your otp is: ${otp}`);
-        setSignupData(prev => ({ ...prev, otp }));
+        alert(`Failed to send OTP: ${data.message || 'Unknown error'}. Please try again.`);
+        setOtpSent(false);
       }
     } catch (err) {
-      alert(`Backend server not running.\n\n[DEMO MODE] Your OTP is: ${otp}`);
-      console.log(`[demo fallback] your otp is: ${otp}`);
-      setSignupData(prev => ({ ...prev, otp }));
+      alert('Could not connect to server. Please try again later.');
+      console.error('OTP send error:', err);
+      setOtpSent(false);
     }
   };
 
@@ -167,14 +166,15 @@ const LoginPage = () => {
       });
       const data = await res.json();
       if (data.success) {
-        alert(`OTP sent successfully to ${forgotPasswordData.email}`);
+        alert(`OTP sent successfully to ${forgotPasswordData.email}! Check your inbox.`);
       } else {
-        alert(`Could not send real Email.\n\n[DEMO MODE] Your OTP is: ${otp}`);
-        setForgotPasswordData(prev => ({ ...prev, otp }));
+        alert(`Failed to send OTP: ${data.message || 'Unknown error'}. Please try again.`);
+        setOtpSent(false);
       }
     } catch (err) {
-      alert(`Backend server not running.\n\n[DEMO MODE] Your OTP is: ${otp}`);
-      setForgotPasswordData(prev => ({ ...prev, otp }));
+      alert('Could not connect to server. Please try again later.');
+      console.error('OTP send error:', err);
+      setOtpSent(false);
     }
   };
 
@@ -215,7 +215,7 @@ const LoginPage = () => {
   return (
     <div className={`postcard-bg ${visible ? 'fade-in' : ''}`}>
 
-      <button className="back-btn" onClick={() => navigate('/')}>ΓåÉ back</button>
+      <button className="back-btn" onClick={() => navigate('/')}>&larr; back</button>
 
       {/* Stamp-shaped card */}
       <div className={`postcard-card ${visible ? 'slide-up' : ''}`}>
@@ -242,11 +242,11 @@ const LoginPage = () => {
               </div>
               <div className="form-field">
                 <label>password :</label>
-                <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={loginData.password}
+                <input type="password" placeholder="********" value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })} required />
               </div>
               <button type="submit" className="send-btn" style={{marginTop: '6px'}}>
-                <span className="seal" /> send ΓåÆ
+                <span className="seal" /> send &rarr;
               </button>
               <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
                 <button type="button" onClick={() => { setTab('forgot'); setOtpSent(false); setOtpVerified(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
@@ -284,10 +284,10 @@ const LoginPage = () => {
                   </div>
                 </div>
               )}
-              {otpVerified && <p className="verified-badge">Γ£ô email verified</p>}
+              {otpVerified && <p className="verified-badge">&#10004; email verified</p>}
               <div className="form-field">
                 <label>password :</label>
-                <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={signupData.password}
+                <input type="password" placeholder="********" value={signupData.password}
                   onChange={e => setSignupData({ ...signupData, password: e.target.value })} required />
               </div>
               <div className="form-field">
@@ -322,7 +322,7 @@ const LoginPage = () => {
                 </div>
               </div>
               <button type="submit" className="send-btn">
-                <span className="seal" /> join nomad ΓåÆ
+                <span className="seal" /> join nomad &rarr;
               </button>
             </form>
           )}
@@ -353,16 +353,16 @@ const LoginPage = () => {
                   </div>
                 </div>
               )}
-              {otpVerified && <p className="verified-badge">Γ£ô email verified</p>}
+              {otpVerified && <p className="verified-badge">&#10004; email verified</p>}
               {otpVerified && (
                 <div className="form-field">
                   <label>new password :</label>
-                  <input type="password" placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó" value={forgotPasswordData.newPassword}
+                  <input type="password" placeholder="********" value={forgotPasswordData.newPassword}
                     onChange={e => setForgotPasswordData({ ...forgotPasswordData, newPassword: e.target.value })} required />
                 </div>
               )}
               <button type="submit" className="send-btn" disabled={!otpVerified} style={{marginTop: '6px'}}>
-                <span className="seal" /> reset password ΓåÆ
+                <span className="seal" /> reset password &rarr;
               </button>
               <div style={{display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '4px'}}>
                 <button type="button" onClick={() => { setTab('login'); setOtpVerified(false); setOtpSent(false); }} style={{background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontFamily: 'Courier New', textDecoration: 'underline', fontSize: '0.85rem', padding: 0}}>
