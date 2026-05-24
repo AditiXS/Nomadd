@@ -1282,11 +1282,12 @@ io.on('connection', (socket) => {
 
   socket.on('send_message', async (data) => {
     try {
+      console.log('Sending message:', data);
       const senderEmail = normalizeEmail(data.senderEmail);
       const receiverEmail = normalizeEmail(data.receiverEmail);
       const content = data.content;
       const msg = await Message.create({ senderEmail, receiverEmail, content });
-      
+      console.log('Message saved:', msg);
       // Send to receiver
       io.to(receiverEmail).emit('receive_message', msg);
       // Send back to sender for confirmation
@@ -1332,6 +1333,17 @@ app.get('/api/messages/:user1/:user2', async (req, res) => {
     res.json({ success: true, messages });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to fetch messages' });
+  }
+});
+
+// DEBUG ENDPOINT
+app.get('/api/debug-messages', async (req, res) => {
+  try {
+    const allMsgs = await Message.find().sort({ timestamp: -1 }).limit(10);
+    const count = await Message.countDocuments();
+    res.json({ count, latest: allMsgs });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
   }
 });
 

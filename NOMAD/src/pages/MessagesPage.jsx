@@ -108,6 +108,17 @@ const MessagesPage = () => {
       const receiver = msg.receiverEmail.toLowerCase();
       const current = currentUser.email.toLowerCase();
 
+      // If the message is for the currently open chat, append it
+      setActiveChatProfile(currentActive => {
+        if (currentActive) {
+          const active = currentActive.email.toLowerCase();
+          if ((sender === active && receiver === current) || (sender === current && receiver === active)) {
+            setMessages(prev => [...prev, msg]);
+          }
+        }
+        return currentActive;
+      });
+
       // Update the left sidebar latest message
       setChats(prevChats => {
         const newChats = [...prevChats];
@@ -119,19 +130,21 @@ const MessagesPage = () => {
           // Move to top
           const [movedChat] = newChats.splice(chatIdx, 1);
           newChats.unshift(movedChat);
+          return newChats;
+        } else {
+          // Chat not in list, fetch profile and prepend
+          fetch(`${API_BASE}/api/user/profile/${encodeURIComponent(otherPerson)}`)
+            .then(r => r.json())
+            .then(d => {
+              if (d.success && d.profile) {
+                setChats(prev => {
+                  if (prev.find(c => c.profile.email.toLowerCase() === d.profile.email.toLowerCase())) return prev;
+                  return [{ profile: d.profile, lastMessage: msg.content, timestamp: msg.timestamp }, ...prev];
+                });
+              }
+            });
+          return prevChats;
         }
-        return newChats;
-      });
-
-      // If the message is for the currently open chat, append it
-      setActiveChatProfile(currentActive => {
-        if (currentActive) {
-          const active = currentActive.email.toLowerCase();
-          if ((sender === active && receiver === current) || (sender === current && receiver === active)) {
-            setMessages(prev => [...prev, msg]);
-          }
-        }
-        return currentActive;
       });
     });
 
