@@ -1,6 +1,6 @@
 .profile-page-container {
   min-height: 100vh;
-  background-color: #f5f0eb;
+  background-color: #fafafa;
   padding: 40px 20px;
   font-family: 'Inter', sans-serif;
   display: flex;
@@ -12,7 +12,7 @@
   align-self: flex-start;
   background: none;
   border: none;
-  color: #ff6b35;
+  color: #000;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -23,7 +23,7 @@
 }
 
 .profile-back-btn:hover {
-  background: rgba(255, 107, 53, 0.1);
+  background: #eee;
 }
 
 .profile-card-container {
@@ -61,7 +61,7 @@
   justify-content: center;
   font-size: 100px;
   color: #fff;
-  background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+  background: linear-gradient(135deg, #444, #111);
 }
 
 .tinder-profile-overlay {
@@ -128,8 +128,8 @@
 }
 
 .tinder-interest-tag {
-  background: rgba(255, 107, 53, 0.1);
-  color: #ff6b35;
+  background: #000;
+  color: #fff;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 14px;
@@ -160,20 +160,20 @@
 .tinder-edit-btn {
   width: 100%;
   padding: 16px;
-  background: #ff6b35;
+  background: #000;
   color: #fff;
   border: none;
   border-radius: 30px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .tinder-edit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Edit Form */
@@ -217,7 +217,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #ff6b35;
+  border-color: #000;
 }
 
 .profile-edit-actions {
@@ -240,7 +240,7 @@
 .profile-save-btn {
   flex: 2;
   padding: 14px;
-  background: #ff6b35;
+  background: #000;
   color: #fff;
   border: none;
   border-radius: 12px;

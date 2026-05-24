@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EventCalendar from '../components/EventCalendar';
+import ChatModal from '../components/ChatModal';
 import API_BASE from '../utils/api';
 import './HyderabadPage.css';
 import './CommunityProfile.css';
@@ -1024,59 +1025,13 @@ const HyderabadPage = () => {
         </section>
       )}
 
-      {/* Mock Chat Modal */}
+      {/* Real-time Chat and WebRTC Modal */}
       {activeChatProfile && (
-        <div className="event-modal-overlay chat-overlay" onClick={() => setActiveChatProfile(null)}>
-          <div className="event-modal chat-modal" onClick={e => e.stopPropagation()}>
-            <button className="event-modal-close" onClick={() => setActiveChatProfile(null)}>×</button>
-            <div className="chat-modal-header">
-              <div className="chat-avatar">
-                {activeChatProfile.avatar ? <img src={activeChatProfile.avatar} alt="avatar" /> : activeChatProfile.name.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <h3 className="chat-name">{activeChatProfile.name}</h3>
-                <p className="chat-status">🟢 Online</p>
-              </div>
-            </div>
-            <div className="chat-modal-body">
-              <div className="chat-bubble received">
-                Hi! I'm also exploring {displayName}. Let's connect!
-              </div>
-            </div>
-            <div className="chat-modal-footer">
-              <input type="text" className="chat-input" placeholder="Type a message..." value={chatMessage} onChange={e => setChatMessage(e.target.value)} onKeyDown={(e) => {
-                if (e.key === 'Enter' && chatMessage.trim()) {
-                  const bubble = document.createElement('div');
-                  bubble.className = 'chat-bubble sent';
-                  bubble.innerText = chatMessage;
-                  e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(bubble);
-                  setChatMessage('');
-                  setTimeout(() => {
-                    const reply = document.createElement('div');
-                    reply.className = 'chat-bubble received';
-                    reply.innerText = "That sounds great!";
-                    e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(reply);
-                  }, 1000);
-                }
-              }} />
-              <button className="chat-send-btn" onClick={(e) => {
-                if (chatMessage.trim()) {
-                  const bubble = document.createElement('div');
-                  bubble.className = 'chat-bubble sent';
-                  bubble.innerText = chatMessage;
-                  e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(bubble);
-                  setChatMessage('');
-                  setTimeout(() => {
-                    const reply = document.createElement('div');
-                    reply.className = 'chat-bubble received';
-                    reply.innerText = "That sounds great!";
-                    e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(reply);
-                  }, 1000);
-                }
-              }}>Send</button>
-            </div>
-          </div>
-        </div>
+        <ChatModal 
+          currentUser={currentUser} 
+          activeChatProfile={activeChatProfile} 
+          onClose={() => setActiveChatProfile(null)} 
+        />
       )}
 
       <footer className="city-footer">

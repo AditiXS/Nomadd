@@ -12,11 +12,11 @@ const ProfilePage = () => {
   const [formData, setFormData] = useState({
     name: '',
     bio: '',
-    avatar: '',
     age: '',
     interests: '',
     socialLink: ''
   });
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     const savedUser = sessionStorage.getItem('user');
@@ -41,11 +41,11 @@ const ProfilePage = () => {
         setFormData({
           name: data.profile.name || '',
           bio: data.profile.bio || '',
-          avatar: data.profile.avatar || '',
           age: data.profile.age || '',
           interests: data.profile.interests ? data.profile.interests.join(', ') : '',
           socialLink: data.profile.socialLink || ''
         });
+        setAvatarFile(null); // Reset file input
         // Update user session with latest data just in case
         const updatedUser = { ...JSON.parse(sessionStorage.getItem('user')), ...data.profile };
         sessionStorage.setItem('user', JSON.stringify(updatedUser));
@@ -62,13 +62,43 @@ const ProfilePage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
+    
+    let avatarUrl = user.avatar;
+    if (avatarFile) {
+      const form = new FormData();
+      form.append('avatar', avatarFile);
+      try {
+        const uploadRes = await fetch(`${API_BASE}/api/upload-avatar`, {
+          method: 'POST',
+          body: form
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success) {
+          avatarUrl = `${API_BASE}${uploadData.filePath}`;
+        } else {
+          alert('Failed to upload image');
+          return;
+        }
+      } catch (err) {
+        alert('Error uploading image');
+        return;
+      }
+    }
+
     try {
+      const payload = { ...formData, avatar: avatarUrl };
       const res = await fetch(`${API_BASE}/api/user/profile/${encodeURIComponent(user.email)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (data.success) {
@@ -151,8 +181,8 @@ const ProfilePage = () => {
                 <input type="text" name="name" value={formData.name} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Avatar URL</label>
-                <input type="text" name="avatar" value={formData.avatar} onChange={handleChange} placeholder="https://example.com/me.jpg" />
+                <label>Profile Picture</label>
+                <input type="file" accept="image/*" onChange={handleFileChange} />
               </div>
               <div className="form-group">
                 <label>Age</label>

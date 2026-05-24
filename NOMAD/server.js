@@ -5,6 +5,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
+import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './db/connect.js';
@@ -13,13 +14,18 @@ import {
   CommunityPost,
   FoodReview,
   CarpoolPost,
+  Message,
   toApiDoc,
   toApiDocs,
 } from './db/models.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
 const PORT = process.env.PORT || 3001;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,6 +37,20 @@ function normalizeEmail(email) {
 
 app.use(cors());
 app.use(express.json());
+// Serve the public folder for uploaded avatars
+app.use(express.static('public'));
+
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
 
 // POST /api/send-otp
 // Body: { phone: "9876543210", otp: "123456" }
@@ -124,9 +144,9 @@ app.post('/api/send-email-otp', async (req, res) => {
 
 // POST /api/signup
 app.post('/api/signup', async (req, res) => {
-  const { name, email, password, idType, idNumber, phone, designation } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
+  const { name, email, password, idType, idNumber, phone, designation, city } = req.body;
+  if (!name || !email || !password || !city) {
+    return res.status(400).json({ success: false, message: 'Name, email, password, and city are required' });
   }
 
   try {
@@ -146,6 +166,7 @@ app.post('/api/signup', async (req, res) => {
       idNumber,
       phone,
       designation: designation || 'nomad',
+      city: city.toLowerCase()
     });
 
     res.json({ success: true, message: 'User signed up successfully' });
@@ -160,7 +181,7 @@ app.post('/api/signup', async (req, res) => {
 
 // POST /api/login
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, targetCity } = req.body;
   if (!email || !password) {
     return res.status(400).json({ success: false, message: 'Email and password are required' });
   }
@@ -187,11 +208,23 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    res.json({
-      success: true,
-      message: 'Login successful',
-      user: { name: user.name, email: user.email, designation: user.designation || 'nomad' },
-    });
+    // City binding check
+    if (targetCity && user.city && targetCity.toLowerCase() !== user.city.toLowerCase()) {
+      return res.status(403).json({ 
+        success: false, 
+        message: `You already have a city on your list: ${user.city}`, 
+        boundCity: user.city 
+      });
+    }
+
+    const userObj = {
+      name: user.name,
+      email: user.email,
+      designation: user.designation || 'nomad',
+      city: user.city
+    };
+
+    res.json({ success: true, message: 'Login successful', user: userObj });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ success: false, message: 'Server error during login' });
@@ -215,6 +248,7 @@ app.post('/api/reset-password', async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     await user.save();
+
 
     res.json({ success: true, message: 'Password updated successfully' });
   } catch (err) {
@@ -256,6 +290,15 @@ app.put('/api/user/profile/:email', async (req, res) => {
     console.error('Update profile error:', err);
     res.status(500).json({ success: false, message: 'Server error updating profile' });
   }
+});
+
+// POST /api/upload-avatar
+app.post('/api/upload-avatar', upload.single('avatar'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  const filePath = `/uploads/${req.file.filename}`;
+  res.json({ success: true, filePath });
 });
 
 // GET /api/community/profiles
@@ -642,8 +685,8 @@ app.get('/api/places/:city', async (req, res) => {
       { id: 4, name: 'Lotus Temple', category: 'Temple', description: 'Striking Baháʼí House of Worship shaped like a blooming lotus flower.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Lotus_temple_in_India.jpg/640px-Lotus_temple_in_India.jpg', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: 'Free' },
       { id: 5, name: 'Humayun\'s Tomb', category: 'Heritage Fort', description: 'Garden tomb that inspired the Taj Mahal — a masterpiece of Mughal architecture.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Humayun%27s_Tomb%2C_Delhi.jpg/640px-Humayun%27s_Tomb%2C_Delhi.jpg', rating: 4.7, timings: '6:00 AM – 6:00 PM', entry: '₹30' },
       { id: 6, name: 'Akshardham', category: 'Temple', description: 'Sprawling Hindu temple complex with exhibitions, gardens, and a musical fountain.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Akshardham_Temple_-_Delhi.jpg/640px-Akshardham_Temple_-_Delhi.jpg', rating: 4.8, timings: '10:00 AM – 6:30 PM', entry: 'Free (exhibits extra)' },
-      { id: 7, name: 'Chandni Chowk', category: 'Attraction', description: 'Legendary Old Delhi bazaar — spices, jewellery, street food, and Mughal lanes.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Crowded_street_-_geograph.org.uk_-_1002342.jpg/640px-Crowded_street_-_geograph.org.uk_-_1002342.jpg', rating: 4.5, timings: '10:00 AM – 9:00 PM', entry: 'Free' },
-      { id: 8, name: 'Connaught Place', category: 'Attraction', description: 'Colonial-era circular market and Delhi\'s commercial and nightlife hub.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Crowded_street_-_geograph.org.uk_-_1002342.jpg/640px-Crowded_street_-_geograph.org.uk_-_1002342.jpg', rating: 4.4, timings: 'Open 24/7', entry: 'Free' }
+      { id: 7, name: 'Chandni Chowk', category: 'Attraction', description: 'Legendary Old Delhi bazaar — spices, jewellery, street food, and Mughal lanes.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Chandni_Chowk_street.jpg/640px-Chandni_Chowk_street.jpg', rating: 4.5, timings: '10:00 AM – 9:00 PM', entry: 'Free' },
+      { id: 8, name: 'Connaught Place', category: 'Attraction', description: 'Colonial-era circular market and Delhi\'s commercial and nightlife hub.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Connaught_Place_New_Delhi.jpg/640px-Connaught_Place_New_Delhi.jpg', rating: 4.4, timings: 'Open 24/7', entry: 'Free' }
     ]
   };
 
@@ -722,12 +765,12 @@ app.get('/api/foods/:city', async (req, res) => {
       { id: 'f4', name: 'Bisi Bele Bath', type: 'Local Famous', description: 'Hot lentil rice dish cooked with tamarind, vegetables, and aromatic spices.', image: null, must_try_at: 'MTR, Mavalli Tiffin Rooms', price_range: 'Low', reviews: [], avg_rating: 4.7 }
     ],
     delhi: [
-      { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: null, must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f2', name: 'Chole Bhature', type: 'Street Food', description: 'Fluffy fried bread with spicy chickpea curry — the ultimate Delhi breakfast.', image: null, must_try_at: 'Sitaram Diwan Chand, Kwality', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: null, must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 },
-      { id: 'f4', name: 'Kebabs', type: 'Local Famous', description: 'Smoky seekh and galouti kebabs from Old Delhi\'s legendary grill houses.', image: null, must_try_at: 'Karim\'s, Al Jawahar, Qureshi Kabab', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f5', name: 'Chole Kulche', type: 'Street Food', description: 'Soft kulcha bread with tangy chole — a Delhi street-food classic.', image: null, must_try_at: 'Chache Di Hatti, Nagpal Chole Bhature', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: null, must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
+      { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Chicken_makhani.jpg/640px-Chicken_makhani.jpg', must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f2', name: 'Chole Bhature', type: 'Street Food', description: 'Fluffy fried bread with spicy chickpea curry — the ultimate Delhi breakfast.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Chole_Bhature_at_New_Delhi.jpg/640px-Chole_Bhature_at_New_Delhi.jpg', must_try_at: 'Sitaram Diwan Chand, Kwality', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg/640px-Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg', must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f4', name: 'Kebabs', type: 'Local Famous', description: 'Smoky seekh and galouti kebabs from Old Delhi\'s legendary grill houses.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Seekh_kebab.jpg/640px-Seekh_kebab.jpg', must_try_at: 'Karim\'s, Al Jawahar, Qureshi Kabab', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f5', name: 'Chole Kulche', type: 'Street Food', description: 'Soft kulcha bread with tangy chole — a Delhi street-food classic.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Kulcha_and_chhole.jpg/640px-Kulcha_and_chhole.jpg', must_try_at: 'Chache Di Hatti, Nagpal Chole Bhature', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Dahi_vada_2.jpg/640px-Dahi_vada_2.jpg', must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
     ],
     chennai: [
       { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: null, must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
@@ -1214,11 +1257,64 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
+// --- SOCKET.IO CHAT & WEBRTC ---
+io.on('connection', (socket) => {
+  console.log('User connected to socket:', socket.id);
+
+  socket.on('join_chat', (userEmail) => {
+    socket.join(userEmail);
+    console.log(`User ${userEmail} joined their room`);
+  });
+
+  socket.on('send_message', async (data) => {
+    try {
+      const { senderEmail, receiverEmail, content } = data;
+      const msg = await Message.create({ senderEmail, receiverEmail, content });
+      
+      // Send to receiver
+      io.to(receiverEmail).emit('receive_message', msg);
+      // Send back to sender for confirmation
+      io.to(senderEmail).emit('receive_message', msg);
+    } catch (err) {
+      console.error('Error saving message:', err);
+    }
+  });
+
+  // WebRTC Signaling
+  socket.on('call_user', (data) => {
+    io.to(data.userToCall).emit('incoming_call', { signal: data.signalData, from: data.from, name: data.name });
+  });
+
+  socket.on('answer_call', (data) => {
+    io.to(data.to).emit('call_accepted', data.signal);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// GET /api/messages/:user1/:user2
+app.get('/api/messages/:user1/:user2', async (req, res) => {
+  try {
+    const { user1, user2 } = req.params;
+    const messages = await Message.find({
+      $or: [
+        { senderEmail: user1, receiverEmail: user2 },
+        { senderEmail: user2, receiverEmail: user1 }
+      ]
+    }).sort({ timestamp: 1 });
+    res.json({ success: true, messages });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to fetch messages' });
+  }
+});
+
 async function start() {
   try {
     await connectDB();
-    app.listen(PORT, () => {
-      console.log(`🚀 NOMAD backend running at http://localhost:${PORT}`);
+    server.listen(PORT, () => {
+      console.log(`✅ Backend running at http://localhost:${PORT}`);
     });
   } catch (err) {
     console.error('❌ Failed to start server:', err.message);

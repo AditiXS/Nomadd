@@ -71,21 +71,28 @@ const LoginPage = () => {
       const res = await fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
+        body: JSON.stringify({ ...loginData, targetCity: searchParams.get('city') || '' })
       });
       const data = await res.json();
       if (data.success) {
         alert(data.message);
         // Save user details including designation in sessionStorage
         sessionStorage.setItem('user', JSON.stringify(data.user));
-        const city = searchParams.get('city');
+        const city = data.user.city || searchParams.get('city');
         if (city) {
           navigate(`/city/${city}`);
         } else {
           navigate('/');
         }
       } else {
-        alert(`Login failed: ${data.message}`);
+        if (res.status === 403 && data.boundCity) {
+          alert(data.message);
+          // Redirect them to their bound city automatically after alerting
+          sessionStorage.setItem('user', JSON.stringify({ ...loginData, city: data.boundCity })); // Temporary save to let them pass if auth actually succeeded but city failed
+          navigate(`/city/${data.boundCity}`);
+        } else {
+          alert(`Login failed: ${data.message}`);
+        }
       }
     } catch (err) {
       alert('Network error connecting to backend.');
@@ -119,10 +126,13 @@ const LoginPage = () => {
     }
 
     try {
+      const targetCity = searchParams.get('city') || 'hyderabad'; // default if accessed randomly
+      const payload = { ...signupData, city: targetCity };
+      
       const res = await fetch(`${API_BASE}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signupData)
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (data.success) {
@@ -131,14 +141,10 @@ const LoginPage = () => {
         sessionStorage.setItem('user', JSON.stringify({
           name: signupData.name,
           email: signupData.email,
-          designation: signupData.designation
+          designation: signupData.designation,
+          city: targetCity
         }));
-        const city = searchParams.get('city');
-        if (city) {
-          navigate(`/city/${city}`);
-        } else {
-          navigate('/');
-        }
+        navigate(`/city/${targetCity}`);
       } else {
         alert(`Signup failed: ${data.message}`);
       }

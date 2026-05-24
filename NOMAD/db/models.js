@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     age: Number,
     interests: { type: [String], default: [] },
     socialLink: String,
+    city: { type: String }, // Bound city for the user
   },
   { timestamps: true }
 );
@@ -52,10 +53,21 @@ const carpoolPostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const messageSchema = new mongoose.Schema(
+  {
+    senderEmail: { type: String, required: true },
+    receiverEmail: { type: String, required: true },
+    content: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
+
 export const User = mongoose.model('User', userSchema);
 export const CommunityPost = mongoose.model('CommunityPost', communityPostSchema);
 export const FoodReview = mongoose.model('FoodReview', foodReviewSchema);
 export const CarpoolPost = mongoose.model('CarpoolPost', carpoolPostSchema);
+export const Message = mongoose.model('Message', messageSchema);
 
 /** Shape Mongo documents like the old MySQL rows for the frontend */
 export function toApiDoc(doc) {
