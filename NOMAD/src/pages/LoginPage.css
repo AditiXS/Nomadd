@@ -169,7 +169,6 @@
   color: #111;
   padding: 4px 0 6px;
   width: 100%;
-  text-transform: lowercase;
   transition: border-color 0.2s;
   box-sizing: border-box;
   min-height: 30px;
