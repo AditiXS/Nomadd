@@ -378,6 +378,7 @@ const HyderabadPage = () => {
           {sections.map(s => (
             <button key={s} className={`nav-link ${activeSection === s ? 'active' : ''}`} onClick={() => setActiveSection(s)}>{s}</button>
           ))}
+          <button className="nav-link profile-nav-btn" onClick={() => navigate('/profile')}>👤 Profile</button>
         </nav>
       </div>
 
