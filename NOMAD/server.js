@@ -970,6 +970,27 @@ app.post('/api/community/posts', async (req, res) => {
   }
 });
 
+// POST /api/community/posts/:id/reply — reply to a community post
+app.post('/api/community/posts/:id/reply', async (req, res) => {
+  try {
+    const { author_name, content } = req.body;
+    if (!author_name || !content) {
+      return res.status(400).json({ success: false, message: 'author_name and content are required' });
+    }
+    const post = await CommunityPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
+    
+    if (!post.replies) post.replies = [];
+    post.replies.push({ author_name, content, created_at: new Date() });
+    await post.save();
+    
+    res.json({ success: true, post: toApiDoc(post) });
+  } catch (error) {
+    console.error('Community reply error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // City coordinates for map centering
 const CITY_COORDS = {
   hyderabad: { lat: 17.385, lon: 78.4867 }, mumbai: { lat: 19.076, lon: 72.8777 },

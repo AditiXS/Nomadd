@@ -37,6 +37,9 @@ const HyderabadPage = () => {
   const [events, setEvents] = useState([]);
   const [transport, setTransport] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [replyInputs, setReplyInputs] = useState({});
+  const [replyingTo, setReplyingTo] = useState({});
+  const todayISO = new Date().toISOString().split('T')[0];
   const [postContent, setPostContent] = useState('');
   const [authorName, setAuthorName] = useState('');
   const [posting, setPosting] = useState(false);
@@ -327,6 +330,12 @@ const HyderabadPage = () => {
     e.preventDefault();
     const { name, origin, destination, date, time, seats } = carpoolForm;
     if (!name.trim() || !origin.trim() || !destination.trim() || !date || !time) return;
+    
+    const selectedDateTime = new Date(`${date}T${time}`);
+    if (selectedDateTime < new Date()) {
+      alert('Carpool date and time cannot be in the past.');
+      return;
+    }
     setCarpoolPosting(true);
     try {
       const res = await fetch(`${API_BASE}/api/carpool/posts`, {
@@ -358,6 +367,24 @@ const HyderabadPage = () => {
       if (data.success) { setPostContent(''); fetchPosts(); }
     } catch (err) {}
     setPosting(false);
+  };
+
+  const handleReply = async (postId) => {
+    const content = replyInputs[postId];
+    if (!content || !content.trim()) return;
+    setReplyingTo(prev => ({ ...prev, [postId]: true }));
+    try {
+      const res = await fetch(`${API_BASE}/api/community/posts/${postId}/reply`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ author_name: authorName || 'Anonymous', content: content.trim() })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setReplyInputs(prev => ({ ...prev, [postId]: '' }));
+        fetchPosts();
+      }
+    } catch (err) {}
+    setReplyingTo(prev => ({ ...prev, [postId]: false }));
   };
 
   const handleReviewSubmit = async (restaurantName) => {
@@ -833,7 +860,7 @@ const HyderabadPage = () => {
                   <div className="carpool-form-row carpool-meta-row">
                     <div className="carpool-input-group">
                       <label className="carpool-label">Date</label>
-                      <input className="carpool-input" type="date" value={carpoolForm.date}
+                      <input className="carpool-input" type="date" value={carpoolForm.date} min={todayISO}
                         onChange={e => setCarpoolForm({ ...carpoolForm, date: e.target.value })} required />
                     </div>
                     <div className="carpool-input-group">
@@ -1043,6 +1070,37 @@ const HyderabadPage = () => {
                       </div>
                     </div>
                     <p className="post-content">{post.content}</p>
+                    
+                    {/* Replies Section */}
+                    <div className="post-replies" style={{ marginTop: '15px', paddingLeft: '15px', borderLeft: '2px solid #eaeaea' }}>
+                      {post.replies && post.replies.map((reply, i) => (
+                        <div key={i} className="reply-card" style={{ marginBottom: '10px' }}>
+                          <div className="post-header" style={{ marginBottom: '4px' }}>
+                            <div className="post-avatar" style={{ width: '24px', height: '24px', fontSize: '0.8rem' }}>
+                              {reply.author_name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="post-author" style={{ fontSize: '0.9rem' }}>{reply.author_name}</p>
+                              <p className="post-time" style={{ fontSize: '0.75rem' }}>{timeAgo(reply.created_at)}</p>
+                            </div>
+                          </div>
+                          <p className="post-content" style={{ fontSize: '0.9rem', margin: 0 }}>{reply.content}</p>
+                        </div>
+                      ))}
+                      
+                      <div className="reply-composer" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                        <input className="composer-name" style={{ width: '100px', padding: '6px', fontSize: '0.85rem' }} 
+                          placeholder="Name" value={authorName} onChange={e => setAuthorName(e.target.value)} required />
+                        <input className="composer-name" style={{ flex: 1, padding: '6px', fontSize: '0.85rem' }}
+                          placeholder="Write a reply..." value={replyInputs[post.id] || ''} 
+                          onChange={e => setReplyInputs({ ...replyInputs, [post.id]: e.target.value })} 
+                          onKeyDown={e => { if (e.key === 'Enter') handleReply(post.id); }} />
+                        <button type="button" className="composer-btn" style={{ padding: '6px 12px', fontSize: '0.85rem' }} 
+                          onClick={() => handleReply(post.id)} disabled={replyingTo[post.id]}>
+                          {replyingTo[post.id] ? '...' : 'Reply'}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

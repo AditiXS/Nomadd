@@ -19,11 +19,20 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const replySchema = new mongoose.Schema(
+  {
+    author_name: { type: String, required: true },
+    content: { type: String, required: true },
+    created_at: { type: Date, default: Date.now },
+  }
+);
+
 const communityPostSchema = new mongoose.Schema(
   {
     city: { type: String, required: true, lowercase: true, trim: true },
     author_name: { type: String, required: true },
     content: { type: String, required: true },
+    replies: [replySchema],
   },
   { timestamps: true }
 );
