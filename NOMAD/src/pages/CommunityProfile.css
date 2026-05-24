@@ -140,11 +140,13 @@
 }
 
 .chat-modal {
-  max-width: 400px;
+  width: 100%;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
   padding: 0;
-  height: 500px;
+  height: 80vh;
+  max-height: 600px;
 }
 
 .chat-modal-header {
@@ -250,4 +252,57 @@
 
 .chat-send-btn:hover {
   background: #e65a2a;
+}
+
+/* Chat Modal Mobile Responsiveness */
+@media (max-width: 480px) {
+  .chat-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
+    border-radius: 0 !important;
+  }
+  
+  .chat-modal-header {
+    padding: 12px 15px;
+  }
+  
+  .chat-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .chat-name {
+    font-size: 16px;
+  }
+  
+  .chat-modal-body {
+    padding: 15px;
+  }
+  
+  .chat-bubble {
+    max-width: 85%;
+    font-size: 13px;
+  }
+  
+  .chat-modal-footer {
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  
+  .chat-input {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .chat-send-btn {
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  
+  .profiles-grid {
+    grid-template-columns: 1fr;
+  }
 }

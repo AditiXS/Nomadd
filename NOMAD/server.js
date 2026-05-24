@@ -417,17 +417,17 @@ function buildCuratedEvents(month, year, city) {
   const cityEventTemplates = {
     hyderabad: {
       cultural: [
-        { title: 'Hyderabadi Qawwali Night', venue: 'Mecca Masjid Area', image: 'https://loremflickr.com/640/480/hyderabadiqawwalinight,india' },
+        { title: 'Hyderabadi Qawwali Night', venue: 'Mecca Masjid Area', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Savault_Chapel_Under_Milky_Way_BLS.jpg/960px-Savault_Chapel_Under_Milky_Way_BLS.jpg' },
         { title: 'Deccan Heritage Walk', venue: 'Charminar', image: 'https://loremflickr.com/640/480/indian,festival,india' },
       ],
       food: [
-        { title: 'Hyderabadi Biryani Festival', venue: 'Paradise Restaurant Grounds', image: 'https://loremflickr.com/640/480/hyderabadibiryanifestival,india' },
-        { title: 'Old City Food Trail', venue: 'Charminar Bazaar', image: 'https://loremflickr.com/640/480/oldcityfoodtrail,india' },
+        { title: 'Hyderabadi Biryani Festival', venue: 'Paradise Restaurant Grounds', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg/960px-Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg' },
+        { title: 'Old City Food Trail', venue: 'Charminar Bazaar', image: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Trail_between_two_fields_%28Slovenia%2C_Selo_pri_Mirni%29.jpg' },
       ],
     },
     delhi: {
       cultural: [
-        { title: 'Dilli Haat Cultural Evening', venue: 'Dilli Haat, INA', image: 'https://loremflickr.com/640/480/indian,festival,india' },
+        { title: 'Dilli Haat Cultural Evening', venue: 'Dilli Haat, INA', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Evening_in_Parambikkulam%2C_Kerala%2C_India.jpg/960px-Evening_in_Parambikkulam%2C_Kerala%2C_India.jpg' },
         { title: 'Old Delhi Heritage Walk', venue: 'Chandni Chowk', image: 'https://loremflickr.com/640/480/indian,festival,india' },
       ],
       food: [
@@ -811,12 +811,12 @@ app.get('/api/foods/:city', async (req, res) => {
   // Curated food data — images fetched live from Wikipedia (see below)
   const curatedFoods = {
     hyderabad: [
-      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: 'https://loremflickr.com/640/480/hyderabadibiryani,india', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: 'https://loremflickr.com/640/480/haleem,india', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: 'https://loremflickr.com/640/480/doublekameetha,india', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: 'https://loremflickr.com/640/480/iranichai,india', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/%22Hyderabadi_Dum_Biryani%22.jpg/960px-%22Hyderabadi_Dum_Biryani%22.jpg', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Pakistani_Haleem_served_with_garnish.jpg/960px-Pakistani_Haleem_served_with_garnish.jpg', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Double_ka_meetha_with_a_big_spoon.jpg/960px-Double_ka_meetha_with_a_big_spoon.jpg', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Yazdani_Bakery_in_Fort.jpg/960px-Yazdani_Bakery_in_Fort.jpg', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
       { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', image: 'https://loremflickr.com/640/480/qubanikameetha,india', must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', reviews: [], avg_rating: 4.5 },
-      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: 'https://loremflickr.com/640/480/lukhmi,india', must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
+      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Hyderabadi_lukhmi.JPG/960px-Hyderabadi_lukhmi.JPG', must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
     ],
     mumbai: [
       { id: 'f1', name: 'Vada Pav', type: 'Street Food', description: 'The lifeline of Mumbai - deep fried potato dumpling inside a bread bun.', image: 'https://loremflickr.com/640/480/vadapav,india', must_try_at: 'Ashok Vada Pav, Aaram Vada Pav', price_range: 'Low', reviews: [], avg_rating: 4.8 },
