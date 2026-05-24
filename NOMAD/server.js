@@ -1335,6 +1335,43 @@ app.get('/api/messages/:user1/:user2', async (req, res) => {
   }
 });
 
+// GET /api/chats/:email
+app.get('/api/chats/:email', async (req, res) => {
+  try {
+    const userEmail = normalizeEmail(req.params.email);
+    const messages = await Message.find({
+      $or: [{ senderEmail: userEmail }, { receiverEmail: userEmail }]
+    }).sort({ timestamp: -1 });
+
+    const chatPartners = new Map();
+    for (const msg of messages) {
+      const otherEmail = msg.senderEmail === userEmail ? msg.receiverEmail : msg.senderEmail;
+      if (!chatPartners.has(otherEmail)) {
+        chatPartners.set(otherEmail, msg);
+      }
+    }
+
+    const uniqueEmails = Array.from(chatPartners.keys());
+    const users = await User.find({ email: { $in: uniqueEmails } });
+    
+    const chatsList = users.map(u => {
+      const lastMsg = chatPartners.get(normalizeEmail(u.email));
+      return {
+        profile: toApiDoc(u),
+        lastMessage: lastMsg.content,
+        timestamp: lastMsg.timestamp
+      };
+    });
+
+    // Sort by most recent message
+    chatsList.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    res.json({ success: true, chats: chatsList });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to fetch chats' });
+  }
+});
+
 async function start() {
   try {
     await connectDB();

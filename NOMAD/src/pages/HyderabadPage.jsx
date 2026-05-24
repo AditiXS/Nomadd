@@ -1030,15 +1030,6 @@ const HyderabadPage = () => {
         </section>
       )}
 
-      {/* Real-time Chat and WebRTC Modal */}
-      {activeChatProfile && (
-        <ChatModal 
-          currentUser={currentUser} 
-          activeChatProfile={activeChatProfile} 
-          onClose={() => setActiveChatProfile(null)} 
-        />
-      )}
-
       <footer className="city-footer">
         <p>NOMAD / {displayName.toUpperCase()} — discover your next home</p>
       </footer>

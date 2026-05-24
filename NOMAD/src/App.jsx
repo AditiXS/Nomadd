@@ -6,6 +6,7 @@ import HyderabadIntro from './pages/HyderabadIntro';
 import DelhiIntro from './pages/DelhiIntro';
 import HyderabadPage from './pages/HyderabadPage';
 import ProfilePage from './pages/ProfilePage';
+import MessagesPage from './pages/MessagesPage';
 import './index.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/intro/delhi" element={<DelhiIntro />} />
         <Route path="/city/:city" element={<HyderabadPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/messages" element={<MessagesPage />} />
       </Routes>
     </BrowserRouter>
   );
