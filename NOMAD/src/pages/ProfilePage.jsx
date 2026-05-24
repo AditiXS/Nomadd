@@ -77,24 +77,13 @@ const ProfilePage = () => {
   const handleSave = async () => {
     let avatarUrl = user.avatar;
     if (avatarFile) {
-      const form = new FormData();
-      form.append('avatar', avatarFile);
-      try {
-        const uploadRes = await fetch(`${API_BASE}/api/upload-avatar`, {
-          method: 'POST',
-          body: form
-        });
-        const uploadData = await uploadRes.json();
-        if (uploadData.success) {
-          avatarUrl = `${API_BASE}${uploadData.filePath}`;
-        } else {
-          alert('Failed to upload image');
-          return;
-        }
-      } catch (err) {
-        alert('Error uploading image');
-        return;
-      }
+      // Convert file to Base64
+      avatarUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(avatarFile);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
     }
 
     try {
