@@ -304,7 +304,15 @@ app.post('/api/upload-avatar', upload.single('avatar'), (req, res) => {
 // GET /api/community/profiles
 app.get('/api/community/profiles', async (req, res) => {
   try {
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { city, excludeEmail } = req.query;
+    let query = {};
+    if (city) {
+      query.city = city.toLowerCase();
+    }
+    if (excludeEmail) {
+      query.email = { $ne: normalizeEmail(excludeEmail) };
+    }
+    const users = await User.find(query).sort({ createdAt: -1 });
     res.json({ success: true, profiles: toApiDocs(users) });
   } catch (err) {
     console.error('Fetch community profiles error:', err);
@@ -1268,7 +1276,9 @@ io.on('connection', (socket) => {
 
   socket.on('send_message', async (data) => {
     try {
-      const { senderEmail, receiverEmail, content } = data;
+      const senderEmail = normalizeEmail(data.senderEmail);
+      const receiverEmail = normalizeEmail(data.receiverEmail);
+      const content = data.content;
       const msg = await Message.create({ senderEmail, receiverEmail, content });
       
       // Send to receiver
@@ -1305,7 +1315,8 @@ io.on('connection', (socket) => {
 // GET /api/messages/:user1/:user2
 app.get('/api/messages/:user1/:user2', async (req, res) => {
   try {
-    const { user1, user2 } = req.params;
+    const user1 = normalizeEmail(req.params.user1);
+    const user2 = normalizeEmail(req.params.user2);
     const messages = await Message.find({
       $or: [
         { senderEmail: user1, receiverEmail: user2 },

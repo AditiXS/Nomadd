@@ -240,7 +240,7 @@ const HyderabadPage = () => {
 
   const fetchProfiles = () => {
     setLoadingProfiles(true);
-    fetch(`${API_BASE}/api/community/profiles`)
+    fetch(`${API_BASE}/api/community/profiles?city=${cityName}&excludeEmail=${currentUser?.email || ''}`)
       .then(r => r.json()).then(d => { if (d.success) setProfiles(d.profiles); }).catch(() => {}).finally(() => setLoadingProfiles(false));
   };
 
