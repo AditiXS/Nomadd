@@ -216,7 +216,6 @@ const HyderabadPage = () => {
 
     fetchPosts();
     fetchCarpoolPosts();
-    fetchProfiles();
 
     // Fetch fare estimator locations
     fetch(`${API_BASE}/api/transport/${cityName}/locations`)
@@ -243,6 +242,12 @@ const HyderabadPage = () => {
     fetch(`${API_BASE}/api/community/profiles?city=${cityName}&excludeEmail=${currentUser?.email || ''}`)
       .then(r => r.json()).then(d => { if (d.success) setProfiles(d.profiles); }).catch(() => {}).finally(() => setLoadingProfiles(false));
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchProfiles();
+    }
+  }, [cityName, currentUser?.email]);
 
   const handleEstimateFare = async () => {
     if (!fareOrigin || !fareDest) return;
