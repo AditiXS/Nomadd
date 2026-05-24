@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import API_BASE from '../utils/api';
-import './CommunityProfile.css';
+import '../pages/CommunityProfile.css';
 
 const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
   const [messages, setMessages] = useState([]);
