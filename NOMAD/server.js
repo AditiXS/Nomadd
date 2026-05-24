@@ -276,13 +276,14 @@ app.put('/api/user/profile/:email', async (req, res) => {
     const user = await User.findOne({ email: emailNorm });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const { name, bio, avatar, age, interests, socialLink } = req.body;
+    const { name, bio, avatar, age, interests, socialLink, designation } = req.body;
     if (name) user.name = name;
     if (bio !== undefined) user.bio = bio;
     if (avatar !== undefined) user.avatar = avatar;
     if (age !== undefined) user.age = age;
     if (interests !== undefined) user.interests = Array.isArray(interests) ? interests : interests.split(',').map(s => s.trim());
     if (socialLink !== undefined) user.socialLink = socialLink;
+    if (designation !== undefined) user.designation = designation;
 
     await user.save();
     res.json({ success: true, profile: toApiDoc(user) });

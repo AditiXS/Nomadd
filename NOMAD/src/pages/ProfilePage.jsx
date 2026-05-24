@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API_BASE from '../utils/api';
 import './ProfilePage.css';
@@ -8,15 +8,18 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: '',
     bio: '',
     age: '',
     interests: '',
-    socialLink: ''
+    socialLink: '',
+    designation: ''
   });
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   useEffect(() => {
     const savedUser = sessionStorage.getItem('user');
@@ -43,10 +46,11 @@ const ProfilePage = () => {
           bio: data.profile.bio || '',
           age: data.profile.age || '',
           interests: data.profile.interests ? data.profile.interests.join(', ') : '',
-          socialLink: data.profile.socialLink || ''
+          socialLink: data.profile.socialLink || '',
+          designation: data.profile.designation || 'nomad'
         });
-        setAvatarFile(null); // Reset file input
-        // Update user session with latest data just in case
+        setAvatarFile(null);
+        setAvatarPreview(null);
         const updatedUser = { ...JSON.parse(sessionStorage.getItem('user')), ...data.profile };
         sessionStorage.setItem('user', JSON.stringify(updatedUser));
         setUser(updatedUser);
@@ -64,13 +68,13 @@ const ProfilePage = () => {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setAvatarFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    
+  const handleSave = async () => {
     let avatarUrl = user.avatar;
     if (avatarFile) {
       const form = new FormData();
@@ -103,6 +107,7 @@ const ProfilePage = () => {
       const data = await res.json();
       if (data.success) {
         setIsEditing(false);
+        setAvatarPreview(null);
         const updatedUser = { ...user, ...data.profile };
         sessionStorage.setItem('user', JSON.stringify(updatedUser));
         setUser(updatedUser);
@@ -115,98 +120,214 @@ const ProfilePage = () => {
     }
   };
 
+  const handleCancel = () => {
+    setIsEditing(false);
+    setAvatarFile(null);
+    setAvatarPreview(null);
+    // Reset form data to current user
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        bio: user.bio || '',
+        age: user.age || '',
+        interests: user.interests ? user.interests.join(', ') : '',
+        socialLink: user.socialLink || '',
+        designation: user.designation || 'nomad'
+      });
+    }
+  };
+
   const handleBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   if (loading) return <div className="profile-loading">Loading Profile...</div>;
 
+  const displayAvatar = avatarPreview || user?.avatar;
+  const designation = (isEditing ? formData.designation : user?.designation) || 'nomad';
+  const designationLabel = designation.charAt(0).toUpperCase() + designation.slice(1);
+
   return (
     <div className="profile-page-container">
+      {/* Blurred Background */}
+      <div
+        className={`profile-bg-blur ${!displayAvatar ? 'profile-bg-blur-fallback' : ''}`}
+        style={displayAvatar ? { backgroundImage: `url(${displayAvatar})` } : {}}
+      />
+
       <button className="profile-back-btn" onClick={handleBack}>&larr; Back</button>
-      
+
       <div className="profile-card-container">
-        {!isEditing ? (
-          <div className="tinder-profile-card">
-            <div className="tinder-profile-image-container">
-              {user.avatar ? (
-                <img src={user.avatar} alt="Profile" className="tinder-profile-image" />
+        <div className="lined-paper-card">
+
+          {/* Header: Polaroid + Title */}
+          <div className="meet-the-header">
+            <div className="polaroid-wrapper">
+              <div className="paperclip" />
+              <div className="polaroid-photo" onClick={() => isEditing && fileInputRef.current?.click()}>
+                {displayAvatar ? (
+                  <img src={displayAvatar} alt={user?.name || 'Profile'} />
+                ) : (
+                  <div className="polaroid-placeholder">
+                    {(user?.name || 'N').charAt(0).toUpperCase()}
+                  </div>
+                )}
+                {isEditing && (
+                  <div className="polaroid-upload-overlay">📷 Change Photo</div>
+                )}
+                <span className="polaroid-name">
+                  {isEditing ? formData.name || 'Your Name' : user?.name || 'Your Name'}
+                </span>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+            </div>
+
+            <div className="meet-the-title">
+              MEET THE<br />{designationLabel}
+            </div>
+          </div>
+
+          {/* Name */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">NAME</div>
+            {isEditing ? (
+              <input
+                className="inline-edit-input"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Your name..."
+              />
+            ) : (
+              <div className={`profile-detail-value ${!user?.name ? 'empty' : ''}`}>
+                {user?.name || 'Not set'}
+              </div>
+            )}
+          </div>
+
+          {/* Designation / Occupation */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">I AM A</div>
+            {isEditing ? (
+              <input
+                className="inline-edit-input"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                placeholder="Nomad, Mover, Explorer..."
+              />
+            ) : (
+              <div className={`profile-detail-value ${!designation ? 'empty' : ''}`}>
+                {designationLabel}
+              </div>
+            )}
+          </div>
+
+          {/* Age */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">AGE</div>
+            {isEditing ? (
+              <input
+                className="inline-edit-input"
+                name="age"
+                type="number"
+                value={formData.age}
+                onChange={handleChange}
+                placeholder="25"
+              />
+            ) : (
+              <div className={`profile-detail-value ${!user?.age ? 'empty' : ''}`}>
+                {user?.age || 'Not set'}
+              </div>
+            )}
+          </div>
+
+          {/* About / Bio */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">ABOUT ME</div>
+            {isEditing ? (
+              <textarea
+                className="inline-edit-textarea"
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                placeholder="Tell the world about yourself..."
+                rows={3}
+              />
+            ) : (
+              <div className={`profile-detail-value ${!user?.bio ? 'empty' : ''}`}>
+                {user?.bio || 'This nomad is mysterious. No bio yet!'}
+              </div>
+            )}
+          </div>
+
+          {/* Interests */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">INTERESTS</div>
+            {isEditing ? (
+              <input
+                className="inline-edit-input"
+                name="interests"
+                value={formData.interests}
+                onChange={handleChange}
+                placeholder="Coffee, Hiking, Photography..."
+              />
+            ) : (
+              <div className="profile-tags-row">
+                {user?.interests && user.interests.length > 0 ? (
+                  user.interests.map((interest, i) => (
+                    <span key={i} className="profile-tag">{interest}</span>
+                  ))
+                ) : (
+                  <span className="profile-tag empty-tag">No interests added</span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Social Link */}
+          <div className="profile-detail-group">
+            <div className="profile-detail-label">SOCIAL</div>
+            {isEditing ? (
+              <input
+                className="inline-edit-input"
+                name="socialLink"
+                value={formData.socialLink}
+                onChange={handleChange}
+                placeholder="Instagram / LinkedIn link..."
+              />
+            ) : (
+              user?.socialLink ? (
+                <a href={user.socialLink} target="_blank" rel="noopener noreferrer" className="profile-social-link">
+                  🌐 Connect
+                </a>
               ) : (
-                <div className="tinder-profile-image-placeholder">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="tinder-profile-overlay">
-                <h1 className="tinder-profile-name">
-                  {user.name} {user.age && <span className="tinder-profile-age">{user.age}</span>}
-                </h1>
-                <p className="tinder-profile-designation">{user.designation || 'Nomad'}</p>
-              </div>
-            </div>
-            <div className="tinder-profile-content">
-              <div className="tinder-profile-section">
-                <h3>About Me</h3>
-                <p>{user.bio || 'This nomad is mysterious. No bio yet!'}</p>
-              </div>
-              <div className="tinder-profile-section">
-                <h3>Interests</h3>
-                <div className="tinder-profile-tags">
-                  {user.interests && user.interests.length > 0 ? (
-                    user.interests.map((interest, i) => (
-                      <span key={i} className="tinder-interest-tag">{interest}</span>
-                    ))
-                  ) : (
-                    <span className="tinder-interest-tag empty">No interests added</span>
-                  )}
-                </div>
-              </div>
-              {user.socialLink && (
-                <div className="tinder-profile-section">
-                  <a href={user.socialLink} target="_blank" rel="noopener noreferrer" className="tinder-social-link">
-                    🌐 Connect / Social
-                  </a>
-                </div>
-              )}
-              <button className="tinder-edit-btn" onClick={() => setIsEditing(true)}>
-                Edit Profile
+                <div className="profile-detail-value empty">No link added</div>
+              )
+            )}
+          </div>
+
+          {/* Buttons */}
+          <div className="profile-actions">
+            {isEditing ? (
+              <>
+                <button className="profile-cancel-btn" onClick={handleCancel}>Cancel</button>
+                <button className="profile-save-btn" onClick={handleSave}>Save Changes</button>
+              </>
+            ) : (
+              <button className="profile-edit-btn" onClick={() => setIsEditing(true)}>
+                ✏️ Edit Profile
               </button>
-            </div>
+            )}
           </div>
-        ) : (
-          <div className="tinder-profile-edit">
-            <h2>Edit Profile</h2>
-            <form onSubmit={handleSave}>
-              <div className="form-group">
-                <label>Name</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-              </div>
-              <div className="form-group">
-                <label>Profile Picture</label>
-                <input type="file" accept="image/*" onChange={handleFileChange} />
-              </div>
-              <div className="form-group">
-                <label>Age</label>
-                <input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="e.g. 25" />
-              </div>
-              <div className="form-group">
-                <label>Bio</label>
-                <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Tell us about yourself..." rows={4} />
-              </div>
-              <div className="form-group">
-                <label>Interests (comma separated)</label>
-                <input type="text" name="interests" value={formData.interests} onChange={handleChange} placeholder="Coffee, Hiking, React" />
-              </div>
-              <div className="form-group">
-                <label>Social Link</label>
-                <input type="text" name="socialLink" value={formData.socialLink} onChange={handleChange} placeholder="Insta/LinkedIn link" />
-              </div>
-              <div className="profile-edit-actions">
-                <button type="button" className="profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-                <button type="submit" className="profile-save-btn">Save Changes</button>
-              </div>
-            </form>
-          </div>
-        )}
+
+        </div>
       </div>
     </div>
   );
