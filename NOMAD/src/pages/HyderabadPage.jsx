@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EventCalendar from '../components/EventCalendar';
 import API_BASE from '../utils/api';
 import './HyderabadPage.css';
+import './CommunityProfile.css';
 
 const HyderabadPage = () => {
   const navigate = useNavigate();
@@ -44,6 +45,13 @@ const HyderabadPage = () => {
   const [loadingFoods, setLoadingFoods] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingTransport, setLoadingTransport] = useState(true);
+
+  // Profile / Community Tab State
+  const [communityTab, setCommunityTab] = useState('discussion'); // 'discussion' or 'profiles'
+  const [profiles, setProfiles] = useState([]);
+  const [loadingProfiles, setLoadingProfiles] = useState(false);
+  const [activeChatProfile, setActiveChatProfile] = useState(null);
+  const [chatMessage, setChatMessage] = useState('');
 
   // Review form state
   const [reviewForm, setReviewForm] = useState({ restaurant: '', name: '', stars: 5, text: '' });
@@ -207,6 +215,7 @@ const HyderabadPage = () => {
 
     fetchPosts();
     fetchCarpoolPosts();
+    fetchProfiles();
 
     // Fetch fare estimator locations
     fetch(`${API_BASE}/api/transport/${cityName}/locations`)
@@ -226,6 +235,12 @@ const HyderabadPage = () => {
   const fetchCarpoolPosts = () => {
     fetch(`${API_BASE}/api/carpool/posts?city=${cityName}`)
       .then(r => r.json()).then(d => { if (d.success) setCarpoolPosts(d.posts); }).catch(() => {});
+  };
+
+  const fetchProfiles = () => {
+    setLoadingProfiles(true);
+    fetch(`${API_BASE}/api/community/profiles`)
+      .then(r => r.json()).then(d => { if (d.success) setProfiles(d.profiles); }).catch(() => {}).finally(() => setLoadingProfiles(false));
   };
 
   const handleEstimateFare = async () => {
@@ -926,41 +941,141 @@ const HyderabadPage = () => {
 
       {/* ═══ COMMUNITY ═══ */}
       {activeSection === 'community' && (
-        <section className="city-section">
+        <section className="city-section community-section">
           <div className="section-header">
-            <h2 className="section-title">Community Wall</h2>
+            <h2 className="section-title">Community</h2>
             <p className="section-subtitle">Connect with fellow nomads in {displayName}</p>
           </div>
-          <form className="community-composer" onSubmit={handlePost}>
-            <div className="composer-top">
-              <div className="composer-avatar">✈️</div>
-              <input className="composer-name" placeholder="Your name..." value={authorName}
-                onChange={e => setAuthorName(e.target.value)} required maxLength={50} />
-            </div>
-            <textarea className="composer-textarea" placeholder={`Share something about ${displayName}…`}
-              value={postContent} onChange={e => setPostContent(e.target.value)} required maxLength={500} rows={3} />
-            <div className="composer-footer">
-              <span className="composer-count">{postContent.length}/500</span>
-              <button type="submit" className="composer-btn" disabled={posting}>{posting ? 'Posting...' : 'Post →'}</button>
-            </div>
-          </form>
-          <div className="posts-feed">
-            {posts.length === 0 ? (
-              <div className="posts-empty"><p>No posts yet. Be the first!</p></div>
-            ) : posts.map(post => (
-              <div key={post.id} className="post-card">
-                <div className="post-header">
-                  <div className="post-avatar">{post.author_name.charAt(0).toUpperCase()}</div>
-                  <div>
-                    <p className="post-author">{post.author_name}</p>
-                    <p className="post-time">{timeAgo(post.created_at)}</p>
-                  </div>
-                </div>
-                <p className="post-content">{post.content}</p>
-              </div>
-            ))}
+          
+          <div className="community-tabs">
+            <button className={`comm-tab-btn ${communityTab === 'discussion' ? 'active' : ''}`} onClick={() => setCommunityTab('discussion')}>💬 Discussion</button>
+            <button className={`comm-tab-btn ${communityTab === 'profiles' ? 'active' : ''}`} onClick={() => setCommunityTab('profiles')}>👥 Nomad Profiles</button>
           </div>
+
+          {communityTab === 'discussion' && (
+            <>
+              <form className="community-composer" onSubmit={handlePost}>
+                <div className="composer-top">
+                  <div className="composer-avatar">✈️</div>
+                  <input className="composer-name" placeholder="Your name..." value={authorName}
+                    onChange={e => setAuthorName(e.target.value)} required maxLength={50} />
+                </div>
+                <textarea className="composer-textarea" placeholder={`Share something about ${displayName}…`}
+                  value={postContent} onChange={e => setPostContent(e.target.value)} required maxLength={500} rows={3} />
+                <div className="composer-footer">
+                  <span className="composer-count">{postContent.length}/500</span>
+                  <button type="submit" className="composer-btn" disabled={posting}>{posting ? 'Posting...' : 'Post →'}</button>
+                </div>
+              </form>
+              <div className="posts-feed">
+                {posts.length === 0 ? (
+                  <div className="posts-empty"><p>No posts yet. Be the first!</p></div>
+                ) : posts.map(post => (
+                  <div key={post.id} className="post-card">
+                    <div className="post-header">
+                      <div className="post-avatar">{post.author_name.charAt(0).toUpperCase()}</div>
+                      <div>
+                        <p className="post-author">{post.author_name}</p>
+                        <p className="post-time">{timeAgo(post.created_at)}</p>
+                      </div>
+                    </div>
+                    <p className="post-content">{post.content}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {communityTab === 'profiles' && (
+            <div className="profiles-feed">
+              {loadingProfiles ? (
+                 <div className="posts-empty"><p>Loading profiles...</p></div>
+              ) : profiles.length === 0 ? (
+                 <div className="posts-empty"><p>No profiles found yet.</p></div>
+              ) : (
+                 <div className="profiles-grid">
+                   {profiles.map(p => (
+                     <div key={p.id} className="comm-profile-card">
+                       <div className="comm-profile-img-wrap">
+                         {p.avatar ? (
+                           <img src={p.avatar} alt={p.name} className="comm-profile-img" />
+                         ) : (
+                           <div className="comm-profile-placeholder">{p.name.charAt(0).toUpperCase()}</div>
+                         )}
+                       </div>
+                       <div className="comm-profile-info">
+                         <h3 className="comm-profile-name">{p.name} {p.age && <span className="age-span">{p.age}</span>}</h3>
+                         <p className="comm-profile-desig">{p.designation || 'Nomad'}</p>
+                         {p.interests && p.interests.length > 0 && (
+                           <div className="comm-profile-tags">
+                             {p.interests.slice(0, 3).map(tag => <span key={tag} className="comm-tag">{tag}</span>)}
+                             {p.interests.length > 3 && <span className="comm-tag-more">+{p.interests.length - 3}</span>}
+                           </div>
+                         )}
+                         <button className="comm-msg-btn" onClick={() => setActiveChatProfile(p)}>💬 Message</button>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+              )}
+            </div>
+          )}
         </section>
+      )}
+
+      {/* Mock Chat Modal */}
+      {activeChatProfile && (
+        <div className="event-modal-overlay chat-overlay" onClick={() => setActiveChatProfile(null)}>
+          <div className="event-modal chat-modal" onClick={e => e.stopPropagation()}>
+            <button className="event-modal-close" onClick={() => setActiveChatProfile(null)}>×</button>
+            <div className="chat-modal-header">
+              <div className="chat-avatar">
+                {activeChatProfile.avatar ? <img src={activeChatProfile.avatar} alt="avatar" /> : activeChatProfile.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 className="chat-name">{activeChatProfile.name}</h3>
+                <p className="chat-status">🟢 Online</p>
+              </div>
+            </div>
+            <div className="chat-modal-body">
+              <div className="chat-bubble received">
+                Hi! I'm also exploring {displayName}. Let's connect!
+              </div>
+            </div>
+            <div className="chat-modal-footer">
+              <input type="text" className="chat-input" placeholder="Type a message..." value={chatMessage} onChange={e => setChatMessage(e.target.value)} onKeyDown={(e) => {
+                if (e.key === 'Enter' && chatMessage.trim()) {
+                  const bubble = document.createElement('div');
+                  bubble.className = 'chat-bubble sent';
+                  bubble.innerText = chatMessage;
+                  e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(bubble);
+                  setChatMessage('');
+                  setTimeout(() => {
+                    const reply = document.createElement('div');
+                    reply.className = 'chat-bubble received';
+                    reply.innerText = "That sounds great!";
+                    e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(reply);
+                  }, 1000);
+                }
+              }} />
+              <button className="chat-send-btn" onClick={(e) => {
+                if (chatMessage.trim()) {
+                  const bubble = document.createElement('div');
+                  bubble.className = 'chat-bubble sent';
+                  bubble.innerText = chatMessage;
+                  e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(bubble);
+                  setChatMessage('');
+                  setTimeout(() => {
+                    const reply = document.createElement('div');
+                    reply.className = 'chat-bubble received';
+                    reply.innerText = "That sounds great!";
+                    e.target.closest('.chat-modal').querySelector('.chat-modal-body').appendChild(reply);
+                  }, 1000);
+                }
+              }}>Send</button>
+            </div>
+          </div>
+        </div>
       )}
 
       <footer className="city-footer">

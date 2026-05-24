@@ -222,6 +222,52 @@ app.post('/api/reset-password', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error during password reset' });
   }
 });
+// GET /api/user/profile/:email
+app.get('/api/user/profile/:email', async (req, res) => {
+  try {
+    const emailNorm = normalizeEmail(req.params.email);
+    const user = await User.findOne({ email: emailNorm });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    res.json({ success: true, profile: toApiDoc(user) });
+  } catch (err) {
+    console.error('Fetch profile error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching profile' });
+  }
+});
+
+// PUT /api/user/profile/:email
+app.put('/api/user/profile/:email', async (req, res) => {
+  try {
+    const emailNorm = normalizeEmail(req.params.email);
+    const user = await User.findOne({ email: emailNorm });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const { name, bio, avatar, age, interests, socialLink } = req.body;
+    if (name) user.name = name;
+    if (bio !== undefined) user.bio = bio;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (age !== undefined) user.age = age;
+    if (interests !== undefined) user.interests = Array.isArray(interests) ? interests : interests.split(',').map(s => s.trim());
+    if (socialLink !== undefined) user.socialLink = socialLink;
+
+    await user.save();
+    res.json({ success: true, profile: toApiDoc(user) });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    res.status(500).json({ success: false, message: 'Server error updating profile' });
+  }
+});
+
+// GET /api/community/profiles
+app.get('/api/community/profiles', async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ createdAt: -1 });
+    res.json({ success: true, profiles: toApiDocs(users) });
+  } catch (err) {
+    console.error('Fetch community profiles error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching community profiles' });
+  }
+});
 
 // GET /api/events/:city
 // Fetches REAL events — tries Ticketmaster, Eventbrite, Cheerio web scraping, then serves rich fallback

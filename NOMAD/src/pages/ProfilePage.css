@@ -1,0 +1,256 @@
+.profile-page-container {
+  min-height: 100vh;
+  background-color: #f5f0eb;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-back-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #ff6b35;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+
+.profile-back-btn:hover {
+  background: rgba(255, 107, 53, 0.1);
+}
+
+.profile-card-container {
+  width: 100%;
+  max-width: 450px;
+}
+
+/* Tinder-like View */
+.tinder-profile-card {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.tinder-profile-image-container {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  background: #333;
+}
+
+.tinder-profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tinder-profile-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+}
+
+.tinder-profile-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 20px 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: #fff;
+}
+
+.tinder-profile-name {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.tinder-profile-age {
+  font-size: 24px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.tinder-profile-designation {
+  margin: 5px 0 0;
+  font-size: 16px;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tinder-profile-content {
+  padding: 24px;
+}
+
+.tinder-profile-section {
+  margin-bottom: 24px;
+}
+
+.tinder-profile-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.tinder-profile-section p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.tinder-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tinder-interest-tag {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tinder-interest-tag.empty {
+  background: #eee;
+  color: #999;
+}
+
+.tinder-social-link {
+  display: inline-block;
+  background: #f4f4f4;
+  color: #333;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.tinder-social-link:hover {
+  background: #ebebeb;
+}
+
+.tinder-edit-btn {
+  width: 100%;
+  padding: 16px;
+  background: #ff6b35;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tinder-edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+/* Edit Form */
+.tinder-profile-edit {
+  background: #fff;
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.tinder-profile-edit h2 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ff6b35;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.profile-cancel-btn {
+  flex: 1;
+  padding: 14px;
+  background: #f4f4f4;
+  color: #555;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-save-btn {
+  flex: 2;
+  padding: 14px;
+  background: #ff6b35;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 20px;
+  color: #888;
+}

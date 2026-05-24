@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema(
     idNumber: String,
     phone: String,
     designation: { type: String, default: 'nomad' },
+    avatar: String,
+    bio: String,
+    age: Number,
+    interests: { type: [String], default: [] },
+    socialLink: String,
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import HyderabadIntro from './pages/HyderabadIntro';
 import DelhiIntro from './pages/DelhiIntro';
 import HyderabadPage from './pages/HyderabadPage';
+import ProfilePage from './pages/ProfilePage';
 import './index.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/intro/hyderabad" element={<HyderabadIntro />} />
         <Route path="/intro/delhi" element={<DelhiIntro />} />
         <Route path="/city/:city" element={<HyderabadPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
