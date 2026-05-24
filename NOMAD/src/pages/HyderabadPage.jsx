@@ -1019,7 +1019,7 @@ const HyderabadPage = () => {
                              {p.interests.length > 3 && <span className="comm-tag-more">+{p.interests.length - 3}</span>}
                            </div>
                          )}
-                         <button className="comm-msg-btn" onClick={() => setActiveChatProfile(p)}>💬 Message</button>
+                         <button className="comm-msg-btn" onClick={() => navigate(`/messages?user=${p.email}`)}>💬 Message</button>
                        </div>
                      </div>
                    ))}
