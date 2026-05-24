@@ -87,26 +87,26 @@ const HyderabadPage = () => {
 
   // Relevant Wikimedia Commons event images by type
   const EVENT_TYPE_IMAGES = {
-    performance: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg',
-    food:        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg',
-    holiday:     'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Diwali_2012_-_Celebrating_Diwali_in_India.jpg/640px-Diwali_2012_-_Celebrating_Diwali_in_India.jpg',
-    special:     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/2010_Sukhbaatar_Square_Naadam_Opening_Ceremony.jpg/640px-2010_Sukhbaatar_Square_Naadam_Opening_Ceremony.jpg',
-    cultural:    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg',
-    music:       'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Canned_Heat_at_Woodstock.jpg/640px-Canned_Heat_at_Woodstock.jpg',
-    sports:      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Cricket_fielding.jpg/640px-Cricket_fielding.jpg',
-    festival:    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/India_-_Varanasi_festival_-_3496.jpg/640px-India_-_Varanasi_festival_-_3496.jpg',
+    performance: 'https://loremflickr.com/640/480/festival,india?lock=70',
+    food:        'https://loremflickr.com/640/480/food,india?lock=71',
+    holiday:     'https://loremflickr.com/640/480/food,india?lock=72',
+    special:     'https://loremflickr.com/640/480/food,india?lock=73',
+    cultural:    'https://loremflickr.com/640/480/festival,india?lock=74',
+    music:       'https://loremflickr.com/640/480/festival,india?lock=75',
+    sports:      'https://loremflickr.com/640/480/food,india?lock=76',
+    festival:    'https://loremflickr.com/640/480/festival,india?lock=77',
   };
 
   // Fallback pool of real Wikimedia Commons event/festival images
   const EVENT_FALLBACK_POOL = [
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/India_-_Varanasi_festival_-_3496.jpg/640px-India_-_Varanasi_festival_-_3496.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/2010_Sukhbaatar_Square_Naadam_Opening_Ceremony.jpg/640px-2010_Sukhbaatar_Square_Naadam_Opening_Ceremony.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Crowded_street_-_geograph.org.uk_-_1002342.jpg/640px-Crowded_street_-_geograph.org.uk_-_1002342.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Canned_Heat_at_Woodstock.jpg/640px-Canned_Heat_at_Woodstock.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Diwali_2012_-_Celebrating_Diwali_in_India.jpg/640px-Diwali_2012_-_Celebrating_Diwali_in_India.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Ganesh_Chaturthi_at_Lalbaug.jpg/640px-Ganesh_Chaturthi_at_Lalbaug.jpg',
+    'https://loremflickr.com/640/480/festival,india?lock=78',
+    'https://loremflickr.com/640/480/festival,india?lock=79',
+    'https://loremflickr.com/640/480/food,india?lock=80',
+    'https://loremflickr.com/640/480/food,india?lock=81',
+    'https://loremflickr.com/640/480/food,india?lock=82',
+    'https://loremflickr.com/640/480/festival,india?lock=83',
+    'https://loremflickr.com/640/480/food,india?lock=84',
+    'https://loremflickr.com/640/480/food,india?lock=85',
   ];
 
   const getEventImage = (event, index) => {
@@ -134,23 +134,23 @@ const HyderabadPage = () => {
 
   const placeImageFallbacks = {
     // Hyderabad
-    'charminar': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1.jpg/330px-Charminar_Hyderabad_1.jpg',
-    'golconda fort': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Golconda_Fort_005.jpg/330px-Golconda_Fort_005.jpg',
-    'hussain sagar lake': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HussainSagar_Moon_Rise.jpg/330px-HussainSagar_Moon_Rise.jpg',
-    'ramoji film city': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ramoji_Film_City.jpg/330px-Ramoji_Film_City.jpg',
-    'salar jung museum': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Salar_Jung_Museum%2C_Hyderabad%2C_India.jpg/330px-Salar_Jung_Museum%2C_Hyderabad%2C_India.jpg',
-    'birla mandir': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Birla_Mandir%2C_Hyderabad.png/330px-Birla_Mandir%2C_Hyderabad.png',
-    'chowmahalla palace': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Chowmahalla_Palace_01.jpg/330px-Chowmahalla_Palace_01.jpg',
-    'nehru zoological park': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Hyderabad_zoo.jpg/330px-Hyderabad_zoo.jpg',
+    'charminar': 'https://loremflickr.com/640/480/landmark,india?lock=86',
+    'golconda fort': 'https://loremflickr.com/640/480/landmark,india?lock=87',
+    'hussain sagar lake': 'https://loremflickr.com/640/480/food,india?lock=88',
+    'ramoji film city': 'https://loremflickr.com/640/480/food,india?lock=89',
+    'salar jung museum': 'https://loremflickr.com/640/480/landmark,india?lock=90',
+    'birla mandir': 'https://loremflickr.com/640/480/food,india?lock=91',
+    'chowmahalla palace': 'https://loremflickr.com/640/480/landmark,india?lock=92',
+    'nehru zoological park': 'https://loremflickr.com/640/480/landmark,india?lock=93',
     // Delhi
-    'india gate': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/India_Gate_in_New_Delhi_03-2016_img3.jpg/640px-India_Gate_in_New_Delhi_03-2016_img3.jpg',
-    'red fort': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Red_Fort_in_Delhi_03-2016.jpg/640px-Red_Fort_in_Delhi_03-2016.jpg',
-    'qutub minar': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Qutub_Minar_in_the_monsoons.jpg/640px-Qutub_Minar_in_the_monsoons.jpg',
-    'lotus temple': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Lotus_temple_in_India.jpg/640px-Lotus_temple_in_India.jpg',
-    "humayun's tomb": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Humayun%27s_Tomb%2C_Delhi.jpg/640px-Humayun%27s_Tomb%2C_Delhi.jpg',
-    'akshardham': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Akshardham_Temple_-_Delhi.jpg/640px-Akshardham_Temple_-_Delhi.jpg',
-    'chandni chowk': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Chandni_Chowk_street.jpg/640px-Chandni_Chowk_street.jpg',
-    'connaught place': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Connaught_Place_New_Delhi.jpg/640px-Connaught_Place_New_Delhi.jpg',
+    'india gate': 'https://loremflickr.com/640/480/landmark,india?lock=94',
+    'red fort': 'https://loremflickr.com/640/480/landmark,india?lock=95',
+    'qutub minar': 'https://loremflickr.com/640/480/food,india?lock=96',
+    'lotus temple': 'https://loremflickr.com/640/480/landmark,india?lock=97',
+    "humayun's tomb": 'https://loremflickr.com/640/480/food,india?lock=98',
+    'akshardham': 'https://loremflickr.com/640/480/landmark,india?lock=99',
+    'chandni chowk': 'https://loremflickr.com/640/480/food,india?lock=100',
+    'connaught place': 'https://loremflickr.com/640/480/food,india?lock=101',
   };
 
   const getPlaceFallbackImage = (place, index) => {
@@ -165,43 +165,43 @@ const HyderabadPage = () => {
 
   const foodImageMap = {
     // Hyderabad
-    'hyderabadi biryani': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hyderabadi_Dum_Biryani.jpg/640px-Hyderabadi_Dum_Biryani.jpg',
-    'haleem': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Hyderabadi_Haleem.jpg/640px-Hyderabadi_Haleem.jpg',
-    'double ka meetha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Bread_pudding_-_Aubry%27s_Orleans.jpg/640px-Bread_pudding_-_Aubry%27s_Orleans.jpg',
-    'irani chai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Cup-of-tea.jpg/640px-Cup-of-tea.jpg',
-    'qubani ka meetha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Peaches_and_plums.jpg/640px-Peaches_and_plums.jpg',
-    'lukhmi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Samosa_%28238609264%29.jpg/640px-Samosa_%28238609264%29.jpg',
+    'hyderabadi biryani': 'https://loremflickr.com/640/480/food,india?lock=102',
+    'haleem': 'https://loremflickr.com/640/480/food,india?lock=103',
+    'double ka meetha': 'https://loremflickr.com/640/480/food,india?lock=104',
+    'irani chai': 'https://loremflickr.com/640/480/food,india?lock=105',
+    'qubani ka meetha': 'https://loremflickr.com/640/480/food,india?lock=106',
+    'lukhmi': 'https://loremflickr.com/640/480/food,india?lock=107',
     // Mumbai
-    'vada pav': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Vada_Pav.jpg/640px-Vada_Pav.jpg',
-    'pav bhaji': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pav_bhaji.jpg/640px-Pav_bhaji.jpg',
-    'pani puri': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Panipuri.jpg/640px-Panipuri.jpg',
-    'bombay sandwich': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Bombay_Sandwich.jpg/640px-Bombay_Sandwich.jpg',
+    'vada pav': 'https://loremflickr.com/640/480/food,india?lock=108',
+    'pav bhaji': 'https://loremflickr.com/640/480/food,india?lock=109',
+    'pani puri': 'https://loremflickr.com/640/480/food,india?lock=110',
+    'bombay sandwich': 'https://loremflickr.com/640/480/food,india?lock=111',
     // Delhi
-    'butter chicken': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Chicken_makhani.jpg/640px-Chicken_makhani.jpg',
-    'chole bhature': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Chole_Bhature_at_New_Delhi.jpg/640px-Chole_Bhature_at_New_Delhi.jpg',
-    'paranthe wali gali': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg/640px-Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg',
-    'kebabs': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Seekh_kebab.jpg/640px-Seekh_kebab.jpg',
-    'chole kulche': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Kulcha_and_chhole.jpg/640px-Kulcha_and_chhole.jpg',
-    'dahi bhalla': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Dahi_vada_2.jpg/640px-Dahi_vada_2.jpg',
+    'butter chicken': 'https://loremflickr.com/640/480/food,india?lock=112',
+    'chole bhature': 'https://loremflickr.com/640/480/food,india?lock=113',
+    'paranthe wali gali': 'https://loremflickr.com/640/480/food,india?lock=114',
+    'kebabs': 'https://loremflickr.com/640/480/food,india?lock=115',
+    'chole kulche': 'https://loremflickr.com/640/480/food,india?lock=116',
+    'dahi bhalla': 'https://loremflickr.com/640/480/food,india?lock=117',
     // Bangalore
-    'masala dosa': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Masala_Dosa_-_Udupi_Hotel.jpg/640px-Masala_Dosa_-_Udupi_Hotel.jpg',
-    'filter coffee': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/640px-A_small_cup_of_coffee.JPG',
-    'akki roti': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Akki_rotti.jpg/640px-Akki_rotti.jpg',
-    'bisi bele bath': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bisi_Bele_Bath.jpg/640px-Bisi_Bele_Bath.jpg',
+    'masala dosa': 'https://loremflickr.com/640/480/food,india?lock=118',
+    'filter coffee': 'https://loremflickr.com/640/480/food,india?lock=119',
+    'akki roti': 'https://loremflickr.com/640/480/food,india?lock=120',
+    'bisi bele bath': 'https://loremflickr.com/640/480/food,india?lock=121',
     // Chennai
-    'idli sambhar': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Idli_Sambar.jpg/640px-Idli_Sambar.jpg',
-    'chettinad chicken curry': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chicken_curry.jpg/640px-Chicken_curry.jpg',
-    'kothu parotta': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Kothu_parotta.jpg/640px-Kothu_parotta.jpg',
+    'idli sambhar': 'https://loremflickr.com/640/480/food,india?lock=122',
+    'chettinad chicken curry': 'https://loremflickr.com/640/480/food,india?lock=123',
+    'kothu parotta': 'https://loremflickr.com/640/480/food,india?lock=124',
     // Kolkata
-    'kathi roll': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Kati_roll.jpg/640px-Kati_roll.jpg',
-    'rosogolla': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Rasgulla.jpg/640px-Rasgulla.jpg',
-    'hilsa fish curry': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Ilish_Macher_Jhol.jpg/640px-Ilish_Macher_Jhol.jpg',
+    'kathi roll': 'https://loremflickr.com/640/480/food,india?lock=125',
+    'rosogolla': 'https://loremflickr.com/640/480/food,india?lock=126',
+    'hilsa fish curry': 'https://loremflickr.com/640/480/food,india?lock=127',
   };
 
   const getFoodFallbackImage = (foodName) => {
-    if (!foodName) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg';
+    if (!foodName) return 'https://loremflickr.com/640/480/food,india?lock=128';
     const key = foodName.toLowerCase();
-    return foodImageMap[key] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg';
+    return foodImageMap[key] || 'https://loremflickr.com/640/480/food,india?lock=129';
   };
 
   const getFoodFallbackData = (city) => {
