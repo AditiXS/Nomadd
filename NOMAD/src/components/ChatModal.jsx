@@ -27,15 +27,20 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
-      newSocket.emit('join_chat', currentUser.email);
+      newSocket.emit('join_chat', currentUser.email.toLowerCase());
     });
 
     // Receive chat message
     newSocket.on('receive_message', (msg) => {
       // Only append if it's relevant to this conversation
+      const sender = msg.senderEmail.toLowerCase();
+      const receiver = msg.receiverEmail.toLowerCase();
+      const active = activeChatProfile.email.toLowerCase();
+      const current = currentUser.email.toLowerCase();
+
       if (
-        (msg.senderEmail === activeChatProfile.email && msg.receiverEmail === currentUser.email) ||
-        (msg.senderEmail === currentUser.email && msg.receiverEmail === activeChatProfile.email)
+        (sender === active && receiver === current) ||
+        (sender === current && receiver === active)
       ) {
         setMessages((prev) => [...prev, msg]);
       }
@@ -274,11 +279,14 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
           </div>
         ) : (
           <div className="chat-modal-body">
-            {messages.map((m, i) => (
-              <div key={i} className={`chat-bubble ${m.senderEmail === currentUser.email ? 'sent' : 'received'}`}>
-                {m.content}
-              </div>
-            ))}
+            {messages.map((m, i) => {
+              const isSent = m.senderEmail.toLowerCase() === currentUser.email.toLowerCase();
+              return (
+                <div key={i} className={`chat-bubble ${isSent ? 'sent' : 'received'}`}>
+                  {m.content}
+                </div>
+              );
+            })}
           </div>
         )}
 
