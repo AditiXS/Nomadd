@@ -6,7 +6,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 30px; /* Added horizontal padding to create space on left and right */
+  padding: 60px 30px;
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -23,7 +24,7 @@
   width: 100%; /* Spans full width of parent, minus the parent padding */
   max-width: 1200px; /* Keeps from getting absurdly wide on ultra-wide monitors */
   text-align: center;
-  padding: 40px 60px;
+  padding: 40px 50px;
   box-sizing: border-box;
 
   /* The actual stamp effect (Pure CSS Cutouts) */
@@ -45,20 +46,44 @@
 
 .map-intro-heading {
   font-family: 'Yatra One', cursive;
-  font-size: clamp(2.5rem, 6.5vw, 5rem); /* Scaled up to be bigger, but safely fitting on one line */
-  white-space: nowrap; /* Forces text to stay on one line */
+  font-size: clamp(1.6rem, 5.5vw, 5rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #000;
-  /* Black text */
-  /* Rust red similar to painted text */
   margin: 0;
   letter-spacing: 0.02em;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-  /* Subtle texture instead of heavy glow */
   opacity: 0.9;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .map-intro-subtext {
   display: none;
+}
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 768px) {
+  .map-intro-section {
+    padding: 40px 16px;
+  }
+
+  .map-intro-inner {
+    padding: 28px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-intro-section {
+    padding: 32px 10px;
+  }
+
+  .map-intro-inner {
+    padding: 22px 14px;
+  }
+
+  .map-intro-heading {
+    font-size: clamp(1.3rem, 6vw, 2rem);
+    line-height: 1.3;
+  }
 }
