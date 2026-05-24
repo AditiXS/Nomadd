@@ -13,6 +13,8 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
   const [receivingCall, setReceivingCall] = useState(false);
   const [callerSignal, setCallerSignal] = useState(null);
   const [callAccepted, setCallAccepted] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
   
   const myVideo = useRef(null);
   const userVideo = useRef(null);
@@ -52,6 +54,16 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
       if (connectionRef.current) {
         connectionRef.current.setRemoteDescription(new RTCSessionDescription(signal));
       }
+    });
+
+    newSocket.on('ice-candidate', (candidate) => {
+      if (connectionRef.current) {
+        connectionRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error(e));
+      }
+    });
+
+    newSocket.on('call_ended', () => {
+      endCall(false);
     });
 
     // Fetch initial chat history
@@ -111,7 +123,10 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
 
       peer.onicecandidate = (event) => {
         if (event.candidate) {
-          // Typically we send individual ICE candidates, but for simplicity here we assume the offer will gather some base ones
+          socket.emit('ice-candidate', {
+            to: activeChatProfile.email,
+            candidate: event.candidate
+          });
         }
       };
 
@@ -155,6 +170,15 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
         }
       };
 
+      peer.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit('ice-candidate', {
+            to: activeChatProfile.email,
+            candidate: event.candidate
+          });
+        }
+      };
+
       await peer.setRemoteDescription(new RTCSessionDescription(callerSignal));
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
@@ -162,6 +186,41 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
       socket.emit('answer_call', { signal: peer.localDescription, to: activeChatProfile.email });
     } catch (err) {
       console.error('Failed to answer call', err);
+    }
+  };
+
+  const toggleAudio = () => {
+    if (streamRef.current && streamRef.current.getAudioTracks().length > 0) {
+      const enabled = streamRef.current.getAudioTracks()[0].enabled;
+      streamRef.current.getAudioTracks()[0].enabled = !enabled;
+      setIsAudioMuted(enabled);
+    }
+  };
+
+  const toggleVideo = () => {
+    if (streamRef.current && streamRef.current.getVideoTracks().length > 0) {
+      const enabled = streamRef.current.getVideoTracks()[0].enabled;
+      streamRef.current.getVideoTracks()[0].enabled = !enabled;
+      setIsVideoOff(enabled);
+    }
+  };
+
+  const endCall = (emit = true) => {
+    setInCall(false);
+    setCallAccepted(false);
+    setReceivingCall(false);
+    setIsAudioMuted(false);
+    setIsVideoOff(false);
+    if (connectionRef.current) {
+      connectionRef.current.close();
+      connectionRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    if (emit && socket) {
+      socket.emit('end_call', { to: activeChatProfile.email });
     }
   };
 
@@ -194,11 +253,24 @@ const ChatModal = ({ currentUser, activeChatProfile, onClose }) => {
 
         {inCall ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#000', position: 'relative' }}>
-             <video playsInline muted ref={myVideo} autoPlay style={{ width: '100px', position: 'absolute', bottom: 10, right: 10, borderRadius: '8px', zIndex: 10 }} />
+             <video playsInline muted ref={myVideo} autoPlay style={{ width: '100px', position: 'absolute', bottom: 60, right: 10, borderRadius: '8px', zIndex: 10 }} />
              {callAccepted && (
                <video playsInline ref={userVideo} autoPlay style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
              )}
              {!callAccepted && <div style={{ color: '#fff', textAlign: 'center', marginTop: '50px' }}>Calling...</div>}
+             
+             {/* Call Controls */}
+             <div style={{ position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px', zIndex: 20 }}>
+               <button onClick={toggleAudio} style={{ background: isAudioMuted ? '#ff6b35' : '#333', color: '#fff', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer', width: '40px', height: '40px' }}>
+                 {isAudioMuted ? '🔇' : '🎙️'}
+               </button>
+               <button onClick={toggleVideo} style={{ background: isVideoOff ? '#ff6b35' : '#333', color: '#fff', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer', width: '40px', height: '40px' }}>
+                 {isVideoOff ? '🚫' : '📹'}
+               </button>
+               <button onClick={() => endCall(true)} style={{ background: 'red', color: '#fff', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer', width: '40px', height: '40px' }}>
+                 ❌
+               </button>
+             </div>
           </div>
         ) : (
           <div className="chat-modal-body">
