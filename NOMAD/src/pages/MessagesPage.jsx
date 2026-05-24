@@ -54,38 +54,45 @@ const MessagesPage = () => {
       const data = await res.json();
       if (data.success) {
         setChats(data.chats);
-        
-        // Handle auto-select from URL query params (e.g., ?user=aditi@gmail.com)
-        const params = new URLSearchParams(location.search);
-        const targetUserEmail = params.get('user');
-        
-        if (targetUserEmail) {
-          // If the chat is already in the list, select it
-          const existingChat = data.chats.find(c => c.profile.email.toLowerCase() === targetUserEmail.toLowerCase());
-          if (existingChat) {
-            setActiveChatProfile(existingChat.profile);
-          } else {
-            // Otherwise, fetch the user profile and artificially inject it so they can start a new chat
-            fetch(`${API_BASE}/api/user/profile/${encodeURIComponent(targetUserEmail)}`)
-              .then(r => r.json())
-              .then(d => {
-                if (d.success && d.profile) {
-                  setActiveChatProfile(d.profile);
-                  setChats(prev => [{ profile: d.profile, lastMessage: 'New chat', timestamp: new Date() }, ...prev]);
-                }
-              });
-          }
-        } else if (data.chats.length > 0) {
-          // Auto-select first chat
-          setActiveChatProfile(data.chats[0].profile);
-        }
       }
     } catch (err) {
       console.error('Failed to fetch chats:', err);
     }
   };
 
-  // 3. Socket Connection & Global Listeners
+  // 3. Handle URL parameters to auto-select or inject a new chat
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const targetUserEmail = params.get('user');
+
+    if (targetUserEmail) {
+      const existingChat = chats.find(c => c.profile?.email?.toLowerCase() === targetUserEmail.toLowerCase());
+      if (existingChat) {
+        setActiveChatProfile(existingChat.profile);
+      } else {
+        // Chat not in list, fetch profile and inject
+        fetch(`${API_BASE}/api/user/profile/${encodeURIComponent(targetUserEmail)}`)
+          .then(r => r.json())
+          .then(d => {
+            if (d.success && d.profile) {
+              setActiveChatProfile(d.profile);
+              setChats(prev => {
+                // Prevent duplicate injection
+                if (prev.find(c => c.profile?.email?.toLowerCase() === d.profile.email.toLowerCase())) {
+                  return prev;
+                }
+                return [{ profile: d.profile, lastMessage: 'New chat', timestamp: new Date() }, ...prev];
+              });
+            }
+          })
+          .catch(err => console.error('Failed to fetch target user profile:', err));
+      }
+    } else if (chats.length > 0 && !activeChatProfile) {
+      setActiveChatProfile(chats[0].profile);
+    }
+  }, [location.search, chats]);
+
+  // 4. Socket Connection & Global Listeners
   useEffect(() => {
     if (!currentUser) return;
     
