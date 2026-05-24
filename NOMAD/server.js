@@ -412,11 +412,63 @@ function buildCuratedEvents(month, year, city) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const capCity = city.charAt(0).toUpperCase() + city.slice(1);
   const events = [];
+
+  // City-specific event templates
+  const cityEventTemplates = {
+    hyderabad: {
+      cultural: [
+        { title: 'Hyderabadi Qawwali Night', venue: 'Mecca Masjid Area', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg' },
+        { title: 'Deccan Heritage Walk', venue: 'Charminar', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Charminar_Hyderabad_1702.jpg/640px-Charminar_Hyderabad_1702.jpg' },
+      ],
+      food: [
+        { title: 'Hyderabadi Biryani Festival', venue: 'Paradise Restaurant Grounds', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hyderabadi_Dum_Biryani.jpg/640px-Hyderabadi_Dum_Biryani.jpg' },
+        { title: 'Old City Food Trail', venue: 'Charminar Bazaar', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg' },
+      ],
+    },
+    delhi: {
+      cultural: [
+        { title: 'Dilli Haat Cultural Evening', venue: 'Dilli Haat, INA', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/India_-_Varanasi_festival_-_3496.jpg/640px-India_-_Varanasi_festival_-_3496.jpg' },
+        { title: 'Old Delhi Heritage Walk', venue: 'Chandni Chowk', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Chandni_Chowk_street.jpg/640px-Chandni_Chowk_street.jpg' },
+      ],
+      food: [
+        { title: 'Chandni Chowk Street Food Festival', venue: 'Paranthe Wali Gali', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg/640px-Parathas_being_fried_in_a_shop_in_Paranthe_Wali_Gali.jpg' },
+        { title: 'Delhi Kebab & Biryani Mela', venue: 'Karim\'s, Jama Masjid', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Seekh_kebab.jpg/640px-Seekh_kebab.jpg' },
+      ],
+    },
+    mumbai: {
+      cultural: [
+        { title: 'Kala Ghoda Arts Festival', venue: 'Kala Ghoda, Fort', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg' },
+        { title: 'Marine Drive Music Night', venue: 'Marine Drive', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Canned_Heat_at_Woodstock.jpg/640px-Canned_Heat_at_Woodstock.jpg' },
+      ],
+      food: [
+        { title: 'Mumbai Street Food Festival', venue: 'Juhu Beach', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg' },
+      ],
+    },
+    bangalore: {
+      cultural: [
+        { title: 'Bangalore Open Air Music Fest', venue: 'Cubbon Park', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Canned_Heat_at_Woodstock.jpg/640px-Canned_Heat_at_Woodstock.jpg' },
+      ],
+      food: [
+        { title: 'South Indian Breakfast Festival', venue: 'VV Puram Food Street', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Masala_Dosa_-_Udupi_Hotel.jpg/640px-Masala_Dosa_-_Udupi_Hotel.jpg' },
+      ],
+    },
+  };
+
+  const templates = cityEventTemplates[city] || {
+    cultural: [{ title: `${capCity} Cultural Night`, venue: `Downtown ${capCity}`, image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bharatnatyam_Performance.jpg/640px-Bharatnatyam_Performance.jpg' }],
+    food: [{ title: `Street Food Festival ${capCity}`, venue: `Central Park, ${capCity}`, image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg' }],
+  };
   
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = date(d);
-    if (d % 3 === 0) events.push({ id: `cur-${d}-1`, title: `${capCity} Cultural Night`, date: dateStr, type: 'performance', venue: `Downtown ${capCity}`, bookingLink: `https://in.bookmyshow.com/explore/events-${city}` });
-    if (d % 5 === 0) events.push({ id: `cur-${d}-2`, title: `Street Food Festival ${capCity}`, date: dateStr, type: 'food', venue: `Central Park, ${capCity}`, bookingLink: `https://in.bookmyshow.com/explore/events-${city}` });
+    if (d % 3 === 0) {
+      const tmpl = templates.cultural[d % templates.cultural.length];
+      events.push({ id: `cur-${d}-1`, title: tmpl.title, date: dateStr, type: 'performance', venue: tmpl.venue, image: tmpl.image, bookingLink: `https://in.bookmyshow.com/explore/events-${city}` });
+    }
+    if (d % 5 === 0) {
+      const tmpl = templates.food[d % templates.food.length];
+      events.push({ id: `cur-${d}-2`, title: tmpl.title, date: dateStr, type: 'food', venue: tmpl.venue, image: tmpl.image, bookingLink: `https://in.bookmyshow.com/explore/events-${city}` });
+    }
   }
   return events;
 }
@@ -759,24 +811,24 @@ app.get('/api/foods/:city', async (req, res) => {
   // Curated food data — images fetched live from Wikipedia (see below)
   const curatedFoods = {
     hyderabad: [
-      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: null, must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: null, must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: null, must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: null, must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
-      { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', image: null, must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', reviews: [], avg_rating: 4.5 },
-      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: null, must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
+      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hyderabadi_Dum_Biryani.jpg/640px-Hyderabadi_Dum_Biryani.jpg', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Hyderabadi_Haleem.jpg/640px-Hyderabadi_Haleem.jpg', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Bread_pudding_-_Aubry%27s_Orleans.jpg/640px-Bread_pudding_-_Aubry%27s_Orleans.jpg', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Cup-of-tea.jpg/640px-Cup-of-tea.jpg', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Peaches_and_plums.jpg/640px-Peaches_and_plums.jpg', must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', reviews: [], avg_rating: 4.5 },
+      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Samosa_%28238609264%29.jpg/640px-Samosa_%28238609264%29.jpg', must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
     ],
     mumbai: [
-      { id: 'f1', name: 'Vada Pav', type: 'Street Food', description: 'The lifeline of Mumbai - deep fried potato dumpling inside a bread bun.', image: null, must_try_at: 'Ashok Vada Pav, Aaram Vada Pav', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Pav Bhaji', type: 'Local Famous', description: 'Spicy mash of vegetables served hot with butter-soaked bread.', image: null, must_try_at: 'Sardar Pav Bhaji, Cannon Pav Bhaji', price_range: 'Moderate', reviews: [], avg_rating: 4.7 },
-      { id: 'f3', name: 'Pani Puri', type: 'Street Food', description: 'Crispy hollow puris filled with tangy tamarind water and spiced potato.', image: null, must_try_at: 'Elco Market, Juhu Beach stalls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f4', name: 'Bombay Sandwich', type: 'Street Food', description: 'Toasted sandwich layered with chutney, cucumber, tomato, and masala potatoes.', image: null, must_try_at: 'Churchgate stalls, Dadar market', price_range: 'Low', reviews: [], avg_rating: 4.6 }
+      { id: 'f1', name: 'Vada Pav', type: 'Street Food', description: 'The lifeline of Mumbai - deep fried potato dumpling inside a bread bun.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Vada_Pav.jpg/640px-Vada_Pav.jpg', must_try_at: 'Ashok Vada Pav, Aaram Vada Pav', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Pav Bhaji', type: 'Local Famous', description: 'Spicy mash of vegetables served hot with butter-soaked bread.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pav_bhaji.jpg/640px-Pav_bhaji.jpg', must_try_at: 'Sardar Pav Bhaji, Cannon Pav Bhaji', price_range: 'Moderate', reviews: [], avg_rating: 4.7 },
+      { id: 'f3', name: 'Pani Puri', type: 'Street Food', description: 'Crispy hollow puris filled with tangy tamarind water and spiced potato.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Panipuri.jpg/640px-Panipuri.jpg', must_try_at: 'Elco Market, Juhu Beach stalls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f4', name: 'Bombay Sandwich', type: 'Street Food', description: 'Toasted sandwich layered with chutney, cucumber, tomato, and masala potatoes.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Bombay_Sandwich.jpg/640px-Bombay_Sandwich.jpg', must_try_at: 'Churchgate stalls, Dadar market', price_range: 'Low', reviews: [], avg_rating: 4.6 }
     ],
     bangalore: [
-      { id: 'f1', name: 'Masala Dosa', type: 'Local Delicacy', description: 'Crispy rice crepe stuffed with spiced potato filling, served with chutneys.', image: null, must_try_at: 'CTR, Vidyarthi Bhavan, MTR', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Filter Coffee', type: 'Beverage', description: 'Strong, frothy traditional South Indian coffee brewed in a metal tumbler.', image: null, must_try_at: 'MTR, Brahmin\'s Coffee Bar, Koshy\'s', price_range: 'Low', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Akki Roti', type: 'Local Delicacy', description: 'Rice flour flatbread with vegetables and spices — a Karnataka staple.', image: null, must_try_at: 'Brahmin\'s Coffee Bar, Vidyarthi Bhavan', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f4', name: 'Bisi Bele Bath', type: 'Local Famous', description: 'Hot lentil rice dish cooked with tamarind, vegetables, and aromatic spices.', image: null, must_try_at: 'MTR, Mavalli Tiffin Rooms', price_range: 'Low', reviews: [], avg_rating: 4.7 }
+      { id: 'f1', name: 'Masala Dosa', type: 'Local Delicacy', description: 'Crispy rice crepe stuffed with spiced potato filling, served with chutneys.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Masala_Dosa_-_Udupi_Hotel.jpg/640px-Masala_Dosa_-_Udupi_Hotel.jpg', must_try_at: 'CTR, Vidyarthi Bhavan, MTR', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Filter Coffee', type: 'Beverage', description: 'Strong, frothy traditional South Indian coffee brewed in a metal tumbler.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/640px-A_small_cup_of_coffee.JPG', must_try_at: 'MTR, Brahmin\'s Coffee Bar, Koshy\'s', price_range: 'Low', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Akki Roti', type: 'Local Delicacy', description: 'Rice flour flatbread with vegetables and spices — a Karnataka staple.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Akki_rotti.jpg/640px-Akki_rotti.jpg', must_try_at: 'Brahmin\'s Coffee Bar, Vidyarthi Bhavan', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f4', name: 'Bisi Bele Bath', type: 'Local Famous', description: 'Hot lentil rice dish cooked with tamarind, vegetables, and aromatic spices.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bisi_Bele_Bath.jpg/640px-Bisi_Bele_Bath.jpg', must_try_at: 'MTR, Mavalli Tiffin Rooms', price_range: 'Low', reviews: [], avg_rating: 4.7 }
     ],
     delhi: [
       { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Chicken_makhani.jpg/640px-Chicken_makhani.jpg', must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
@@ -787,14 +839,14 @@ app.get('/api/foods/:city', async (req, res) => {
       { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Dahi_vada_2.jpg/640px-Dahi_vada_2.jpg', must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
     ],
     chennai: [
-      { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: null, must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Chettinad Chicken Curry', type: 'Local Famous', description: 'Fiery aromatic curry with distinctive Chettinad spices and kalpasi.', image: null, must_try_at: 'Anjappar, Ponnusamy Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Kothu Parotta', type: 'Street Food', description: 'Flaky bread shredded and stir-fried with egg, onions, and spices.', image: null, must_try_at: 'Burma Bazaar, street stalls', price_range: 'Low', reviews: [], avg_rating: 4.7 }
+      { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Idli_Sambar.jpg/640px-Idli_Sambar.jpg', must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Chettinad Chicken Curry', type: 'Local Famous', description: 'Fiery aromatic curry with distinctive Chettinad spices and kalpasi.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chicken_curry.jpg/640px-Chicken_curry.jpg', must_try_at: 'Anjappar, Ponnusamy Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Kothu Parotta', type: 'Street Food', description: 'Flaky bread shredded and stir-fried with egg, onions, and spices.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Kothu_parotta.jpg/640px-Kothu_parotta.jpg', must_try_at: 'Burma Bazaar, street stalls', price_range: 'Low', reviews: [], avg_rating: 4.7 }
     ],
     kolkata: [
-      { id: 'f1', name: 'Kathi Roll', type: 'Street Food', description: 'Paratha wrapped around spiced egg and meat filling — invented in Kolkata.', image: null, must_try_at: 'Nizam\'s, Hot Kathi Rolls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Rosogolla', type: 'Dessert', description: 'Spongy cottage cheese balls soaked in light sugar syrup — a Bengal original.', image: null, must_try_at: 'K.C. Das, Balaram Mullick', price_range: 'Low', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Hilsa Fish Curry', type: 'Local Famous', description: 'Hilsa fish cooked in mustard paste — the pride of Bengali cuisine.', image: null, must_try_at: '6 Ballygunge Place, Bhojohori Manna', price_range: 'Moderate', reviews: [], avg_rating: 4.8 }
+      { id: 'f1', name: 'Kathi Roll', type: 'Street Food', description: 'Paratha wrapped around spiced egg and meat filling — invented in Kolkata.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Kati_roll.jpg/640px-Kati_roll.jpg', must_try_at: 'Nizam\'s, Hot Kathi Rolls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Rosogolla', type: 'Dessert', description: 'Spongy cottage cheese balls soaked in light sugar syrup — a Bengal original.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Rasgulla.jpg/640px-Rasgulla.jpg', must_try_at: 'K.C. Das, Balaram Mullick', price_range: 'Low', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Hilsa Fish Curry', type: 'Local Famous', description: 'Hilsa fish cooked in mustard paste — the pride of Bengali cuisine.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Ilish_Macher_Jhol.jpg/640px-Ilish_Macher_Jhol.jpg', must_try_at: '6 Ballygunge Place, Bhojohori Manna', price_range: 'Moderate', reviews: [], avg_rating: 4.8 }
     ]
   };
 
@@ -802,18 +854,20 @@ app.get('/api/foods/:city', async (req, res) => {
     { id: 'f1', name: `${capCity} Signature Dish`, type: 'Local Delicacy', description: `A must-try when visiting ${capCity}.`, image: null, must_try_at: 'Downtown Kitchen', price_range: 'Varies', reviews: [], avg_rating: 4.5 }
   ];
 
-  // Fetch real Wikipedia images for each food item concurrently
-  const imagePromises = foods.map(f => getFoodImage(f.name));
-  const images = await Promise.allSettled(imagePromises);
-  foods.forEach((f, i) => {
-    const result = images[i];
-    if (result.status === 'fulfilled' && result.value) {
-      f.image = result.value;
-    } else {
-      // Absolute fallback: unsplash with food name
-      f.image = unsplashSearch(f.name + ' food dish');
-    }
-  });
+  // Only fetch Wikipedia images for foods that don't have a hardcoded image
+  const foodsNeedingImages = foods.filter(f => !f.image);
+  if (foodsNeedingImages.length > 0) {
+    const imagePromises = foodsNeedingImages.map(f => getFoodImage(f.name));
+    const images = await Promise.allSettled(imagePromises);
+    foodsNeedingImages.forEach((f, i) => {
+      const result = images[i];
+      if (result.status === 'fulfilled' && result.value) {
+        f.image = result.value;
+      } else {
+        f.image = `https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg`;
+      }
+    });
+  }
 
   // Attach reviews and order links
   for (let f of foods) {
