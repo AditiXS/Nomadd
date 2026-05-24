@@ -1324,14 +1324,17 @@ app.get('/api/messages/:user1/:user2', async (req, res) => {
   try {
     const user1 = normalizeEmail(req.params.user1);
     const user2 = normalizeEmail(req.params.user2);
+    console.log(`Fetching messages between ${user1} and ${user2}`);
     const messages = await Message.find({
       $or: [
         { senderEmail: user1, receiverEmail: user2 },
         { senderEmail: user2, receiverEmail: user1 }
       ]
     }).sort({ timestamp: 1 });
+    console.log(`Found ${messages.length} messages between ${user1} and ${user2}`);
     res.json({ success: true, messages });
   } catch (err) {
+    console.error('Error fetching messages:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch messages' });
   }
 });
@@ -1351,35 +1354,50 @@ app.get('/api/debug-messages', async (req, res) => {
 app.get('/api/chats/:email', async (req, res) => {
   try {
     const userEmail = normalizeEmail(req.params.email);
+    console.log(`Fetching chats for ${userEmail}`);
     const messages = await Message.find({
       $or: [{ senderEmail: userEmail }, { receiverEmail: userEmail }]
     }).sort({ timestamp: -1 });
+    console.log(`Found ${messages.length} total messages for ${userEmail}`);
 
     const chatPartners = new Map();
     for (const msg of messages) {
-      const otherEmail = msg.senderEmail === userEmail ? msg.receiverEmail : msg.senderEmail;
+      // Normalize both sides to handle case mismatches
+      const sender = normalizeEmail(msg.senderEmail);
+      const receiver = normalizeEmail(msg.receiverEmail);
+      const otherEmail = sender === userEmail ? receiver : sender;
       if (!chatPartners.has(otherEmail)) {
         chatPartners.set(otherEmail, msg);
       }
     }
 
     const uniqueEmails = Array.from(chatPartners.keys());
-    const users = await User.find({ email: { $in: uniqueEmails } });
+    console.log(`Unique chat partners: ${uniqueEmails}`);
+    
+    // Use case-insensitive regex matching for email lookup
+    const emailRegexes = uniqueEmails.map(e => new RegExp(`^${e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'));
+    const users = await User.find({ email: { $in: emailRegexes } });
+    console.log(`Found ${users.length} user profiles for ${uniqueEmails.length} partners`);
     
     const chatsList = users.map(u => {
       const lastMsg = chatPartners.get(normalizeEmail(u.email));
+      if (!lastMsg) {
+        console.warn(`No lastMsg found for ${u.email} (normalized: ${normalizeEmail(u.email)})`);
+        return null;
+      }
       return {
         profile: toApiDoc(u),
         lastMessage: lastMsg.content,
         timestamp: lastMsg.timestamp
       };
-    });
+    }).filter(Boolean);
 
     // Sort by most recent message
     chatsList.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     res.json({ success: true, chats: chatsList });
   } catch (err) {
+    console.error('Error fetching chats:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch chats' });
   }
 });

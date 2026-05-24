@@ -50,8 +50,10 @@ const MessagesPage = () => {
   // 2. Fetch Inbox List
   const fetchChats = async (email) => {
     try {
+      console.log('[DEBUG] fetchChats called for:', email);
       const res = await fetch(`${API_BASE}/api/chats/${encodeURIComponent(email)}`);
       const data = await res.json();
+      console.log('[DEBUG] fetchChats response:', data);
       if (data.success) {
         setChats(data.chats);
       }
