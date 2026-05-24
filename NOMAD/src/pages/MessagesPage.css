@@ -393,3 +393,34 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+/* Mobile Responsiveness for Messages Page */
+@media (max-width: 768px) {
+  .messages-page-container {
+    flex-direction: column;
+  }
+  
+  .messages-sidebar {
+    width: 100%;
+    height: 35vh;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .messages-main {
+    height: 65vh;
+  }
+  
+  .chat-active-header {
+    padding: 10px 15px;
+  }
+  
+  .chat-input-area {
+    padding: 12px 15px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  
+  .msg-bubble {
+    max-width: 85%;
+  }
+}

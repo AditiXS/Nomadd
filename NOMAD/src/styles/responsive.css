@@ -248,7 +248,7 @@ iframe {
   }
 
   .city-back-btn {
-    top: 72px;
+    top: 110px;
     left: 16px;
     min-width: 44px;
     min-height: 44px;
@@ -1145,6 +1145,14 @@ iframe {
 
   .section-title {
     font-size: clamp(1.3rem, 7vw, 2rem);
+  }
+
+  /* ─ Reply Composer wrap ─ */
+  .reply-composer {
+    flex-wrap: wrap;
+  }
+  .reply-composer .composer-name:first-child {
+    width: 100% !important;
   }
 }
 

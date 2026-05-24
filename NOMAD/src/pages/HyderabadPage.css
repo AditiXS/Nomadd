@@ -2668,6 +2668,7 @@
 }
 
 .place-scrap-photo {
+  box-sizing: border-box;
   aspect-ratio: 1 / 1;
   padding: 10px 10px 38px;
   background: #fbf6e8;
