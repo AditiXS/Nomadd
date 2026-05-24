@@ -134,23 +134,23 @@ const HyderabadPage = () => {
 
   const placeImageFallbacks = {
     // Hyderabad
-    'charminar': 'https://loremflickr.com/640/480/landmark,india?lock=86',
-    'golconda fort': 'https://loremflickr.com/640/480/landmark,india?lock=87',
-    'hussain sagar lake': 'https://loremflickr.com/640/480/food,india?lock=88',
-    'ramoji film city': 'https://loremflickr.com/640/480/food,india?lock=89',
-    'salar jung museum': 'https://loremflickr.com/640/480/landmark,india?lock=90',
-    'birla mandir': 'https://loremflickr.com/640/480/food,india?lock=91',
-    'chowmahalla palace': 'https://loremflickr.com/640/480/landmark,india?lock=92',
-    'nehru zoological park': 'https://loremflickr.com/640/480/landmark,india?lock=93',
+    'charminar': 'https://loremflickr.com/640/480/charminar,india',
+    'golconda fort': 'https://loremflickr.com/640/480/golcondafort,india',
+    'hussain sagar lake': 'https://loremflickr.com/640/480/hussainsagarlake,india',
+    'ramoji film city': 'https://loremflickr.com/640/480/ramojifilmcity,india',
+    'salar jung museum': 'https://loremflickr.com/640/480/salarjungmuseum,india',
+    'birla mandir': 'https://loremflickr.com/640/480/birlamandir,india',
+    'chowmahalla palace': 'https://loremflickr.com/640/480/chowmahallapalace,india',
+    'nehru zoological park': 'https://loremflickr.com/640/480/nehruzoologicalpark,india',
     // Delhi
-    'india gate': 'https://loremflickr.com/640/480/landmark,india?lock=94',
-    'red fort': 'https://loremflickr.com/640/480/landmark,india?lock=95',
-    'qutub minar': 'https://loremflickr.com/640/480/food,india?lock=96',
-    'lotus temple': 'https://loremflickr.com/640/480/landmark,india?lock=97',
+    'india gate': 'https://loremflickr.com/640/480/indiagate,india',
+    'red fort': 'https://loremflickr.com/640/480/redfort,india',
+    'qutub minar': 'https://loremflickr.com/640/480/qutubminar,india',
+    'lotus temple': 'https://loremflickr.com/640/480/lotustemple,india',
     "humayun's tomb": 'https://loremflickr.com/640/480/food,india?lock=98',
-    'akshardham': 'https://loremflickr.com/640/480/landmark,india?lock=99',
-    'chandni chowk': 'https://loremflickr.com/640/480/food,india?lock=100',
-    'connaught place': 'https://loremflickr.com/640/480/food,india?lock=101',
+    'akshardham': 'https://loremflickr.com/640/480/akshardham,india',
+    'chandni chowk': 'https://loremflickr.com/640/480/chandnichowk,india',
+    'connaught place': 'https://loremflickr.com/640/480/connaughtplace,india',
   };
 
   const getPlaceFallbackImage = (place, index) => {
@@ -165,37 +165,37 @@ const HyderabadPage = () => {
 
   const foodImageMap = {
     // Hyderabad
-    'hyderabadi biryani': 'https://loremflickr.com/640/480/food,india?lock=102',
-    'haleem': 'https://loremflickr.com/640/480/food,india?lock=103',
-    'double ka meetha': 'https://loremflickr.com/640/480/food,india?lock=104',
-    'irani chai': 'https://loremflickr.com/640/480/food,india?lock=105',
-    'qubani ka meetha': 'https://loremflickr.com/640/480/food,india?lock=106',
-    'lukhmi': 'https://loremflickr.com/640/480/food,india?lock=107',
+    'hyderabadi biryani': 'https://loremflickr.com/640/480/hyderabadibiryani,india',
+    'haleem': 'https://loremflickr.com/640/480/haleem,india',
+    'double ka meetha': 'https://loremflickr.com/640/480/doublekameetha,india',
+    'irani chai': 'https://loremflickr.com/640/480/iranichai,india',
+    'qubani ka meetha': 'https://loremflickr.com/640/480/qubanikameetha,india',
+    'lukhmi': 'https://loremflickr.com/640/480/lukhmi,india',
     // Mumbai
-    'vada pav': 'https://loremflickr.com/640/480/food,india?lock=108',
-    'pav bhaji': 'https://loremflickr.com/640/480/food,india?lock=109',
-    'pani puri': 'https://loremflickr.com/640/480/food,india?lock=110',
-    'bombay sandwich': 'https://loremflickr.com/640/480/food,india?lock=111',
+    'vada pav': 'https://loremflickr.com/640/480/vadapav,india',
+    'pav bhaji': 'https://loremflickr.com/640/480/pavbhaji,india',
+    'pani puri': 'https://loremflickr.com/640/480/panipuri,india',
+    'bombay sandwich': 'https://loremflickr.com/640/480/bombaysandwich,india',
     // Delhi
-    'butter chicken': 'https://loremflickr.com/640/480/food,india?lock=112',
-    'chole bhature': 'https://loremflickr.com/640/480/food,india?lock=113',
-    'paranthe wali gali': 'https://loremflickr.com/640/480/food,india?lock=114',
-    'kebabs': 'https://loremflickr.com/640/480/food,india?lock=115',
-    'chole kulche': 'https://loremflickr.com/640/480/food,india?lock=116',
-    'dahi bhalla': 'https://loremflickr.com/640/480/food,india?lock=117',
+    'butter chicken': 'https://loremflickr.com/640/480/butterchicken,india',
+    'chole bhature': 'https://loremflickr.com/640/480/cholebhature,india',
+    'paranthe wali gali': 'https://loremflickr.com/640/480/paranthewaligali,india',
+    'kebabs': 'https://loremflickr.com/640/480/kebabs,india',
+    'chole kulche': 'https://loremflickr.com/640/480/cholekulche,india',
+    'dahi bhalla': 'https://loremflickr.com/640/480/dahibhalla,india',
     // Bangalore
-    'masala dosa': 'https://loremflickr.com/640/480/food,india?lock=118',
-    'filter coffee': 'https://loremflickr.com/640/480/food,india?lock=119',
-    'akki roti': 'https://loremflickr.com/640/480/food,india?lock=120',
-    'bisi bele bath': 'https://loremflickr.com/640/480/food,india?lock=121',
+    'masala dosa': 'https://loremflickr.com/640/480/masaladosa,india',
+    'filter coffee': 'https://loremflickr.com/640/480/filtercoffee,india',
+    'akki roti': 'https://loremflickr.com/640/480/akkiroti,india',
+    'bisi bele bath': 'https://loremflickr.com/640/480/bisibelebath,india',
     // Chennai
-    'idli sambhar': 'https://loremflickr.com/640/480/food,india?lock=122',
-    'chettinad chicken curry': 'https://loremflickr.com/640/480/food,india?lock=123',
-    'kothu parotta': 'https://loremflickr.com/640/480/food,india?lock=124',
+    'idli sambhar': 'https://loremflickr.com/640/480/idlisambhar,india',
+    'chettinad chicken curry': 'https://loremflickr.com/640/480/chettinadchickencurry,india',
+    'kothu parotta': 'https://loremflickr.com/640/480/kothuparotta,india',
     // Kolkata
-    'kathi roll': 'https://loremflickr.com/640/480/food,india?lock=125',
-    'rosogolla': 'https://loremflickr.com/640/480/food,india?lock=126',
-    'hilsa fish curry': 'https://loremflickr.com/640/480/food,india?lock=127',
+    'kathi roll': 'https://loremflickr.com/640/480/kathiroll,india',
+    'rosogolla': 'https://loremflickr.com/640/480/rosogolla,india',
+    'hilsa fish curry': 'https://loremflickr.com/640/480/hilsafishcurry,india',
   };
 
   const getFoodFallbackImage = (foodName) => {

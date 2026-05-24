@@ -417,39 +417,39 @@ function buildCuratedEvents(month, year, city) {
   const cityEventTemplates = {
     hyderabad: {
       cultural: [
-        { title: 'Hyderabadi Qawwali Night', venue: 'Mecca Masjid Area', image: 'https://loremflickr.com/640/480/festival,india?lock=1' },
-        { title: 'Deccan Heritage Walk', venue: 'Charminar', image: 'https://loremflickr.com/640/480/landmark,india?lock=2' },
+        { title: 'Hyderabadi Qawwali Night', venue: 'Mecca Masjid Area', image: 'https://loremflickr.com/640/480/hyderabadiqawwalinight,india' },
+        { title: 'Deccan Heritage Walk', venue: 'Charminar', image: 'https://loremflickr.com/640/480/indian,festival,india' },
       ],
       food: [
-        { title: 'Hyderabadi Biryani Festival', venue: 'Paradise Restaurant Grounds', image: 'https://loremflickr.com/640/480/food,india?lock=3' },
-        { title: 'Old City Food Trail', venue: 'Charminar Bazaar', image: 'https://loremflickr.com/640/480/food,india?lock=4' },
+        { title: 'Hyderabadi Biryani Festival', venue: 'Paradise Restaurant Grounds', image: 'https://loremflickr.com/640/480/hyderabadibiryanifestival,india' },
+        { title: 'Old City Food Trail', venue: 'Charminar Bazaar', image: 'https://loremflickr.com/640/480/oldcityfoodtrail,india' },
       ],
     },
     delhi: {
       cultural: [
-        { title: 'Dilli Haat Cultural Evening', venue: 'Dilli Haat, INA', image: 'https://loremflickr.com/640/480/festival,india?lock=5' },
-        { title: 'Old Delhi Heritage Walk', venue: 'Chandni Chowk', image: 'https://loremflickr.com/640/480/food,india?lock=6' },
+        { title: 'Dilli Haat Cultural Evening', venue: 'Dilli Haat, INA', image: 'https://loremflickr.com/640/480/indian,festival,india' },
+        { title: 'Old Delhi Heritage Walk', venue: 'Chandni Chowk', image: 'https://loremflickr.com/640/480/indian,festival,india' },
       ],
       food: [
-        { title: 'Chandni Chowk Street Food Festival', venue: 'Paranthe Wali Gali', image: 'https://loremflickr.com/640/480/food,india?lock=7' },
-        { title: 'Delhi Kebab & Biryani Mela', venue: 'Karim\'s, Jama Masjid', image: 'https://loremflickr.com/640/480/food,india?lock=8' },
+        { title: 'Chandni Chowk Street Food Festival', venue: 'Paranthe Wali Gali', image: 'https://loremflickr.com/640/480/indian,streetfood,india' },
+        { title: 'Delhi Kebab & Biryani Mela', venue: 'Karim\'s, Jama Masjid', image: 'https://loremflickr.com/640/480/delhikebabbiryanimela,india' },
       ],
     },
     mumbai: {
       cultural: [
-        { title: 'Kala Ghoda Arts Festival', venue: 'Kala Ghoda, Fort', image: 'https://loremflickr.com/640/480/festival,india?lock=9' },
-        { title: 'Marine Drive Music Night', venue: 'Marine Drive', image: 'https://loremflickr.com/640/480/festival,india?lock=10' },
+        { title: 'Kala Ghoda Arts Festival', venue: 'Kala Ghoda, Fort', image: 'https://loremflickr.com/640/480/kalaghodaartsfestival,india' },
+        { title: 'Marine Drive Music Night', venue: 'Marine Drive', image: 'https://loremflickr.com/640/480/marinedrivemusicnight,india' },
       ],
       food: [
-        { title: 'Mumbai Street Food Festival', venue: 'Juhu Beach', image: 'https://loremflickr.com/640/480/food,india?lock=11' },
+        { title: 'Mumbai Street Food Festival', venue: 'Juhu Beach', image: 'https://loremflickr.com/640/480/indian,streetfood,india' },
       ],
     },
     bangalore: {
       cultural: [
-        { title: 'Bangalore Open Air Music Fest', venue: 'Cubbon Park', image: 'https://loremflickr.com/640/480/festival,india?lock=12' },
+        { title: 'Bangalore Open Air Music Fest', venue: 'Cubbon Park', image: 'https://loremflickr.com/640/480/bangaloreopenairmusicfest,india' },
       ],
       food: [
-        { title: 'South Indian Breakfast Festival', venue: 'VV Puram Food Street', image: 'https://loremflickr.com/640/480/food,india?lock=13' },
+        { title: 'South Indian Breakfast Festival', venue: 'VV Puram Food Street', image: 'https://loremflickr.com/640/480/southindianbreakfastfestival,india' },
       ],
     },
   };
@@ -725,34 +725,34 @@ app.get('/api/places/:city', async (req, res) => {
   // City-specific curated list (guaranteed high-quality Wikipedia images)
   const cityFallbacks = {
     hyderabad: [
-      { id: 1, name: 'Charminar', category: 'Heritage Fort', description: 'Iconic 16th-century mosque and monument, the global symbol of Hyderabad.', image: 'https://loremflickr.com/640/480/landmark,india?lock=16', rating: 4.8, timings: '9:30 AM – 5:30 PM', entry: '₹25' },
-      { id: 2, name: 'Golconda Fort', category: 'Heritage Fort', description: 'Magnificent 13th-century fort famous for its acoustics and diamond history.', image: 'https://loremflickr.com/640/480/landmark,india?lock=17', rating: 4.7, timings: '8:00 AM – 5:30 PM', entry: '₹15' },
-      { id: 3, name: 'Hussain Sagar Lake', category: 'Lake', description: 'Heart-shaped lake with a monolithic Buddha statue, connecting Twin Cities.', image: 'https://loremflickr.com/640/480/food,india?lock=18', rating: 4.5, timings: 'Open 24/7', entry: 'Free' },
-      { id: 4, name: 'Ramoji Film City', category: 'Attraction', description: 'World\'s largest film studio complex with guided tours and entertainment.', image: 'https://loremflickr.com/640/480/food,india?lock=19', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: '₹1250' },
-      { id: 5, name: 'Salar Jung Museum', category: 'Museum', description: 'One of India\'s three National Museums with a vast collection of art & artifacts.', image: 'https://loremflickr.com/640/480/landmark,india?lock=20', rating: 4.6, timings: '10:00 AM – 5:00 PM', entry: '₹20' },
-      { id: 6, name: 'Birla Mandir', category: 'Temple', description: 'Stunning white marble temple atop Naubath Pahad hill with panoramic city views.', image: 'https://loremflickr.com/640/480/food,india?lock=21', rating: 4.7, timings: '7:00 AM – 12:00 PM, 2:00 PM – 9:00 PM', entry: 'Free' },
-      { id: 7, name: 'Chowmahalla Palace', category: 'Heritage Fort', description: 'Seat of the Asaf Jahi dynasty, showcasing Nizami grandeur and vintage cars.', image: 'https://loremflickr.com/640/480/landmark,india?lock=22', rating: 4.5, timings: '10:00 AM – 5:00 PM', entry: '₹80' },
-      { id: 8, name: 'Nehru Zoological Park', category: 'Park', description: 'One of India\'s largest zoos with safari rides, spread over 380 acres.', image: 'https://loremflickr.com/640/480/landmark,india?lock=23', rating: 4.3, timings: '8:30 AM – 5:00 PM', entry: '₹40' }
+      { id: 1, name: 'Charminar', category: 'Heritage Fort', description: 'Iconic 16th-century mosque and monument, the global symbol of Hyderabad.', image: 'https://loremflickr.com/640/480/charminar,india', rating: 4.8, timings: '9:30 AM – 5:30 PM', entry: '₹25' },
+      { id: 2, name: 'Golconda Fort', category: 'Heritage Fort', description: 'Magnificent 13th-century fort famous for its acoustics and diamond history.', image: 'https://loremflickr.com/640/480/golcondafort,india', rating: 4.7, timings: '8:00 AM – 5:30 PM', entry: '₹15' },
+      { id: 3, name: 'Hussain Sagar Lake', category: 'Lake', description: 'Heart-shaped lake with a monolithic Buddha statue, connecting Twin Cities.', image: 'https://loremflickr.com/640/480/hussainsagarlake,india', rating: 4.5, timings: 'Open 24/7', entry: 'Free' },
+      { id: 4, name: 'Ramoji Film City', category: 'Attraction', description: 'World\'s largest film studio complex with guided tours and entertainment.', image: 'https://loremflickr.com/640/480/ramojifilmcity,india', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: '₹1250' },
+      { id: 5, name: 'Salar Jung Museum', category: 'Museum', description: 'One of India\'s three National Museums with a vast collection of art & artifacts.', image: 'https://loremflickr.com/640/480/salarjungmuseum,india', rating: 4.6, timings: '10:00 AM – 5:00 PM', entry: '₹20' },
+      { id: 6, name: 'Birla Mandir', category: 'Temple', description: 'Stunning white marble temple atop Naubath Pahad hill with panoramic city views.', image: 'https://loremflickr.com/640/480/birlamandir,india', rating: 4.7, timings: '7:00 AM – 12:00 PM, 2:00 PM – 9:00 PM', entry: 'Free' },
+      { id: 7, name: 'Chowmahalla Palace', category: 'Heritage Fort', description: 'Seat of the Asaf Jahi dynasty, showcasing Nizami grandeur and vintage cars.', image: 'https://loremflickr.com/640/480/chowmahallapalace,india', rating: 4.5, timings: '10:00 AM – 5:00 PM', entry: '₹80' },
+      { id: 8, name: 'Nehru Zoological Park', category: 'Park', description: 'One of India\'s largest zoos with safari rides, spread over 380 acres.', image: 'https://loremflickr.com/640/480/nehruzoologicalpark,india', rating: 4.3, timings: '8:30 AM – 5:00 PM', entry: '₹40' }
     ],
     mumbai: [
-      { id: 1, name: 'Gateway of India', category: 'Heritage Fort', description: 'Iconic monument on the waterfront overlooking the Arabian Sea.', image: 'https://loremflickr.com/640/480/landmark,india?lock=24', rating: 4.7, timings: 'Open 24/7', entry: 'Free' },
-      { id: 2, name: 'Marine Drive', category: 'Attraction', description: 'C-shaped boulevard along the coast, famous as the Queen\'s Necklace.', image: 'https://loremflickr.com/640/480/food,india?lock=25', rating: 4.8, timings: 'Open 24/7', entry: 'Free' },
-      { id: 3, name: 'Chhatrapati Shivaji Maharaj Vastu Sangrahalaya', category: 'Museum', description: 'Premier art and history museum in India.', image: 'https://loremflickr.com/640/480/food,india?lock=26', rating: 4.6, timings: '10:15 AM - 6:00 PM', entry: '₹100' }
+      { id: 1, name: 'Gateway of India', category: 'Heritage Fort', description: 'Iconic monument on the waterfront overlooking the Arabian Sea.', image: 'https://loremflickr.com/640/480/gatewayofindia,india', rating: 4.7, timings: 'Open 24/7', entry: 'Free' },
+      { id: 2, name: 'Marine Drive', category: 'Attraction', description: 'C-shaped boulevard along the coast, famous as the Queen\'s Necklace.', image: 'https://loremflickr.com/640/480/marinedrive,india', rating: 4.8, timings: 'Open 24/7', entry: 'Free' },
+      { id: 3, name: 'Chhatrapati Shivaji Maharaj Vastu Sangrahalaya', category: 'Museum', description: 'Premier art and history museum in India.', image: 'https://loremflickr.com/640/480/chhatrapatishivajimaharajvastusangrahalaya,india', rating: 4.6, timings: '10:15 AM - 6:00 PM', entry: '₹100' }
     ],
     bangalore: [
-      { id: 1, name: 'Lalbagh Botanical Garden', category: 'Park', description: 'Historic botanical garden with a famous glass house.', image: 'https://loremflickr.com/640/480/food,india?lock=27', rating: 4.6, timings: '6:00 AM - 7:00 PM', entry: '₹30' },
-      { id: 2, name: 'Bangalore Palace', category: 'Heritage Fort', description: 'Majestic palace built in Tudor Revival style architecture.', image: 'https://loremflickr.com/640/480/landmark,india?lock=28', rating: 4.5, timings: '10:00 AM - 5:30 PM', entry: '₹250' },
-      { id: 3, name: 'Cubbon Park', category: 'Park', description: 'Landmark park in the heart of the city.', image: 'https://loremflickr.com/640/480/food,india?lock=29', rating: 4.7, timings: '6:00 AM - 6:00 PM', entry: 'Free' }
+      { id: 1, name: 'Lalbagh Botanical Garden', category: 'Park', description: 'Historic botanical garden with a famous glass house.', image: 'https://loremflickr.com/640/480/lalbaghbotanicalgarden,india', rating: 4.6, timings: '6:00 AM - 7:00 PM', entry: '₹30' },
+      { id: 2, name: 'Bangalore Palace', category: 'Heritage Fort', description: 'Majestic palace built in Tudor Revival style architecture.', image: 'https://loremflickr.com/640/480/bangalorepalace,india', rating: 4.5, timings: '10:00 AM - 5:30 PM', entry: '₹250' },
+      { id: 3, name: 'Cubbon Park', category: 'Park', description: 'Landmark park in the heart of the city.', image: 'https://loremflickr.com/640/480/cubbonpark,india', rating: 4.7, timings: '6:00 AM - 6:00 PM', entry: 'Free' }
     ],
     delhi: [
-      { id: 1, name: 'India Gate', category: 'Heritage Fort', description: 'War memorial arch on Rajpath, the heart of ceremonial New Delhi.', image: 'https://loremflickr.com/640/480/landmark,india?lock=30', rating: 4.8, timings: 'Open 24/7', entry: 'Free' },
-      { id: 2, name: 'Red Fort', category: 'Heritage Fort', description: 'Mughal-era fortress and UNESCO site where the Prime Minister hoists the flag on Independence Day.', image: 'https://loremflickr.com/640/480/landmark,india?lock=31', rating: 4.7, timings: '9:30 AM – 4:30 PM', entry: '₹35' },
-      { id: 3, name: 'Qutub Minar', category: 'Heritage Fort', description: '73-metre victory tower and the tallest brick minaret in the world.', image: 'https://loremflickr.com/640/480/food,india?lock=32', rating: 4.6, timings: '7:00 AM – 5:00 PM', entry: '₹30' },
-      { id: 4, name: 'Lotus Temple', category: 'Temple', description: 'Striking Baháʼí House of Worship shaped like a blooming lotus flower.', image: 'https://loremflickr.com/640/480/landmark,india?lock=33', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: 'Free' },
-      { id: 5, name: 'Humayun\'s Tomb', category: 'Heritage Fort', description: 'Garden tomb that inspired the Taj Mahal — a masterpiece of Mughal architecture.', image: 'https://loremflickr.com/640/480/food,india?lock=34', rating: 4.7, timings: '6:00 AM – 6:00 PM', entry: '₹30' },
-      { id: 6, name: 'Akshardham', category: 'Temple', description: 'Sprawling Hindu temple complex with exhibitions, gardens, and a musical fountain.', image: 'https://loremflickr.com/640/480/landmark,india?lock=35', rating: 4.8, timings: '10:00 AM – 6:30 PM', entry: 'Free (exhibits extra)' },
-      { id: 7, name: 'Chandni Chowk', category: 'Attraction', description: 'Legendary Old Delhi bazaar — spices, jewellery, street food, and Mughal lanes.', image: 'https://loremflickr.com/640/480/food,india?lock=36', rating: 4.5, timings: '10:00 AM – 9:00 PM', entry: 'Free' },
-      { id: 8, name: 'Connaught Place', category: 'Attraction', description: 'Colonial-era circular market and Delhi\'s commercial and nightlife hub.', image: 'https://loremflickr.com/640/480/food,india?lock=37', rating: 4.4, timings: 'Open 24/7', entry: 'Free' }
+      { id: 1, name: 'India Gate', category: 'Heritage Fort', description: 'War memorial arch on Rajpath, the heart of ceremonial New Delhi.', image: 'https://loremflickr.com/640/480/indiagate,india', rating: 4.8, timings: 'Open 24/7', entry: 'Free' },
+      { id: 2, name: 'Red Fort', category: 'Heritage Fort', description: 'Mughal-era fortress and UNESCO site where the Prime Minister hoists the flag on Independence Day.', image: 'https://loremflickr.com/640/480/redfort,india', rating: 4.7, timings: '9:30 AM – 4:30 PM', entry: '₹35' },
+      { id: 3, name: 'Qutub Minar', category: 'Heritage Fort', description: '73-metre victory tower and the tallest brick minaret in the world.', image: 'https://loremflickr.com/640/480/qutubminar,india', rating: 4.6, timings: '7:00 AM – 5:00 PM', entry: '₹30' },
+      { id: 4, name: 'Lotus Temple', category: 'Temple', description: 'Striking Baháʼí House of Worship shaped like a blooming lotus flower.', image: 'https://loremflickr.com/640/480/lotustemple,india', rating: 4.6, timings: '9:00 AM – 5:30 PM', entry: 'Free' },
+      { id: 5, name: 'Humayun\'s Tomb', category: 'Heritage Fort', description: 'Garden tomb that inspired the Taj Mahal — a masterpiece of Mughal architecture.', image: 'https://loremflickr.com/640/480/humayun,india', rating: 4.7, timings: '6:00 AM – 6:00 PM', entry: '₹30' },
+      { id: 6, name: 'Akshardham', category: 'Temple', description: 'Sprawling Hindu temple complex with exhibitions, gardens, and a musical fountain.', image: 'https://loremflickr.com/640/480/akshardham,india', rating: 4.8, timings: '10:00 AM – 6:30 PM', entry: 'Free (exhibits extra)' },
+      { id: 7, name: 'Chandni Chowk', category: 'Attraction', description: 'Legendary Old Delhi bazaar — spices, jewellery, street food, and Mughal lanes.', image: 'https://loremflickr.com/640/480/chandnichowk,india', rating: 4.5, timings: '10:00 AM – 9:00 PM', entry: 'Free' },
+      { id: 8, name: 'Connaught Place', category: 'Attraction', description: 'Colonial-era circular market and Delhi\'s commercial and nightlife hub.', image: 'https://loremflickr.com/640/480/connaughtplace,india', rating: 4.4, timings: 'Open 24/7', entry: 'Free' }
     ]
   };
 
@@ -811,42 +811,42 @@ app.get('/api/foods/:city', async (req, res) => {
   // Curated food data — images fetched live from Wikipedia (see below)
   const curatedFoods = {
     hyderabad: [
-      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: 'https://loremflickr.com/640/480/food,india?lock=38', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: 'https://loremflickr.com/640/480/food,india?lock=39', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: 'https://loremflickr.com/640/480/food,india?lock=40', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: 'https://loremflickr.com/640/480/food,india?lock=41', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
-      { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', image: 'https://loremflickr.com/640/480/food,india?lock=42', must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', reviews: [], avg_rating: 4.5 },
-      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: 'https://loremflickr.com/640/480/food,india?lock=43', must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
+      { id: 'f1', name: 'Hyderabadi Biryani', type: 'Local Famous', description: 'World-famous slow-cooked basmati rice with marinated meat, spices, and saffron.', image: 'https://loremflickr.com/640/480/hyderabadibiryani,india', must_try_at: 'Paradise, Pista House, Shah Ghouse', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Haleem', type: 'Specialty', description: 'A rich, savory stew of pounded meat, lentils, and wheat, slow-cooked for hours.', image: 'https://loremflickr.com/640/480/haleem,india', must_try_at: 'Pista House, Cafe 555', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Double Ka Meetha', type: 'Dessert', description: 'Traditional bread pudding dessert made with fried bread slices soaked in hot milk with saffron.', image: 'https://loremflickr.com/640/480/doublekameetha,india', must_try_at: 'Karachi Bakery, Nimrah Cafe', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f4', name: 'Irani Chai', type: 'Street Food', description: 'Iconic thick milky tea served alongside buttery Osmania biscuits.', image: 'https://loremflickr.com/640/480/iranichai,india', must_try_at: 'Nimrah Cafe, Niloufer Cafe', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f5', name: 'Qubani Ka Meetha', type: 'Dessert', description: 'Traditional Hyderabadi dessert of stewed apricots topped with fresh cream.', image: 'https://loremflickr.com/640/480/qubanikameetha,india', must_try_at: 'Hotel Shadab, Paradise', price_range: 'Low', reviews: [], avg_rating: 4.5 },
+      { id: 'f6', name: 'Lukhmi', type: 'Street Food', description: 'Flaky pastry pockets stuffed with spiced minced meat — the Hyderabadi samosa.', image: 'https://loremflickr.com/640/480/lukhmi,india', must_try_at: 'Old City, Charminar area', price_range: 'Low', reviews: [], avg_rating: 4.6 }
     ],
     mumbai: [
-      { id: 'f1', name: 'Vada Pav', type: 'Street Food', description: 'The lifeline of Mumbai - deep fried potato dumpling inside a bread bun.', image: 'https://loremflickr.com/640/480/food,india?lock=44', must_try_at: 'Ashok Vada Pav, Aaram Vada Pav', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Pav Bhaji', type: 'Local Famous', description: 'Spicy mash of vegetables served hot with butter-soaked bread.', image: 'https://loremflickr.com/640/480/food,india?lock=45', must_try_at: 'Sardar Pav Bhaji, Cannon Pav Bhaji', price_range: 'Moderate', reviews: [], avg_rating: 4.7 },
-      { id: 'f3', name: 'Pani Puri', type: 'Street Food', description: 'Crispy hollow puris filled with tangy tamarind water and spiced potato.', image: 'https://loremflickr.com/640/480/food,india?lock=46', must_try_at: 'Elco Market, Juhu Beach stalls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f4', name: 'Bombay Sandwich', type: 'Street Food', description: 'Toasted sandwich layered with chutney, cucumber, tomato, and masala potatoes.', image: 'https://loremflickr.com/640/480/food,india?lock=47', must_try_at: 'Churchgate stalls, Dadar market', price_range: 'Low', reviews: [], avg_rating: 4.6 }
+      { id: 'f1', name: 'Vada Pav', type: 'Street Food', description: 'The lifeline of Mumbai - deep fried potato dumpling inside a bread bun.', image: 'https://loremflickr.com/640/480/vadapav,india', must_try_at: 'Ashok Vada Pav, Aaram Vada Pav', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Pav Bhaji', type: 'Local Famous', description: 'Spicy mash of vegetables served hot with butter-soaked bread.', image: 'https://loremflickr.com/640/480/pavbhaji,india', must_try_at: 'Sardar Pav Bhaji, Cannon Pav Bhaji', price_range: 'Moderate', reviews: [], avg_rating: 4.7 },
+      { id: 'f3', name: 'Pani Puri', type: 'Street Food', description: 'Crispy hollow puris filled with tangy tamarind water and spiced potato.', image: 'https://loremflickr.com/640/480/panipuri,india', must_try_at: 'Elco Market, Juhu Beach stalls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f4', name: 'Bombay Sandwich', type: 'Street Food', description: 'Toasted sandwich layered with chutney, cucumber, tomato, and masala potatoes.', image: 'https://loremflickr.com/640/480/bombaysandwich,india', must_try_at: 'Churchgate stalls, Dadar market', price_range: 'Low', reviews: [], avg_rating: 4.6 }
     ],
     bangalore: [
-      { id: 'f1', name: 'Masala Dosa', type: 'Local Delicacy', description: 'Crispy rice crepe stuffed with spiced potato filling, served with chutneys.', image: 'https://loremflickr.com/640/480/food,india?lock=48', must_try_at: 'CTR, Vidyarthi Bhavan, MTR', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Filter Coffee', type: 'Beverage', description: 'Strong, frothy traditional South Indian coffee brewed in a metal tumbler.', image: 'https://loremflickr.com/640/480/food,india?lock=49', must_try_at: 'MTR, Brahmin\'s Coffee Bar, Koshy\'s', price_range: 'Low', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Akki Roti', type: 'Local Delicacy', description: 'Rice flour flatbread with vegetables and spices — a Karnataka staple.', image: 'https://loremflickr.com/640/480/food,india?lock=50', must_try_at: 'Brahmin\'s Coffee Bar, Vidyarthi Bhavan', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f4', name: 'Bisi Bele Bath', type: 'Local Famous', description: 'Hot lentil rice dish cooked with tamarind, vegetables, and aromatic spices.', image: 'https://loremflickr.com/640/480/food,india?lock=51', must_try_at: 'MTR, Mavalli Tiffin Rooms', price_range: 'Low', reviews: [], avg_rating: 4.7 }
+      { id: 'f1', name: 'Masala Dosa', type: 'Local Delicacy', description: 'Crispy rice crepe stuffed with spiced potato filling, served with chutneys.', image: 'https://loremflickr.com/640/480/masaladosa,india', must_try_at: 'CTR, Vidyarthi Bhavan, MTR', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Filter Coffee', type: 'Beverage', description: 'Strong, frothy traditional South Indian coffee brewed in a metal tumbler.', image: 'https://loremflickr.com/640/480/filtercoffee,india', must_try_at: 'MTR, Brahmin\'s Coffee Bar, Koshy\'s', price_range: 'Low', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Akki Roti', type: 'Local Delicacy', description: 'Rice flour flatbread with vegetables and spices — a Karnataka staple.', image: 'https://loremflickr.com/640/480/akkiroti,india', must_try_at: 'Brahmin\'s Coffee Bar, Vidyarthi Bhavan', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f4', name: 'Bisi Bele Bath', type: 'Local Famous', description: 'Hot lentil rice dish cooked with tamarind, vegetables, and aromatic spices.', image: 'https://loremflickr.com/640/480/bisibelebath,india', must_try_at: 'MTR, Mavalli Tiffin Rooms', price_range: 'Low', reviews: [], avg_rating: 4.7 }
     ],
     delhi: [
-      { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: 'https://loremflickr.com/640/480/food,india?lock=52', must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f2', name: 'Chole Bhature', type: 'Street Food', description: 'Fluffy fried bread with spicy chickpea curry — the ultimate Delhi breakfast.', image: 'https://loremflickr.com/640/480/food,india?lock=53', must_try_at: 'Sitaram Diwan Chand, Kwality', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: 'https://loremflickr.com/640/480/food,india?lock=54', must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 },
-      { id: 'f4', name: 'Kebabs', type: 'Local Famous', description: 'Smoky seekh and galouti kebabs from Old Delhi\'s legendary grill houses.', image: 'https://loremflickr.com/640/480/food,india?lock=55', must_try_at: 'Karim\'s, Al Jawahar, Qureshi Kabab', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
-      { id: 'f5', name: 'Chole Kulche', type: 'Street Food', description: 'Soft kulcha bread with tangy chole — a Delhi street-food classic.', image: 'https://loremflickr.com/640/480/food,india?lock=56', must_try_at: 'Chache Di Hatti, Nagpal Chole Bhature', price_range: 'Low', reviews: [], avg_rating: 4.6 },
-      { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: 'https://loremflickr.com/640/480/food,india?lock=57', must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
+      { id: 'f1', name: 'Butter Chicken', type: 'Local Famous', description: 'Iconic creamy tomato-based chicken curry born in Delhi\'s kitchens.', image: 'https://loremflickr.com/640/480/butterchicken,india', must_try_at: 'Moti Mahal, Kake Da Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f2', name: 'Chole Bhature', type: 'Street Food', description: 'Fluffy fried bread with spicy chickpea curry — the ultimate Delhi breakfast.', image: 'https://loremflickr.com/640/480/cholebhature,india', must_try_at: 'Sitaram Diwan Chand, Kwality', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f3', name: 'Paranthe Wali Gali', type: 'Street Food', description: 'Famous Chandni Chowk stuffed parathas with unusual fillings like rabri and dry fruits.', image: 'https://loremflickr.com/640/480/paranthewaligali,india', must_try_at: 'Paranthe Wali Gali, Chandni Chowk', price_range: 'Low', reviews: [], avg_rating: 4.7 },
+      { id: 'f4', name: 'Kebabs', type: 'Local Famous', description: 'Smoky seekh and galouti kebabs from Old Delhi\'s legendary grill houses.', image: 'https://loremflickr.com/640/480/kebabs,india', must_try_at: 'Karim\'s, Al Jawahar, Qureshi Kabab', price_range: 'Moderate', reviews: [], avg_rating: 4.8 },
+      { id: 'f5', name: 'Chole Kulche', type: 'Street Food', description: 'Soft kulcha bread with tangy chole — a Delhi street-food classic.', image: 'https://loremflickr.com/640/480/cholekulche,india', must_try_at: 'Chache Di Hatti, Nagpal Chole Bhature', price_range: 'Low', reviews: [], avg_rating: 4.6 },
+      { id: 'f6', name: 'Dahi Bhalla', type: 'Street Food', description: 'Lentil dumplings in creamy yogurt with chutneys and chaat masala.', image: 'https://loremflickr.com/640/480/dahibhalla,india', must_try_at: 'Natraj Dahi Bhalle Wala, Bikanervala', price_range: 'Low', reviews: [], avg_rating: 4.5 }
     ],
     chennai: [
-      { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: 'https://loremflickr.com/640/480/food,india?lock=58', must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Chettinad Chicken Curry', type: 'Local Famous', description: 'Fiery aromatic curry with distinctive Chettinad spices and kalpasi.', image: 'https://loremflickr.com/640/480/food,india?lock=59', must_try_at: 'Anjappar, Ponnusamy Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Kothu Parotta', type: 'Street Food', description: 'Flaky bread shredded and stir-fried with egg, onions, and spices.', image: 'https://loremflickr.com/640/480/food,india?lock=60', must_try_at: 'Burma Bazaar, street stalls', price_range: 'Low', reviews: [], avg_rating: 4.7 }
+      { id: 'f1', name: 'Idli Sambhar', type: 'Local Delicacy', description: 'Soft steamed rice cakes served with lentil vegetable stew and chutneys.', image: 'https://loremflickr.com/640/480/idlisambhar,india', must_try_at: 'Saravana Bhavan, Murugan Idli Shop', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Chettinad Chicken Curry', type: 'Local Famous', description: 'Fiery aromatic curry with distinctive Chettinad spices and kalpasi.', image: 'https://loremflickr.com/640/480/chettinadchickencurry,india', must_try_at: 'Anjappar, Ponnusamy Hotel', price_range: 'Moderate', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Kothu Parotta', type: 'Street Food', description: 'Flaky bread shredded and stir-fried with egg, onions, and spices.', image: 'https://loremflickr.com/640/480/kothuparotta,india', must_try_at: 'Burma Bazaar, street stalls', price_range: 'Low', reviews: [], avg_rating: 4.7 }
     ],
     kolkata: [
-      { id: 'f1', name: 'Kathi Roll', type: 'Street Food', description: 'Paratha wrapped around spiced egg and meat filling — invented in Kolkata.', image: 'https://loremflickr.com/640/480/food,india?lock=61', must_try_at: 'Nizam\'s, Hot Kathi Rolls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
-      { id: 'f2', name: 'Rosogolla', type: 'Dessert', description: 'Spongy cottage cheese balls soaked in light sugar syrup — a Bengal original.', image: 'https://loremflickr.com/640/480/food,india?lock=62', must_try_at: 'K.C. Das, Balaram Mullick', price_range: 'Low', reviews: [], avg_rating: 4.9 },
-      { id: 'f3', name: 'Hilsa Fish Curry', type: 'Local Famous', description: 'Hilsa fish cooked in mustard paste — the pride of Bengali cuisine.', image: 'https://loremflickr.com/640/480/food,india?lock=63', must_try_at: '6 Ballygunge Place, Bhojohori Manna', price_range: 'Moderate', reviews: [], avg_rating: 4.8 }
+      { id: 'f1', name: 'Kathi Roll', type: 'Street Food', description: 'Paratha wrapped around spiced egg and meat filling — invented in Kolkata.', image: 'https://loremflickr.com/640/480/kathiroll,india', must_try_at: 'Nizam\'s, Hot Kathi Rolls', price_range: 'Low', reviews: [], avg_rating: 4.8 },
+      { id: 'f2', name: 'Rosogolla', type: 'Dessert', description: 'Spongy cottage cheese balls soaked in light sugar syrup — a Bengal original.', image: 'https://loremflickr.com/640/480/rosogolla,india', must_try_at: 'K.C. Das, Balaram Mullick', price_range: 'Low', reviews: [], avg_rating: 4.9 },
+      { id: 'f3', name: 'Hilsa Fish Curry', type: 'Local Famous', description: 'Hilsa fish cooked in mustard paste — the pride of Bengali cuisine.', image: 'https://loremflickr.com/640/480/hilsafishcurry,india', must_try_at: '6 Ballygunge Place, Bhojohori Manna', price_range: 'Moderate', reviews: [], avg_rating: 4.8 }
     ]
   };
 
