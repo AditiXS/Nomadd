@@ -1250,14 +1250,20 @@ app.get('/api/accommodations/:city', async (req, res) => {
   const capCity = city.charAt(0).toUpperCase() + city.slice(1);
   const type = req.query.type; // 'pg', 'flat', or 'rental'
   
-  // Real apartment/room images from Wikimedia Commons
+  // Reliable apartment/room images from Unsplash
   const ROOM_PICS = [
-    'https://loremflickr.com/640/480/food,india?lock=64',
-    'https://loremflickr.com/640/480/food,india?lock=65',
-    'https://loremflickr.com/640/480/food,india?lock=66',
-    'https://loremflickr.com/640/480/food,india?lock=67',
-    'https://loremflickr.com/640/480/food,india?lock=68',
-    'https://loremflickr.com/640/480/landmark,india?lock=69'
+    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1630699144867-37acec97df5a?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=640&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=640&h=480&fit=crop'
   ];
 
   let data = [];
@@ -1292,11 +1298,8 @@ app.get('/api/accommodations/:city', async (req, res) => {
       if (title.toLowerCase().includes('pg') || title.toLowerCase().includes('hostel')) accType = 'PG';
       else if (title.toLowerCase().includes('house') || title.toLowerCase().includes('villa')) accType = 'Rental';
 
-      const imgNode = $(el).find('img').first();
-      let image = imgNode.attr('src') || imgNode.attr('data-src');
-      if (!image || !image.startsWith('http')) {
-        image = ROOM_PICS[idCounter % ROOM_PICS.length];
-      }
+      // Always use reliable Unsplash images — scraped images are often blocked or broken
+      const image = ROOM_PICS[(idCounter - 1) % ROOM_PICS.length];
 
       data.push({
         id: `acc-${idCounter++}`,
